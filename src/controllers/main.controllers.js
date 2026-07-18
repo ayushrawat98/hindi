@@ -67,7 +67,7 @@ export const setBoardData = async (req, res, next) => {
 			new Date().toISOString()
 		)
 
-		console.log(req.file)
+		// console.log(req.file)
 
 		const newThread = instance.queries.insertParentPost.run(
 			currentBoard.id, 

@@ -31,7 +31,7 @@ export const hindiCheck = (req, res, next) => {
 	req.body.content = req.body.content.replace(urlRegex, ' $& ');
 
 	for(let field of checks) {
-		console.log(req.body[field.e].split(/\s+/),  req.body[field.e].split(/\s+/).every(word => hindiPostRegex.test(word)))
+		// console.log(req.body[field.e].split(/\s+/),  req.body[field.e].split(/\s+/).every(word => hindiPostRegex.test(word)))
 		if(req.body[field.e].length > 0 && !req.body[field.e].split(/\s+/).every(word => hindiPostRegex.test(word) || urlRegex.test(word))) {
 			throw new AppError(400,`${field.h} हिन्दी में लिखिए।`, true)
 		}

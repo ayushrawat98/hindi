@@ -157,6 +157,7 @@ label {
 .overlay {
 	position: fixed;
 	inset: 0;
+	z-index: 2;
 }
 
 .popup {
@@ -183,7 +184,8 @@ label {
 
 .thumbnail--expanded {
 	float: none;
-	max-width: 100%;
+	width: 100%;
+	object-fit: cover;
 	max-height: 100vh;
 }
 
@@ -194,7 +196,7 @@ label {
 .post-list {
 	display: flex;
 	flex-direction: column;
-	gap : 1.5rem;
+	gap : 1.4rem;
 	margin-bottom: 350px;
 }
 

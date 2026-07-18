@@ -25,6 +25,7 @@ app.use((err, req, res, next) => {
 		fs.unlink(req.file.path)
 	}
 	if (err.code && err.code == 'LIMIT_FILE_SIZE') {
+		fs.unlink(req.file?.path)
 		return res.status(500).send("10 MB max size")
 	}
 	return res.status(err.status || 500).send(err.message || "Error")

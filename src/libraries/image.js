@@ -38,7 +38,7 @@ export async function imageProcessor() {
 					'-vf', "scale='min(100,iw)':-1",
 					'-frames:v', '1',
 					'-compression_level', '5',
-					'-quality', '30',
+					'-quality', '100',
 					thumbfilePath + '.webp'
 				];
 
@@ -55,7 +55,7 @@ export async function imageProcessor() {
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
 					})
 					.webp({
-						quality: 30,
+						quality: 100,
 						effort: 3,
 						loop: 0,
 						force: true
@@ -71,7 +71,7 @@ export async function imageProcessor() {
 						width: 100,
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
 					})
-					.webp({ quality: 30, effort: 3 })
+					.webp({ quality: 100, effort: 3 })
 					.toFile(thumbfilePath);
 
 			}

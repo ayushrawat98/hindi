@@ -68,7 +68,7 @@
 {% if "video" in data.file_type %}
 <img class="thumbnail" src="/public/thumbnails/{{data.file_path}}.webp" alt="{{data.file_path}}" controls preload="none" />
 <video class="thumbnail--expanded thumbnail--removed" src="/public/files/{{data.file_path}}"
-	controls preload="none">
+	controls autoplay preload="none">
 </video>
 {% else %}
 <img class="thumbnail" src="/public/thumbnails/{{data.file_path}}" alt="{{data.file_path}}" loading="lazy"
