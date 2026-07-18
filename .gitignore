@@ -1,0 +1,9 @@
+node_modules
+files/*
+.env
+package-lock.json
+todo
+public
+db/db
+db/db-shm
+db/db-wal

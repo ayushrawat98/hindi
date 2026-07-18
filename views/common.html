@@ -1,0 +1,107 @@
+{% macro navigation(boards) %}
+<nav class="board-list" aria-label="Available boards">
+			<ul class="board-list__items">
+				<li class="board-list__item">
+					<a class="board-list__link" href="/board/सर्व">सर्व</a>
+				</li>
+				{% for board in boards %}
+				<li class="board-list__item">
+					<a class="board-list__link" href="/board/{{board.name}}">{{board.name}}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</nav>
+{% endmacro %}
+
+{% macro postList(datalist, board) %}
+<div class="post-list">
+	{% if board %}
+	{% for data in datalist %}
+	{{ boardPost(data, board) }}
+	{% endfor %}
+	{% else %}
+	{% for data in datalist %}
+	{{ post(data, board) }}
+	{% endfor %}
+	{% endif %}
+	</div>
+{% endmacro %}
+
+
+{% macro post(data, board) %}
+<article class="post post--border clearfix" id="{{data.id | hindinumber}}">
+
+	<header class="post__header">
+		<div class="post__meta">
+			<span>अपरिचित</span>
+			<span>&middot;</span>
+			<time datetime="{{data.created_at | indianDate}}">{{data.created_at | indianDate}}</time>
+		</div>
+		<button type="button" class="replyButton link-look post__reply" data-post-number="{{data.id | hindinumber}}">उत्तर दें</button>
+	</header>
+
+	{% if data.file_path %}
+	{{ image(data) }}
+	{% endif %}
+
+	{% if data.title %}
+	<h3 class="post__title">{{data.title | safe}}</h3>
+	{% endif %}
+
+	{% if data.content %}
+	<p class="post__content post__content--wrap">{{data.content | greenText | urlize | safe}}</p>
+	{% endif %}
+
+</article>
+{% endmacro %}
+
+
+
+{% macro image(data) %}
+{% if data.file_status == 'pending' %}
+<img class="thumbnail" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
+<img class="thumbnail--expanded thumbnail--removed" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
+{% elif data.file_status == 'failed' %}
+<img class="thumbnail" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
+<img class="thumbnail--expanded thumbnail--removed" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
+{% else %}
+{% if "video" in data.file_type %}
+<img class="thumbnail" src="/public/thumbnails/{{data.file_path}}.webp" alt="{{data.file_path}}" controls preload="none" />
+<video class="thumbnail--expanded thumbnail--removed" src="/public/files/{{data.file_path}}"
+	controls preload="none">
+</video>
+{% else %}
+<img class="thumbnail" src="/public/thumbnails/{{data.file_path}}" alt="{{data.file_path}}" loading="lazy"
+	decoding="async" />
+	<img class="thumbnail--removed thumbnail--expanded " src="/public/files/{{data.file_path}}" alt="{{data.file_path}}" loading="lazy"
+	decoding="async" />
+{% endif %}
+{% endif %}
+{% endmacro %}
+
+{% macro boardPost(data, board) %}
+
+<article class="post post--hover clearfix" id="{{data.id}}">
+
+	<header class="post__header">
+		<div class="post__meta">
+			<span>अपरिचित</span>
+			<span>&middot;</span>
+			<time datetime="{{data.created_at | indianDate}}">{{data.created_at | indianDate}}</time>
+		</div>
+		<a class="post__link" href="/thread/{{data.id}}">{{data.replies}} {% if data.replies <= 1 %}टिप्पणी{% else %}टिप्पणियाँ{% endif %} </a>
+	</header>
+
+	{{ image(data) }}
+
+	{% if data.title %}
+	<h3 class="post__title">{{data.title}}</h3>
+	{% endif %}
+
+	{% if data.content %}
+	<p class="post__content">{{data.content | safe}}</p>
+	{% endif %}
+
+</article>
+
+{% endmacro %}
