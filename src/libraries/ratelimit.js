@@ -1,7 +1,7 @@
 import rateLimit from "express-rate-limit";
 
 export const burstLimiter = rateLimit({
-    windowMs: 5000, // 5 seconds
+    windowMs: 2500, // 5 seconds
     max: 1,         // Statistically safe for human jitter
     message: "High frequency requests detected."
 });
