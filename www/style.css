@@ -1,3 +1,6 @@
+@view-transition {
+  navigation: auto;
+}
 
 * {
 	padding: 0;
@@ -176,16 +179,16 @@ label {
 
 .thumbnail {
 	display: block;
-	margin: 0 8px 0 0;
-	/* object-fit: contain; */
+	margin: 0 12px 0 0;
 	float: left;
 	max-width: 100px;
+	border-radius: 6px;
 }
 
 .thumbnail--expanded {
 	float: none;
 	width: 100%;
-	object-fit: cover;
+	object-fit: contain;
 	max-height: 100vh;
 }
 
@@ -196,14 +199,14 @@ label {
 .post-list {
 	display: flex;
 	flex-direction: column;
-	gap : 1.4rem;
+	gap : 1rem;
 	margin-bottom: 350px;
 }
 
 .post {
 	width: 100%;
 	animation: appear 500ms ease-in forwards;
-	border-radius: 8px;
+	border-radius: 6px;
 	display: flow-root;
 	background-color: light-dark(var(--surface), var(--surface-dark));
 	padding: 1rem;
@@ -296,11 +299,11 @@ label {
 
 
 @media (min-width : 768px) {
-	.postList {
-		grid-template-columns: 1fr 1fr;
-		gap: 16px;
-	}
 
+	.post-list {
+		gap : 1.5rem;
+	}
+	
 	.popup {
 		width: 600px;
 	}

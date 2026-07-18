@@ -78,7 +78,7 @@ function setReplyPost() {
 				}
 			});
 			overlay.appendChild(clone);
-			document.querySelector('.post-list').appendChild(overlay)
+			document.querySelector('.board-feed__new-posts').appendChild(overlay)
 			oldClone = clone
 		})
 	})
