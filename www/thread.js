@@ -78,7 +78,7 @@ function setReplyPost() {
 				}
 			});
 			overlay.appendChild(clone);
-			document.querySelector('.board-feed__new-posts').appendChild(overlay)
+			document.querySelector('.board-feed__column--hot').appendChild(overlay)
 			oldClone = clone
 		})
 	})
@@ -87,7 +87,6 @@ function setReplyPost() {
 
 function expandFile() {
 	document.querySelectorAll(".thumbnail-js").forEach(file => file.addEventListener("click", (event) => {
-		debugger
 		//on click , expand the image/video
 		let thumbnail = event.currentTarget
 		let og = event.currentTarget.nextElementSibling
