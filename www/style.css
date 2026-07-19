@@ -186,10 +186,12 @@ label {
 }
 
 .thumbnail--expanded {
+	margin: 0;
 	float: none;
+	max-width: 100%;
 	width: 100%;
 	object-fit: contain;
-	max-height: 100vh;
+	max-height: 70vh;
 }
 
 .thumbnail--removed {
@@ -269,13 +271,12 @@ label {
 }
 
 .board-feed__sidebar,
-.board-feed__hot-posts,
-.board-feed__new-posts {
+.board-feed__column{
 	padding: 0.5rem;
 }
 
 /* dont display on mobile */
-.board-feed__hot-posts {
+.board-feed__column--new {
 	display: none;
 }
 
@@ -323,12 +324,12 @@ label {
 		width: 10.5rem;
 	}
 
-	.board-feed__new-posts {
+	.board-feed__column--hot {
 		order: 1;
 		flex: 1 0 18.25rem;
 	}
 
-	.board-feed__hot-posts {
+	.board-feed__column--new {
 		order: 2;
 		flex: 1 0 18.25rem;
 		max-width: 22rem;

@@ -39,13 +39,13 @@ function setReplyPost() {
 	list.forEach(link => {
 		link.addEventListener('click', (linkevent) => {
 			linkevent.preventDefault()
-			
-			
+
+
 			if (oldClone) {
 				oldClone.remove()
 			}
 			let postHash = link.getAttribute('data-post-number-link')
-			
+
 			const currentPost = document.getElementById(postHash)
 			if (!postHash) return;
 			if (!currentPost) {
@@ -59,15 +59,15 @@ function setReplyPost() {
 			clone.classList.add("popup")
 			clone.classList.remove("post--border")
 			// if (window.innerWidth < 768) {
-				// let h = currentPost.offsetHeight > 350 ? 350 : currentPost.offsetHeight
-				// let off = 0
-				// if (linkevent.clientY < 360) {
-				// 	window.scrollBy(0, -(360 - linkevent.clientY))
-				// 	off = 360 - linkevent.clientY
-				// }
-				// clone.style.top = `${linkevent.clientY - h - 20 + off }px`;
+			// let h = currentPost.offsetHeight > 350 ? 350 : currentPost.offsetHeight
+			// let off = 0
+			// if (linkevent.clientY < 360) {
+			// 	window.scrollBy(0, -(360 - linkevent.clientY))
+			// 	off = 360 - linkevent.clientY
 			// }
-			clone.style.top = `${linkevent.clientY - currentPost.offsetHeight - 20 }px`;
+			// clone.style.top = `${linkevent.clientY - h - 20 + off }px`;
+			// }
+			clone.style.top = `${linkevent.clientY - currentPost.offsetHeight - 20}px`;
 			clone.style.left = currentPost.offsetLeft + "px"
 			clone.style.width = currentPost.offsetWidth + "px"
 			overlay.addEventListener('click', (e) => {
@@ -85,20 +85,24 @@ function setReplyPost() {
 }
 
 
-function expandFile(){
-	document.querySelectorAll(".thumbnail").forEach(file => file.addEventListener("click", (event) => {
+function expandFile() {
+	document.querySelectorAll(".thumbnail-js").forEach(file => file.addEventListener("click", (event) => {
+		debugger
 		//on click , expand the image/video
 		let thumbnail = event.currentTarget
 		let og = event.currentTarget.nextElementSibling
+
 		let toggle = () => {
 			thumbnail.classList.toggle("thumbnail--removed")
 			og.classList.toggle("thumbnail--removed")
 		}
 		toggle()
-		//add event listener on og
-		og.addEventListener("click", (secEvent) => {
-			toggle()
-		}, {once : true})
+		//add event listener on og if not video
+		if (og.nodeName != "VIDEO") {
+			og.addEventListener("click", (secEvent) => {
+				toggle()
+			}, { once: true })
+		}
 	}))
 }
 

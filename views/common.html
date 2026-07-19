@@ -59,21 +59,21 @@
 
 {% macro image(data) %}
 {% if data.file_status == 'pending' %}
-<img class="thumbnail" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
-<img class="thumbnail--expanded thumbnail--removed" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
+<img class="thumbnail thumbnail-js" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
+<img class="thumbnail thumbnail--expanded thumbnail--removed" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
 {% elif data.file_status == 'failed' %}
-<img class="thumbnail" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
-<img class="thumbnail--expanded thumbnail--removed" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
+<img class="thumbnail thumbnail-js" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
+<img class="thumbnail thumbnail--expanded thumbnail--removed" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
 {% else %}
 {% if "video" in data.file_type %}
-<img class="thumbnail" src="/public/thumbnails/{{data.file_path}}.webp" alt="{{data.file_path}}" controls preload="none" />
-<video class="thumbnail--expanded thumbnail--removed" src="/public/files/{{data.file_path}}" poster="/public/thumbnails/{{data.file_path}}.webp"
+<img class="thumbnail thumbnail-js" src="/public/thumbnails/{{data.file_path}}.webp" alt="{{data.file_path}}" loading="lazy" decoding="async" />
+<video class="thumbnail thumbnail--expanded thumbnail--removed" src="/public/files/{{data.file_path}}" poster="/public/thumbnails/{{data.file_path}}.webp"
 	controls preload="none">
 </video>
 {% else %}
-<img class="thumbnail" src="/public/thumbnails/{{data.file_path}}" alt="{{data.file_path}}" loading="lazy"
+<img class="thumbnail thumbnail-js" src="/public/thumbnails/{{data.file_path}}" alt="{{data.file_path}}" loading="lazy"
 	decoding="async" />
-	<img class="thumbnail--removed thumbnail--expanded " src="/public/files/{{data.file_path}}" alt="{{data.file_path}}" loading="lazy"
+	<img class="thumbnail thumbnail--removed thumbnail--expanded " src="/public/files/{{data.file_path}}" alt="{{data.file_path}}" loading="lazy"
 	decoding="async" />
 {% endif %}
 {% endif %}

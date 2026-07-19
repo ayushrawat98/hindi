@@ -104,17 +104,17 @@ export const getThreadData = async (req, res, next) => {
 
 		const currentPosts = instance.queries.getChildPosts.all(threadId, 0);
 
-		const hotPosts = instance.queries.getHotParentPostsByBoard.all(currentThread.board_id);
+		const newPosts = instance.queries.getNewParentPostsByBoard.all(currentThread.board_id);
 
-		return { currentThread, currentPosts, hotPosts };
+		return { currentThread, currentPosts, newPosts };
 	});
 
-	const { currentThread, currentPosts, hotPosts } = getThreadData(req.params.threadId);
+	const { currentThread, currentPosts, newPosts } = getThreadData(req.params.threadId);
 
 	return res.render('thread.html', {
 		boards: activeBoardsList,
 		posts: [currentThread, ...currentPosts],
-		hotPosts : hotPosts
+		newPosts : newPosts
 	});
 }
 

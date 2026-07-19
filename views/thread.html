@@ -18,11 +18,11 @@
 	</aside>
 
 
-	<div class="board-feed__hot-posts">
-		{{ macros.postList(hotPosts, boards) }}
+	<div class="board-feed__column board-feed__column--new">
+		{{ macros.postList(newPosts, boards) }}
 	</div>
 
-	<div class="board-feed__new-posts">
+	<div class="board-feed__column board-feed__column--hot">
 		{{ macros.postList(posts) }}
 	</div>
 </div>
