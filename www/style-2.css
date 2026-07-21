@@ -182,24 +182,19 @@ label {
 
 .thumbnail {
 	display: block;
-	margin: 0 12px 0 0;
-	float: left;
-	max-width: 100px;
 	border-radius: 6px;
+	object-fit: cover;
+	max-height: 25vh;
+	width: 100%;
 }
 
 .thumbnail--expanded {
-	margin: 0;
-	float: none;
-	max-width: 100%;
-	width: 100%;
-	object-fit: cover;
-	max-height: 25vh;
+	object-fit: contain;
+	max-height: 90vh;
 }
 
 .thumbnail--removed {
-	object-fit: contain;
-	max-height: 90vh;
+	display: none;
 }
 
 .post-list {
