@@ -35,11 +35,10 @@ export async function imageProcessor() {
 
 				const args = [
 					'-i', ogfilePath,
-					// '-vf', "scale='min(100,iw)':-1",
+					'-vf', "scale='min(100,iw)':-1",
 					'-frames:v', '1',
 					'-compression_level', '5',
-					// '-quality', '100',
-					'-quality', '30',
+					'-quality', '100',
 					thumbfilePath + '.webp'
 				];
 
@@ -51,18 +50,12 @@ export async function imageProcessor() {
 				await sharp(ogfilePath, { animated: true, pages: -1 })
 					.rotate()
 					.withMetadata(false)
-					// .resize({
-					// 	width: 100,
-					// 	withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
-					// })
-					// .webp({
-					// 	quality: 100,
-					// 	effort: 3,
-					// 	loop: 0,
-					// 	force: true
-					// })
+					.resize({
+						width: 100,
+						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
+					})
 					.webp({
-						quality: 30,
+						quality: 100,
 						effort: 5,
 						loop: 0,
 						force: true
@@ -74,12 +67,11 @@ export async function imageProcessor() {
 				await sharp(ogfilePath)
 					.rotate()
 					.withMetadata(false)
-					// .resize({
-					// 	width: 100,
-					// 	withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
-					// })
-					// .webp({ quality: 100, effort: 3 })
-					.webp({ quality: 30, effort: 5 })
+					.resize({
+						width: 100,
+						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
+					})
+					.webp({ quality: 100, effort: 5 })
 					.toFile(thumbfilePath);
 
 			}

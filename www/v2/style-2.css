@@ -183,22 +183,32 @@ label {
 .thumbnail {
 	display: block;
 	border-radius: 6px;
-	object-fit: cover;
-	max-height: 25vh;
-	width: 100%;
+	object-fit: contain;
+	max-height: 400px;
+	max-width: 100%;
+	margin: auto;
+	margin-top: 0.8rem;
 }
 
 .thumbnail--expanded {
-	object-fit: contain;
 	max-height: 90vh;
 }
 
 .thumbnail--removed {
 	display: none;
+
 }
 
 .thumbnail--video {
-	max-height: 50vh;
+	width: 100%;
+}
+
+.thumbnail--float {
+	float: left;
+	width: 100px;
+	margin-right: 12px;
+	border-radius: 6px;
+	display: block;
 }
 
 .post-list {
@@ -260,7 +270,6 @@ label {
 	font-size: 1.1rem;
 	overflow-wrap: break-word;
 	word-break: keep-all;
-	margin-bottom: 1.1rem;
 }
 
 .post__content--wrap {

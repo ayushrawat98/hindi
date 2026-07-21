@@ -4,7 +4,7 @@
 
 {% block head %}
 <title>{{currentBoard.name}}</title>
-<script src="/www/common.js" defer></script>
+<script src="/www/v2/common.js" defer></script>
 {%endblock%}
 
 {% block body %}
@@ -30,7 +30,7 @@
 
 
 	<div class="board-feed__column board-feed__column--new">
-		{{ macros.postList(newPosts, boards) }}
+		{{ macros.sideList(newPosts, boards) }}
 	</div>
 
 	<div class="board-feed__column board-feed__column--hot">

@@ -5,8 +5,8 @@
 <title>
 	{% if posts[0].title %}{{posts[0].title | safe}}-{% endif %}{{posts[0].content.slice(0,50) | safe}}
 </title>
-<script src="/www/common.js" defer></script>
-<script src="/www/thread.js" defer></script>
+<script src="/www/v1/common.js" defer></script>
+<script src="/www/v1/thread.js" defer></script>
 {% endblock %}
 
 {% block body %}
