@@ -197,6 +197,10 @@ label {
 	display: none;
 }
 
+.thumbnail--video {
+	max-height: 50vh;
+}
+
 .post-list {
 	display: flex;
 	flex-direction: column;
