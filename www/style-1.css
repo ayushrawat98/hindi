@@ -170,7 +170,7 @@ label {
 	/* max-width: 99%; */
 	/* margin: auto; */
 	overflow-y: scroll;
-	border: 2px dashed red;
+	border: 2px dashed light-dark(var(--border), var(--border-dark));
 }
 
 

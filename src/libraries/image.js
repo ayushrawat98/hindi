@@ -96,7 +96,7 @@ export async function imageProcessor() {
 		}
 
 		//pause for few seconds
-		await new Promise(r => setTimeout(r, 5000));
+		await new Promise(r => setTimeout(r, 1000));
 	}
 }
 

@@ -67,7 +67,9 @@ function setReplyPost() {
 			// }
 			// clone.style.top = `${linkevent.clientY - h - 20 + off }px`;
 			// }
-			clone.style.top = `${linkevent.clientY - currentPost.offsetHeight - 20}px`;
+			
+			 let h = currentPost.offsetHeight > 350 ? 350 : currentPost.offsetHeight
+			clone.style.top = `${linkevent.clientY - h - 20}px`;
 			clone.style.left = currentPost.offsetLeft + "px"
 			clone.style.width = currentPost.offsetWidth + "px"
 			overlay.addEventListener('click', (e) => {

@@ -2,11 +2,11 @@
 <nav class="board-list" aria-label="Available boards">
 			<ul class="board-list__items">
 				<li class="board-list__item">
-					<a class="board-list__link" href="/board/सर्व">सर्व</a>
+					<a class="board-list__link" href="/v1/board/सर्व">सर्व</a>
 				</li>
 				{% for board in boards %}
 				<li class="board-list__item">
-					<a class="board-list__link" href="/board/{{board.name}}">{{board.name}}</a>
+					<a class="board-list__link" href="/v1/board/{{board.name}}">{{board.name}}</a>
 				</li>
 				{% endfor %}
 			</ul>
@@ -89,7 +89,7 @@
 			<span>&middot;</span>
 			<time datetime="{{data.created_at | indianDate}}">{{data.created_at | indianDate}}</time>
 		</div>
-		<a class="post__link" href="/thread/{{data.id}}">{{data.replies}} {% if data.replies <= 1 %}टिप्पणी{% else %}टिप्पणियाँ{% endif %} </a>
+		<a class="post__link" href="/v1/thread/{{data.id}}">{{data.replies}} {% if data.replies <= 1 %}टिप्पणी{% else %}टिप्पणियाँ{% endif %} </a>
 	</header>
 
 	{{ image(data) }}

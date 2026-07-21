@@ -1,0 +1,75 @@
+{% extends "v2/skeleton.html" %}
+{% import "v2/common.html" as macros %}
+
+
+{% block head %}
+<title>{{currentBoard.name}}</title>
+<script src="/www/common.js" defer></script>
+{%endblock%}
+
+{% block body %}
+
+<div class="board-heading">
+	<h1>सर्व</h1>
+		<p class="board-heading__desc">सब विचार, एक स्थान</p>
+	<!-- {% if currentBoard.name == "सर्व" %}
+		<h1>सर्व</h1>
+		<p class="board-heading__desc">सब विचार, एक स्थान</p>
+	{% else %}
+		<h1>{{currentBoard.name}}</h1>
+		<p class="board-heading__desc">{{currentBoard.description}}</p>
+	{% endif %} -->
+	
+</div>
+
+<div class="board-feed">
+
+	<!-- <aside class="board-feed__sidebar"> -->
+		<!-- {{macros.navigation(boards)}} -->
+	<!-- </aside> -->
+
+
+	<div class="board-feed__column board-feed__column--new">
+		{{ macros.postList(newPosts, boards) }}
+	</div>
+
+	<div class="board-feed__column board-feed__column--hot">
+		<!-- <div class="newPostWindow hidden"> -->
+	<form method="post" enctype="multipart/form-data" id="uploadForm" style="margin-bottom: 8px;">
+		<!-- <label for="name">नाम :</label>
+		<br>
+		<input type="text" id="name" name="name" placeholder="अपरिचित" maxlength="50" />
+		<br>
+		<label for="title">शीर्षक :</label>
+		<br>
+		<input type="text" id="title" name="title" placeholder="यहाँ शीर्षक लिखें..." maxlength="200"/>
+		<br> -->
+		<label for="content">विवरण :</label>
+		<br>
+		<textarea rows="8" cols="40" placeholder="अपनी बात यहाँ लिखें..." id="content" name="content"
+			minlength="1" maxlength="1000"></textarea>
+		<br>
+		<label for="file">संचिका :</label>
+		<br>
+		<input type="file" id="file" name="file" placeholder="file" accept="image/*, video/*" required/>
+		<br/>
+		<div class="formbtn">
+		<!-- <button type="button" class="newPostButton">बंद करें</button>
+		<button type="reset" class="">पूर्वावस्था में लाएं</button> -->
+		<button type="submit">भेजें</button>
+		</div>
+		<progress id="progressBar" max="100" value="0" hidden></progress>
+		<p id="status"></p>
+	</form>
+<!-- </div> -->
+		{{ macros.postList(hotPosts, boards) }}
+	</div>
+</div>
+
+
+
+
+
+
+
+{% endblock %}

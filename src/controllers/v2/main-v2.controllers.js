@@ -1,11 +1,11 @@
-import { __dirname } from '../../path.js';
-import { burstLimiter, quotaLimiter } from '../libraries/ratelimit.js';
-import upload from "../libraries/multer.js"
+import { __dirname } from '../../../path.js';
+import { burstLimiter, quotaLimiter } from '../../libraries/ratelimit.js';
+import upload from "../../libraries/multer.js"
 import fs from "node:fs/promises"
-import instance from '../../db/db.js';
-import { escapeHTML } from '../libraries/sanitize.js';
-import activeBoardsList from '../libraries/activeBoards.js';
-import { AppError } from '../libraries/error.js';
+import instance from '../../../db/db.js';
+import { escapeHTML } from '../../libraries/sanitize.js';
+import activeBoardsList from '../../libraries/activeBoards.js';
+import { AppError } from '../../libraries/error.js';
 
 
 export const getBoardData = async (req, res, next) => {
@@ -36,7 +36,7 @@ export const getBoardData = async (req, res, next) => {
 
 	const data = getBoardData(req.params.boardName);
 
-	return res.render('board.html', {
+	return res.render('v2/board.html', {
 		boards: activeBoardsList,
 		currentBoard: data.currentBoard,
 		newPosts: data.newPosts,
@@ -53,11 +53,11 @@ export const setBoardData = async (req, res, next) => {
 
 	const createThread = instance.db.transaction(() => {
 		// no board - delete file , throw error
-		const currentBoard = activeBoardsList.find(item => item.name == req.params.boardName)
+		// const currentBoard = activeBoardsList.find(item => item.name == req.params.boardName)
 
-		if (!currentBoard) {
-			throw new Error("यह मंच अस्तित्व में नहीं है।")
-		}
+		// if (!currentBoard) {
+		// 	throw new Error("यह मंच अस्तित्व में नहीं है।")
+		// }
 
 		const newFile = instance.queries.insertFile.run(
 			req.file.filename,
@@ -70,7 +70,8 @@ export const setBoardData = async (req, res, next) => {
 		// console.log(req.file)
 
 		const newThread = instance.queries.insertParentPost.run(
-			currentBoard.id, 
+			// currentBoard.id, 
+			1,
 			escapeHTML(req.body.name).trim(), 
 			escapeHTML(req.body.title).trim(), 
 			escapeHTML(req.body.content).trim(), 
@@ -111,7 +112,7 @@ export const getThreadData = async (req, res, next) => {
 
 	const { currentThread, currentPosts, newPosts } = getThreadData(req.params.threadId);
 
-	return res.render('thread.html', {
+	return res.render('v2/thread.html', {
 		boards: activeBoardsList,
 		posts: [currentThread, ...currentPosts],
 		newPosts : newPosts
