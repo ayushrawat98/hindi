@@ -55,21 +55,40 @@ function setReplyPost() {
 
 			let overlay = document.createElement('div');
 			overlay.classList.add("overlay")
+
 			let clone = currentPost.cloneNode(true)
+			//remove expanded image from clone
+			let imglist = clone.querySelectorAll("img")
+			if(imglist[0]?.classList.contains("thumbnail--removed")){
+				imglist[0]?.classList.toggle("thumbnail--removed")
+				imglist[1]?.classList.toggle("thumbnail--removed")
+			}
+			
 			clone.classList.add("popup")
 			clone.classList.remove("post--border")
-			// if (window.innerWidth < 768) {
-			// let h = currentPost.offsetHeight > 350 ? 350 : currentPost.offsetHeight
-			// let off = 0
-			// if (linkevent.clientY < 360) {
-			// 	window.scrollBy(0, -(360 - linkevent.clientY))
-			// 	off = 360 - linkevent.clientY
-			// }
-			// clone.style.top = `${linkevent.clientY - h - 20 + off }px`;
-			// }
-			
-			 let h = currentPost.offsetHeight > 350 ? 350 : currentPost.offsetHeight
-			clone.style.top = `${linkevent.clientY - h - 20}px`;
+
+			//find true unexpanded currentPost height
+			let imglistMain = currentPost.querySelectorAll("img")
+			let currentPostHeight = currentPost.offsetHeight
+			if(imglistMain[0]?.classList.contains("thumbnail--removed")){
+				let toggle = () => {
+					imglistMain[0]?.classList.toggle("thumbnail--removed")
+					imglistMain[1]?.classList.toggle("thumbnail--removed")
+				}
+				toggle()
+				currentPostHeight = currentPost.offsetHeight 
+				toggle()
+			}
+
+			currentPostHeight = currentPostHeight > 300 ? 300 : currentPostHeight
+
+			//find correct place to show popup
+			if(linkevent.clientY < 330){
+				//show below
+				clone.style.top = `${linkevent.clientY + 20}px`;
+			}else {
+				clone.style.top = `${linkevent.clientY - currentPostHeight - 20}px`;
+			}
 			clone.style.left = currentPost.offsetLeft + "px"
 			clone.style.width = currentPost.offsetWidth + "px"
 			overlay.addEventListener('click', (e) => {
@@ -107,8 +126,60 @@ function expandFile() {
 	}))
 }
 
+
+function getReplies() {
+	let postNodes = document.querySelectorAll(".board-feed__column--hot .post-list .post")
+
+	let postMap = new Map()
+	let replyArray = []
+
+	postNodes.forEach(article => {
+		const postId = article.id
+		
+		if(!postMap.has(postId)) {
+			postMap.set(postId, [article, []]) //id, htmlelement, reply array
+		}
+
+		article.querySelectorAll(".replyLink").forEach(link => {
+			replyArray.push([link.getAttribute("data-post-number-link"), postId])
+		})
+	})
+
+	for(let [replyTo , replyFrom] of replyArray){
+		postMap.get(replyTo)[1].push(replyFrom)
+	}
+
+	//add the links
+	for(let [postId , [postNode, repliesId]] of postMap){
+		if(repliesId.length === 0) continue;
+		const footerElem = document.createElement("footer")
+		footerElem.classList.add("post__footer")
+
+		// Use a DocumentFragment to batch DOM inserts into a single paint cycle
+		const fragment = document.createDocumentFragment();
+
+		const firstElem = document.createElement("span");
+		firstElem.textContent = "उत्तर : ";
+		firstElem.style.marginRight = "8px";
+		fragment.appendChild(firstElem);
+
+		repliesId.forEach(replyId => {
+			const linkElem = document.createElement("a");
+			linkElem.style.marginRight = "8px";
+			linkElem.href = "#" + replyId;
+			linkElem.textContent = ">>" + replyId;
+			linkElem.style.color = "#5F7388";
+			fragment.appendChild(linkElem);
+		});
+
+		footerElem.appendChild(fragment);
+		postNode.appendChild(footerElem)
+	}
+}
+
 scrollToPost()
 setReplyPost()
 setShareButton()
 showOP()
 expandFile()
+getReplies()

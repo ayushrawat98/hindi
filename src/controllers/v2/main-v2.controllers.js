@@ -39,7 +39,7 @@ export const getBoardData = async (req, res, next) => {
 	return res.render('v2/board.html', {
 		boards: activeBoardsList,
 		currentBoard: data.currentBoard,
-		newPosts: data.newPosts,
+		newPosts: data.newPosts.slice(0,7),
 		hotPosts : data.hotPosts
 	});
 }
