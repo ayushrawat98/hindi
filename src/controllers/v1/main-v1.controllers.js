@@ -114,7 +114,7 @@ export const getThreadData = async (req, res, next) => {
 	return res.render('v1/thread.html', {
 		boards: activeBoardsList,
 		posts: [currentThread, ...currentPosts],
-		newPosts : newPosts
+		newPosts : newPosts.slice(0,7)
 	});
 }
 

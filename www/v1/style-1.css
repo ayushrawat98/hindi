@@ -271,7 +271,7 @@ label {
 	clear: both;
 	color: light-dark(var(--ignore), var(--ignore-dark));
 	font-size: 1rem;
-	padding-top: 0.5rem;
+	padding-top: 0.7rem;
 }
 
 .board-feed {
@@ -296,6 +296,8 @@ label {
 	border-radius: 8px;
 	padding: 1rem;
 	background-color: light-dark(var(--surface), var(--surface-dark));
+	position: sticky;
+	top: 24px;
 }
 
 .board-list__items {
