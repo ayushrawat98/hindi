@@ -35,74 +35,103 @@ function setShareButton() {
 
 function setReplyPost() {
 	const list = document.querySelectorAll('[data-post-number-link]')
-	let oldClone = undefined
 	list.forEach(link => {
+		let postId = link.getAttribute('data-post-number-link')
+		//click for mobile only
 		link.addEventListener('click', (linkevent) => {
+			if (linkevent.pointerType !== "touch") return;
+			// console.log("pointer click")
 			linkevent.preventDefault()
+			addPopup(link, linkevent, postId, true)
+		})
 
+		//hover for pc only
+		link.addEventListener('pointerenter', (linkevent) => {
+			if (linkevent.pointerType === "touch") return;
+			// console.log("pointer eneter")
+			addPopup(link, linkevent, postId, false)
+		})
 
-			if (oldClone) {
-				oldClone.remove()
-			}
-			let postHash = link.getAttribute('data-post-number-link')
-
-			const currentPost = document.getElementById(postHash)
-			if (!postHash) return;
-			if (!currentPost) {
-				link.style.color = 'gray'
-				return;
-			}
-
-			let overlay = document.createElement('div');
-			overlay.classList.add("overlay")
-
-			let clone = currentPost.cloneNode(true)
-			//remove expanded image from clone
-			let imglist = clone.querySelectorAll("img")
-			if(imglist[0]?.classList.contains("thumbnail--removed")){
-				imglist[0]?.classList.toggle("thumbnail--removed")
-				imglist[1]?.classList.toggle("thumbnail--removed")
-			}
-			
-			clone.classList.add("popup")
-			clone.classList.remove("post--border")
-
-			//find true unexpanded currentPost height
-			let imglistMain = currentPost.querySelectorAll("img")
-			let currentPostHeight = currentPost.offsetHeight
-			if(imglistMain[0]?.classList.contains("thumbnail--removed")){
-				let toggle = () => {
-					imglistMain[0]?.classList.toggle("thumbnail--removed")
-					imglistMain[1]?.classList.toggle("thumbnail--removed")
-				}
-				toggle()
-				currentPostHeight = currentPost.offsetHeight 
-				toggle()
-			}
-
-			currentPostHeight = currentPostHeight > 300 ? 300 : currentPostHeight
-
-			//find correct place to show popup
-			if(linkevent.clientY < 330){
-				//show below
-				clone.style.top = `${linkevent.clientY + 20}px`;
-			}else {
-				clone.style.top = `${linkevent.clientY - currentPostHeight - 20}px`;
-			}
-			clone.style.left = currentPost.offsetLeft + "px"
-			clone.style.width = currentPost.offsetWidth + "px"
-			overlay.addEventListener('click', (e) => {
-				// Only close if the user clicks the overlay itself, not the clone content
-				if (e.target === overlay) {
-					overlay.remove();
-					oldClone = undefined;
-				}
-			});
-			overlay.appendChild(clone);
-			document.querySelector('.board-feed__column--hot').appendChild(overlay)
-			oldClone = clone
+		link.addEventListener('pointerleave', (linkevent) => {
+			if (linkevent.pointerType === "touch") return;
+			// console.log("pointer leave")
+			removeActivePopupWrapper()
 		})
 	})
+}
+
+function toggleThumbnailClass(elemList) {
+	elemList[0]?.classList.toggle("thumbnail--removed")
+	elemList[1]?.classList.toggle("thumbnail--removed")
+}
+
+let activePopupWrapper = null
+function removeActivePopupWrapper (){
+	activePopupWrapper.remove()
+	activePopupWrapper = null
+}
+
+function addPopup(currentNode, linkevent, postHash, addOverlay) {
+	if (!postHash) return;
+	if (activePopupWrapper) {
+		
+	}
+	const currentPost = document.getElementById(postHash)
+	//if the post was delete by moderator , gray it and give a line through
+	if (!currentPost) {
+		currentNode.style.color = 'gray'
+		currentNode.style.textDecoration = "line-through"
+		return;
+	}
+
+	let clone = currentPost.cloneNode(true)
+	//remove expanded image from clone
+	let cloneThumbnails = clone.querySelectorAll("img, video")
+	if (cloneThumbnails[0]?.classList.contains("thumbnail--removed")) {
+		toggleThumbnailClass(cloneThumbnails)
+	}
+
+
+	clone.classList.add("popup")
+	clone.classList.remove("post--border")
+
+	//find true unexpanded currentPost height
+	let currentPostThumbnails = currentPost.querySelectorAll("img, video")
+	let currentPostHeight = currentPost.offsetHeight
+	if (currentPostThumbnails[0]?.classList.contains("thumbnail--removed")) {
+		toggleThumbnailClass(currentPostThumbnails)
+		currentPostHeight = currentPost.offsetHeight
+		toggleThumbnailClass(currentPostThumbnails)
+	}
+
+
+	currentPostHeight = Math.min(currentPostHeight, 300)
+
+	//find correct place to show popup
+	clone.style.top = linkevent.clientY < 300 ?
+		`${linkevent.clientY + 20}px` :
+		`${linkevent.clientY - currentPostHeight - 20}px`
+	clone.style.left = currentPost.offsetLeft + "px"
+	clone.style.width = currentPost.offsetWidth + "px"
+
+	let overlay
+	if (addOverlay) {
+		overlay = document.createElement('div');
+		overlay.classList.add("overlay")
+		overlay.addEventListener('click', (e) => {
+			// Only close if the user clicks the overlay itself, not the clone content
+			if (e.target === overlay) {
+				overlay.remove();
+				activePopupWrapper = undefined;
+			}
+		});
+		overlay.appendChild(clone);
+	} else {
+		//no overlay , make clone fixed
+		clone.style.position = "fixed"
+	}
+	document.querySelector('.board-feed__column--hot').appendChild(addOverlay ? overlay : clone)
+	activePopupWrapper = clone
 }
 
 
@@ -135,8 +164,8 @@ function getReplies() {
 
 	postNodes.forEach(article => {
 		const postId = article.id
-		
-		if(!postMap.has(postId)) {
+
+		if (!postMap.has(postId)) {
 			postMap.set(postId, [article, []]) //id, htmlelement, reply array
 		}
 
@@ -145,13 +174,13 @@ function getReplies() {
 		})
 	})
 
-	for(let [replyTo , replyFrom] of replyArray){
+	for (let [replyTo, replyFrom] of replyArray) {
 		postMap.get(replyTo)[1].push(replyFrom)
 	}
 
 	//add the links
-	for(let [postId , [postNode, repliesId]] of postMap){
-		if(repliesId.length === 0) continue;
+	for (let [postId, [postNode, repliesId]] of postMap) {
+		if (repliesId.length === 0) continue;
 		const footerElem = document.createElement("footer")
 		footerElem.classList.add("post__footer")
 
@@ -169,6 +198,28 @@ function getReplies() {
 			linkElem.href = "#" + replyId;
 			linkElem.textContent = ">>" + replyId;
 			linkElem.style.color = "#5F7388";
+
+			//for mobile
+			linkElem.addEventListener('click', (linkevent) => {
+				if (linkevent.pointerType !== "touch") return;
+				// console.log("pointer click")
+				linkevent.preventDefault()
+				addPopup(linkElem, linkevent, replyId, true)
+			})
+
+			//hover for pc only
+			linkElem.addEventListener('pointerenter', (linkevent) => {
+				if (linkevent.pointerType === "touch") return;
+				// console.log("pointer eneter")
+				addPopup(linkElem, linkevent, replyId, false)
+			})
+
+			linkElem.addEventListener('pointerleave', (linkevent) => {
+				if (linkevent.pointerType === "touch") return;
+				// console.log("pointer leave")
+				removeActivePopupWrapper()
+			})
+
 			fragment.appendChild(linkElem);
 		});
 

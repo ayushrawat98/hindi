@@ -172,6 +172,7 @@ label {
 	overflow-y: scroll;
 	/* border: 2px dashed light-dark(var(--border), var(--border-dark)); */
 	border: 2px dashed red;
+	pointer-events: none;
 }
 
 
