@@ -39,9 +39,9 @@ function setReplyPost() {
 		let postId = link.getAttribute('data-post-number-link')
 		//click for mobile only
 		link.addEventListener('click', (linkevent) => {
+			linkevent.preventDefault()
 			if (linkevent.pointerType !== "touch") return;
 			// console.log("pointer click")
-			linkevent.preventDefault()
 			addPopup(link, linkevent, postId, true)
 		})
 
@@ -201,9 +201,9 @@ function getReplies() {
 
 			//for mobile
 			linkElem.addEventListener('click', (linkevent) => {
+				linkevent.preventDefault()
 				if (linkevent.pointerType !== "touch") return;
 				// console.log("pointer click")
-				linkevent.preventDefault()
 				addPopup(linkElem, linkevent, replyId, true)
 			})
 

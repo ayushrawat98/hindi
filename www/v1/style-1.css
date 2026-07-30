@@ -185,6 +185,7 @@ label {
 	float: left;
 	max-width: 100px;
 	border-radius: 6px;
+	cursor: pointer;
 }
 
 .thumbnail--expanded {
@@ -222,7 +223,7 @@ label {
 	align-items: center;
 	justify-content: space-between;
 	color: light-dark(var(--ignore), var(--ignore-dark));
-	font-size: 1rem;
+	font-size: 0.9rem;
 	margin-bottom: 0.5rem;
 }
 
@@ -235,6 +236,7 @@ label {
 .post__link {
 	flex-grow: 0;
 	flex-shrink: 0;
+	font-size: 1rem;
 }
 
 .post__reply {
@@ -243,7 +245,6 @@ label {
 	padding: 2px;
 	font-family: inherit;
 	color: light-dark(var(--attention), var(--attention-dark));
-	
 	&:hover {
 		background-color: rgba(0, 0, 0, 0.1);
 	}

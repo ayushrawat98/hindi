@@ -7,7 +7,7 @@ import { hindiCheck, trimBody } from '../../libraries/sanitize.js';
 const route = express.Router()
 
 route.get("/", (req, res, next) => {
-	return res.redirect("v2/board/सर्व")
+	return res.redirect("v1/board/सर्व")
 })
 
 route.get('/board/:boardName', getBoardData)
