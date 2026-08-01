@@ -17,6 +17,9 @@ if(configuration.NODE_ENV === "development"){
 }
 
 //routes
+app.get("/", (req, res, next) => {
+	return res.redirect("/v1")
+})
 app.use('/v1', v1Routes)
 app.use('/v2', v2Routes)
 
