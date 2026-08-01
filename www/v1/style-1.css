@@ -258,7 +258,7 @@ label {
 }
 
 .post__title {
-	font-size: 1.2rem;
+	font-size: 1.1rem;
 	text-decoration: none;
 	color: light-dark(var(--heading), var(--heading-dark));
 	font-weight: 600;
@@ -266,7 +266,7 @@ label {
 
 .post__content {
 	color: light-dark(var(--content), var(--content-dark));
-	font-size: 1.1rem;
+	font-size: 1rem;
 	overflow-wrap: break-word;
 	word-break: keep-all;
 }
