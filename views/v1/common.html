@@ -33,7 +33,15 @@
 
 	<header class="post__header">
 		<div class="post__meta">
-			<span>अपरिचित</span>
+			<span>{{data.id | hindinumber}}</span>
+			<span>&middot;</span>
+			<span>
+				{% if data.name %}
+					{{data.name}}
+				{% else %}
+					अपरिचित
+				{% endif %}
+			</span>
 			<span>&middot;</span>
 			<time datetime="{{data.created_at | indianDate}}">{{data.created_at | indianDate}}</time>
 		</div>
