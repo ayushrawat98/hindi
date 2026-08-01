@@ -2,7 +2,6 @@ import express from 'express';
 import { configuration } from '../env.js';
 import { __dirname } from '../path.js';
 import { mainRoutes as v1Routes } from './routes/v1/main-v1.routes.js';
-import { mainRoutes as v2Routes} from './routes/v2/main-v2.routes.js';
 import path from "path";
 import fs from "fs/promises"
 
@@ -21,7 +20,6 @@ app.get("/", (req, res, next) => {
 	return res.redirect("/v1")
 })
 app.use('/v1', v1Routes)
-app.use('/v2', v2Routes)
 
 //global error handling
 app.use((err, req, res, next) => {
