@@ -2,7 +2,7 @@ import path from 'path';
 import sharp from 'sharp';
 import { spawn } from 'child_process';
 import instance from '../../db/db.js'
-import fs from 'fs'
+import fs from "fs/promises"
 import { configuration } from '../../env.js';
 import { __dirname } from '../../path.js';
 
@@ -33,7 +33,7 @@ export async function imageProcessor() {
 
 			if (file.type.startsWith('video')) {
 
-				const args = [
+				const thumbnailArgs = [
 					'-i', ogfilePath,
 					'-vf', "scale='min(100,iw)':-1",
 					'-frames:v', '1',
@@ -42,14 +42,24 @@ export async function imageProcessor() {
 					thumbfilePath + '.webp'
 				];
 
-				await ffmpegProcess(ffmpegPath, args)
+				const stripMetadataArgs = [
+					'-y',
+					'-i', ogfilePath,
+					'-map_metadata', '-1',
+					'-map_chapters', '-1',
+					'-c', 'copy',
+					ogfilePath + ".mp4"
+				];
+
+				await ffmpegProcess(ffmpegPath, thumbnailArgs)
+				await ffmpegProcess(ffmpegPath, stripMetadataArgs)
+				await removeMetaData(ogfilePath, false, ".mp4")
 
 			}
 			else if (file.type.includes('gif')) {
 
 				await sharp(ogfilePath, { animated: true, pages: -1 })
 					.rotate()
-					// .withMetadata(false)
 					.resize({
 						width: 100,
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
@@ -66,7 +76,6 @@ export async function imageProcessor() {
 
 				await sharp(ogfilePath)
 					.rotate()
-					// .withMetadata(false)
 					.resize({
 						width: 100,
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
@@ -74,13 +83,16 @@ export async function imageProcessor() {
 					.webp({ quality: 100, effort: 5 })
 					.toFile(thumbfilePath);
 
+				//remove metadata info
+				await removeMetaData(ogfilePath, true, ".temp")
+
 			}
 
 			//set status as success
 			instance.queries.updateFileStatus.run('success', file.id)
 
 		} catch (error) {
-
+			console.log(error)
 			//set status as failed
 			instance.queries.updateFileStatus.run('failed', file.id)
 			//set that file has failed
@@ -88,9 +100,10 @@ export async function imageProcessor() {
 
 		} finally {
 
-			//delete the image after getting thumbnail
+			//delete the image / thumbnail on failing
 			if (shouldDeleteOriginalFile) {
-				fs.unlink(ogfilePath, () => { })
+				fs.unlink(thumbfilePath)
+				fs.unlink(ogfilePath)
 			}
 
 		}
@@ -116,4 +129,12 @@ function ffmpegProcess(ffmpegPath, args) {
 			}
 		});
 	});
+}
+
+async function removeMetaData(ogfilePath, isImage, ext) {
+	const tempName = ogfilePath + ext
+	if(isImage) await sharp(ogfilePath).toFile(tempName);
+	await fs.rename(ogfilePath, ogfilePath + ".delete");
+	await fs.rename(tempName, ogfilePath);
+	await fs.unlink(ogfilePath + ".delete");
 }
