@@ -206,8 +206,13 @@ label {
 .post-list {
 	display: flex;
 	flex-direction: column;
-	gap : 1rem;
+	gap : 1.25rem;
 	margin-bottom: 350px;
+}
+
+/* smaller gap for thread */
+.post-list--thread {
+	gap: 0.8rem;
 }
 
 .post {
@@ -323,10 +328,10 @@ label {
 
 @media (min-width : 768px) {
 
-	.post-list {
+	/* .post-list {
 		gap : 1.5rem;
 	}
-	
+	 */
 	.popup {
 		width: 600px;
 	}

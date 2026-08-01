@@ -30,11 +30,15 @@
 
 
 	<div class="board-feed__column board-feed__column--new">
+		<div class="post-list">
 		{{ macros.postList(newPosts, boards) }}
+		</div>
 	</div>
 
 	<div class="board-feed__column board-feed__column--hot">
+		<div class="post-list">
 		{{ macros.postList(hotPosts, boards) }}
+		</div>
 	</div>
 </div>
 

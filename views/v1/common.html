@@ -14,7 +14,6 @@
 {% endmacro %}
 
 {% macro postList(datalist, board) %}
-<div class="post-list">
 	{% if board %}
 	{% for data in datalist %}
 	{{ boardPost(data, board) }}
@@ -24,7 +23,6 @@
 	{{ post(data, board) }}
 	{% endfor %}
 	{% endif %}
-	</div>
 {% endmacro %}
 
 
