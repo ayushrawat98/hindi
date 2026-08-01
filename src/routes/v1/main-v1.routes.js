@@ -1,5 +1,5 @@
 import express from 'express';
-import { getBoardData, getThreadData, setBoardData, setThreadData } from '../../controllers/v1/main-v1.controllers.js';
+import { deleteImage, getBoardData, getThreadData, setBoardData, setThreadData } from '../../controllers/v1/main-v1.controllers.js';
 import { burstLimiter, quotaLimiter } from '../../libraries/ratelimit.js';
 import upload from '../../libraries/multer.js';
 import { hindiCheck, trimBody } from '../../libraries/sanitize.js';
@@ -17,6 +17,8 @@ route.post('/board/:boardName', burstLimiter, quotaLimiter, upload.single("file"
 route.get('/thread/:threadId', getThreadData)
 
 route.post('/thread/:threadId', burstLimiter, quotaLimiter, upload.single("file"), trimBody, hindiCheck, setThreadData)
+
+route.get("/delete/:postId/:password", deleteImage)
 
 
 

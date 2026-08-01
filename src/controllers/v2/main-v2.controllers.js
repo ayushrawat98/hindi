@@ -131,7 +131,7 @@ export const setThreadData = async (req, res, next) => {
 			newFile = instance.queries.insertFile.run(req.file.filename, req.file.mimetype, req.file.size, 'pending', new Date().toISOString())
 		}
 		const newPost = instance.queries.insertChildPost.run(currentThread.board_id, currentThread.id, escapeHTML(req.body.name).trim(), escapeHTML(req.body.content).trim(), newFile?.lastInsertRowid ?? null, req.ip, new Date().toISOString())
-		instance.queries.updateParentPostTime.run(new Date().toISOString(), currentThread.id)
+		instance.queries.updateParentPostTimeAndReplies.run(new Date().toISOString(), currentThread.id)
 		return newPost.lastInsertRowid
 	})
 

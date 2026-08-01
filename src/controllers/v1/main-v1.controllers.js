@@ -6,12 +6,14 @@ import instance from '../../../db/db.js';
 import { escapeHTML } from '../../libraries/sanitize.js';
 import activeBoardsList from '../../libraries/activeBoards.js';
 import { AppError } from '../../libraries/error.js';
+import path from 'node:path';
+import { configuration } from '../../../env.js';
 
 
 export const getBoardData = async (req, res, next) => {
 
 	const getBoardData = instance.db.transaction((boardName) => {
-		
+
 		let currentBoard = activeBoardsList.find(item => item.name === boardName);
 
 		// if (!currentBoard && boardName != "सर्व") {
@@ -25,13 +27,13 @@ export const getBoardData = async (req, res, next) => {
 		const hotPosts = currentBoard
 			? instance.queries.getHotParentPostsByBoard.all(currentBoard.id)
 			: instance.queries.getHotParentPosts.all();
-		
+
 		//if no currentBoard just set to whatever frontend sends
-		if(!currentBoard){
-			currentBoard = {name : boardName}
+		if (!currentBoard) {
+			currentBoard = { name: boardName }
 		}
 
-		return {newPosts, hotPosts, currentBoard}
+		return { newPosts, hotPosts, currentBoard }
 	});
 
 	const data = getBoardData(req.params.boardName);
@@ -39,8 +41,8 @@ export const getBoardData = async (req, res, next) => {
 	return res.render('v1/board.html', {
 		boards: activeBoardsList,
 		currentBoard: data.currentBoard,
-		newPosts: data.newPosts.slice(0,7),
-		hotPosts : data.hotPosts
+		newPosts: data.newPosts.slice(0, 7),
+		hotPosts: data.hotPosts
 	});
 }
 
@@ -61,22 +63,22 @@ export const setBoardData = async (req, res, next) => {
 
 		const newFile = instance.queries.insertFile.run(
 			req.file.filename,
-			req.file.mimetype, 
-			req.file.size, 
-			'pending', 
+			req.file.mimetype,
+			req.file.size,
+			'pending',
 			new Date().toISOString()
 		)
 
 		// console.log(req.file)
 
 		const newThread = instance.queries.insertParentPost.run(
-			currentBoard.id, 
-			escapeHTML(req.body.name).trim(), 
-			escapeHTML(req.body.title).trim(), 
-			escapeHTML(req.body.content).trim(), 
-			newFile.lastInsertRowid, 
-			req.ip, 
-			new Date().toISOString(), 
+			currentBoard.id,
+			escapeHTML(req.body.name).trim(),
+			escapeHTML(req.body.title).trim(),
+			escapeHTML(req.body.content).trim(),
+			newFile.lastInsertRowid,
+			req.ip,
+			new Date().toISOString(),
 			new Date().toISOString()
 		)
 	})
@@ -114,7 +116,7 @@ export const getThreadData = async (req, res, next) => {
 	return res.render('v1/thread.html', {
 		boards: activeBoardsList,
 		posts: [currentThread, ...currentPosts],
-		newPosts : newPosts.slice(0,7)
+		newPosts: newPosts.slice(0, 7)
 	});
 }
 
@@ -130,11 +132,11 @@ export const setThreadData = async (req, res, next) => {
 			newFile = instance.queries.insertFile.run(req.file.filename, req.file.mimetype, req.file.size, 'pending', new Date().toISOString())
 		}
 		const newPost = instance.queries.insertChildPost.run(currentThread.board_id, currentThread.id, escapeHTML(req.body.name).trim(), escapeHTML(req.body.content).trim(), newFile?.lastInsertRowid ?? null, req.ip, new Date().toISOString())
-		instance.queries.updateParentPostTime.run(new Date().toISOString(), currentThread.id)
+		instance.queries.updateParentPostTimeAndReplies.run(new Date().toISOString(), currentThread.id)
 		return newPost.lastInsertRowid
 	})
 
-	
+
 
 	try {
 		let newPostId = setThreadData(req)
@@ -146,5 +148,28 @@ export const setThreadData = async (req, res, next) => {
 		// throw error
 		throw new AppError(400, error.message || "Error in sent data for thread", true)
 	}
-	
+
+}
+
+export const deleteImage = (req, res, next) => {
+	if(configuration.PASSWORD == null) return res.status(500).send("Set password")
+	if(configuration.PASSWORD != req.params.password) return res.status(500).send("Wrong password")
+	// req : /delete/postId/password
+	let changeFilePath = instance.db.transaction((req) => {
+		const fileRes = instance.queries.getFileIdByPostId.get(req.params.postId)
+		const result = instance.queries.updateFileStatus.run("failed", fileRes.file_id)
+		const fileDetails = instance.queries.getFile.get(fileRes.file_id)
+		return fileDetails
+	})
+	try {
+		const fileDetails = changeFilePath(req)
+		console.log(fileDetails)
+		//delete image
+		const isVideo = fileDetails.type.includes("video") ? ".webp"  : ""
+		fs.unlink(path.resolve(__dirname, 'public', 'files', fileDetails.path, isVideo))
+		fs.unlink(path.join(__dirname, 'public', 'thumbnails', fileDetails.path))
+		return res.status(200).send("Complete")
+	} catch (error) {
+		console.error(error)
+	}
 }

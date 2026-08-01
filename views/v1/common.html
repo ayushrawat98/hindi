@@ -85,11 +85,20 @@
 
 	<header class="post__header">
 		<div class="post__meta">
-			<span>अपरिचित</span>
+			<span>{{data.id | hindinumber}}</span>
+			<span>&middot;</span>
+			<span>
+				{% if data.name %}
+					{{data.name}}
+				{% else %}
+					अपरिचित
+				{% endif %}
+			</span>
 			<span>&middot;</span>
 			<time datetime="{{data.created_at | indianDate}}">{{data.created_at | indianDate}}</time>
+			<span>&middot;</span>
+			<a class="post__link" href="/v1/thread/{{data.id}}">{{data.replies}} {% if data.replies <= 1 %}टिप्पणी{% else %}टिप्पणियाँ{% endif %} </a>
 		</div>
-		<a class="post__link" href="/v1/thread/{{data.id}}">{{data.replies}} {% if data.replies <= 1 %}टिप्पणी{% else %}टिप्पणियाँ{% endif %} </a>
 	</header>
 
 	{{ image(data) }}

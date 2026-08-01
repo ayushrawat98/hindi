@@ -18,8 +18,6 @@ export const trimBody = (req, res, next) => {
 	req.body.title = (req.body.title ?? "").trim()
 	req.body.name = (req.body.name ?? "").trim()
 	req.body.content = (req.body.content ?? "").trim()
-
-	console.log(req.ip)
 	
 	if(req.body.content.length === 0){
 		throw new AppError(400,`कुछ तो लिखिए।`, true)

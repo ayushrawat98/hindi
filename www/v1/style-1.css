@@ -1,6 +1,7 @@
-@view-transition {
+/* @view-transition {
   navigation: auto;
-}
+  types : normal;
+} */
 
 * {
 	padding: 0;
@@ -117,7 +118,7 @@ label {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
-	animation: appear 200ms ease-in forwards;
+	/* animation: appear 200ms ease-in forwards; */
 
 	display: flex;
 	justify-content: center;
@@ -211,7 +212,7 @@ label {
 
 .post {
 	width: 100%;
-	animation: appear 500ms ease-in forwards;
+	animation: appear 250ms ease-in forwards;
 	border-radius: 6px;
 	display: flow-root;
 	background-color: light-dark(var(--surface), var(--surface-dark));
@@ -234,9 +235,15 @@ label {
 }
 
 .post__link {
+	color: inherit;
 	flex-grow: 0;
 	flex-shrink: 0;
-	font-size: 1rem;
+}
+
+.post__link:after {
+	position: absolute;
+	content : "";
+	inset : 0;
 }
 
 .post__reply {
