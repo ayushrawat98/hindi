@@ -49,7 +49,7 @@ export async function imageProcessor() {
 
 				await sharp(ogfilePath, { animated: true, pages: -1 })
 					.rotate()
-					.withMetadata(false)
+					// .withMetadata(false)
 					.resize({
 						width: 100,
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
@@ -66,7 +66,7 @@ export async function imageProcessor() {
 
 				await sharp(ogfilePath)
 					.rotate()
-					.withMetadata(false)
+					// .withMetadata(false)
 					.resize({
 						width: 100,
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
