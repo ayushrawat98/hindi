@@ -276,9 +276,14 @@ label {
 	word-break: keep-all;
 }
 
-.post__content--wrap {
+.post__content--pre-wrap {
 	/* no wrap on boards */
 	white-space: pre-wrap;
+}
+
+.post__content--pre-line {
+	/* no wrap on boards */
+	white-space: pre-line;
 }
 
 .post__footer {

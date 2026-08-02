@@ -51,11 +51,11 @@
 	{% endif %}
 
 	{% if data.title %}
-	<h3 class="post__title">{{data.title | safe}}</h3>
+	<h3 class="post__title">{{data.title}}</h3>
 	{% endif %}
 
 	{% if data.content %}
-	<p class="post__content post__content--wrap">{{data.content | greenText | urlize | safe}}</p>
+	<p class="post__content post__content--pre-wrap">{{data.content | greenText | urlize | safe}}</p>
 	{% endif %}
 
 </article>
@@ -114,7 +114,7 @@
 	{% endif %}
 
 	{% if data.content %}
-	<p class="post__content">{{data.content | safe}}</p>
+	<p class="post__content post__content--pre-line">{{data.content | greenText | safe}}</p>
 	{% endif %}
 
 </article>
