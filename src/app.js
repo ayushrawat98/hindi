@@ -11,8 +11,8 @@ const app = express()
 app.set('trust proxy', 1);
 
 if(configuration.NODE_ENV === "development"){
-	app.use('/public', express.static(path.resolve(__dirname, "public"), {maxAge : 9999999}));
-	app.use('/www', express.static(path.resolve(__dirname, "www"), {maxAge : 9999999}));
+	app.use('/public', express.static(path.resolve(__dirname, "public"), {maxAge : '1y'}));
+	app.use('/www', express.static(path.resolve(__dirname, "www"), {maxAge : '1y'}));
 }
 
 //routes

@@ -102,8 +102,17 @@ export async function imageProcessor() {
 
 			//delete the image / thumbnail on failing
 			if (shouldDeleteOriginalFile) {
-				fs.unlink(thumbfilePath)
-				fs.unlink(ogfilePath)
+				try {
+					if (file.type.startsWith('video')) {
+						fs.unlink(thumbfilePath + ".webp")
+						fs.unlink(ogfilePath)
+					} else {
+						fs.unlink(thumbfilePath)
+						fs.unlink(ogfilePath)
+					}
+				} catch (err) {
+					console.error(err)
+				}
 			}
 
 		}
@@ -133,7 +142,7 @@ function ffmpegProcess(ffmpegPath, args) {
 
 async function removeMetaData(ogfilePath, isImage, ext) {
 	const tempName = ogfilePath + ext
-	if(isImage) await sharp(ogfilePath).toFile(tempName);
+	if (isImage) await sharp(ogfilePath).toFile(tempName);
 	await fs.rename(ogfilePath, ogfilePath + ".delete");
 	await fs.rename(tempName, ogfilePath);
 	await fs.unlink(ogfilePath + ".delete");
