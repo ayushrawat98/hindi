@@ -195,7 +195,7 @@ label {
 	max-width: 100%;
 	width: 100%;
 	object-fit: contain;
-	max-height: 50vh;
+	max-height: 60vh;
 	margin-bottom: 0.5rem;
 }
 
@@ -229,7 +229,7 @@ label {
 	align-items: center;
 	justify-content: space-between;
 	color: light-dark(var(--ignore), var(--ignore-dark));
-	font-size: 0.9rem;
+	font-size: 0.95rem;
 	margin-bottom: 0.5rem;
 }
 
@@ -263,7 +263,7 @@ label {
 }
 
 .post__title {
-	font-size: 1.1rem;
+	font-size: 1.15rem;
 	text-decoration: none;
 	color: light-dark(var(--heading), var(--heading-dark));
 	font-weight: 600;
@@ -271,7 +271,7 @@ label {
 
 .post__content {
 	color: light-dark(var(--content), var(--content-dark));
-	font-size: 1rem;
+	font-size: 1.05rem;
 	overflow-wrap: break-word;
 	word-break: keep-all;
 }
@@ -289,7 +289,7 @@ label {
 .post__footer {
 	clear: both;
 	color: light-dark(var(--ignore), var(--ignore-dark));
-	font-size: 1rem;
+	font-size: 0.95rem;
 	padding-top: 0.7rem;
 }
 
