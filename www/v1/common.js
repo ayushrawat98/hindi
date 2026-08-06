@@ -134,3 +134,34 @@ function showName(){
 	if(name) document.getElementById('name').value = name
 }
 
+
+
+// document.querySelector('input[type="file"]').addEventListener('change', async function(e) {
+//     if (!this.files || this.files.length === 0) return;
+
+//     const file = this.files[0];
+    
+//     // 1. Define your desired original name (or generate a unique one)
+//     const originalName = "my_custom_filename.jpg"; 
+
+//     // 2. Create a brand new File object with the original data but a new name
+//     const renamedFile = new File([file], originalName, { type: file.type });
+
+//     // 3. Pack it into FormData instead of submitting a traditional HTML form
+//     const formData = new FormData();
+//     formData.append('file_upload', renamedFile); // 'file_upload' matches your backend's expected field name
+
+//     // 4. Send it to your server via Fetch API
+//     try {
+//         const response = await fetch('/your-upload-endpoint', {
+//             method: 'POST',
+//             body: formData // The browser automatically handles the Multipart/Form-Data headers
+//         });
+        
+//         if (response.ok) {
+//             console.log('Upload successful with the correct file name!');
+//         }
+//     } catch (error) {
+//         console.error('Upload failed:', error);
+//     }
+// });

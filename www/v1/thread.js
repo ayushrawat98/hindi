@@ -15,7 +15,7 @@ function scrollToPost() {
 
 function showOP() {
 	let opPostId = document.querySelector('.post-list').firstElementChild.getAttribute('id')
-	document.querySelectorAll('.replyLink').forEach((link) => {
+	document.querySelectorAll('.replyText').forEach((link) => {
 		if (link.getAttribute('href') == '#' + opPostId) {
 			link.textContent += ' (मूल लेखक)'
 		}
@@ -169,7 +169,7 @@ function getReplies() {
 			postMap.set(postId, [article, []]) //id, htmlelement, reply array
 		}
 
-		article.querySelectorAll(".replyLink").forEach(link => {
+		article.querySelectorAll(".replyText").forEach(link => {
 			replyArray.push([link.getAttribute("data-post-number-link"), postId])
 		})
 	})
@@ -197,7 +197,7 @@ function getReplies() {
 			linkElem.style.marginRight = "8px";
 			linkElem.href = "#" + replyId;
 			linkElem.textContent = ">>" + replyId;
-			linkElem.style.color = "#5F7388";
+			linkElem.classList.add("replyText")
 
 			//for mobile
 			linkElem.addEventListener('click', (linkevent) => {

@@ -31,13 +31,13 @@
 
 	<div class="board-feed__column board-feed__column--new">
 		<div class="post-list">
-		{{ macros.postList(newPosts, boards) }}
+		{{ macros.postList(hotPosts, boards) }}
 		</div>
 	</div>
 
 	<div class="board-feed__column board-feed__column--hot">
 		<div class="post-list">
-		{{ macros.postList(hotPosts, boards) }}
+		{{ macros.postList(newPosts, boards) }}
 		</div>
 	</div>
 </div>
@@ -63,7 +63,7 @@
 		<br>
 		<label for="file">संचिका :</label>
 		<br>
-		<input type="file" id="file" name="file" placeholder="file" accept="image/*, video/*" required/>
+		<input type="file" id="file" name="file" accept="image/*, video/*" required/>
 		<br/>
 		<div class="formbtn">
 		<button type="button" class="newPostButton">बंद करें</button>
