@@ -8,37 +8,40 @@
 	margin: 0;
 	box-sizing: border-box;
 }
-
 :root {
-	color-scheme: light dark;
+    color-scheme: light dark;
 
-	--background: #ebe6df;
+    --background: #ebe6df;
     --surface: #f6f2ec;
     --surface-2: #e4ddd4;
     --heading: #2b2825;
     --content: #433f3a;
-    --ignore: #6d675f;
-    --border: #cfc5b8;
-    --attention: #8c6336;
-    --attention-hover: #724f2b;
+    --ignore: #5b554f;          
+    --border: #b9afa2;          
+    --attention: #6f4c22;       
+    --attention-hover: #573a18;
+	--green-text: #556b2f;
+    --reply-text: #48627e;
 
-	--background-dark: #121314;
-	--surface-dark: #1b1c1d;
-	--surface-2-dark: #242628;
-	--heading-dark: #d4d4d4;
-	--content-dark: #b8b8b8;
-	--ignore-dark: #8a8a8a;
-	--border-dark: #303235;
-	--attention-dark: #b9975b;
-	--attention-hover-dark: #cfac6d;
+    --background-dark: #121314;
+    --surface-dark: #1b1c1d;
+    --surface-2-dark: #242628;
+    --heading-dark: #e1e0df;
+    --content-dark: #d0cfce;
+    --ignore-dark: #aaaaaa;    
+    --border-dark: #424548;
+    --attention-dark: #d2ae67;
+    --attention-hover-dark: #e3bc72;
+	--green-text-dark: #9fb96b;
+    --reply-text-dark: #9cb8d8;
 }
 
 .greenText {
-	color: #6F7F44;
+    color: light-dark(var(--green-text), var(--green-text-dark));
 }
 
 .replyText {
-	color: #5F7388;
+    color: light-dark(var(--reply-text), var(--reply-text-dark));
 }
 
 body {
