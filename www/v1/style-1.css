@@ -212,7 +212,7 @@ label {
 	max-width: 100%;
 	width: 100%;
 	object-fit: contain;
-	max-height: 80vh;
+	max-height: 60vh;
 	margin-bottom: 0.5rem;
 	filter: none;
 }
@@ -364,7 +364,6 @@ label {
 
 	.newPostWindow {
 		width: auto;
-		max-width: 400px;
 		right: 16px;
 	}
 
