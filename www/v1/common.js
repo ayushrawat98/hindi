@@ -21,6 +21,22 @@ const commonHideFunction = () => {
 	}
 }
 
+const fileName = document.querySelector(".fileName")
+function setFileName(str){
+	fileName.innerText = str
+}
+
+//show file name on selection
+document.querySelector("#file").addEventListener("change", (event) => {
+	let file = event.target.files[0]
+	setFileName(file.name + " - " + ((file.size)/1024).toFixed(2) + " KiB")
+})
+
+//reset event on form
+document.getElementById("uploadForm").addEventListener("reset", (resetEvent) => {
+	setFileName("")
+})
+
 
 //paste image
 const pasteTextBox = document.getElementById('content');
@@ -40,6 +56,7 @@ pasteTextBox?.addEventListener('paste', (event) => {
 		const dataTransfer = new DataTransfer();
 		dataTransfer.items.add(imageFile);
 		imageFileInput.files = dataTransfer.files;
+		setFileName(imageFile.name + " - " + ((imageFile.size)/1024).toFixed(2) + " KiB")
 		// Prevent default paste behavior in the textbox if desired
 		event.preventDefault();
 	}

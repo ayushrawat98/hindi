@@ -64,6 +64,11 @@ h6 {
 	color: light-dark(var(--heading), var(--heading-dark));
 }
 
+.fakeLink {
+	color: light-dark(var(--attention), var(--attention-dark));
+	cursor: pointer;
+}
+
 a {
 	color: light-dark(var(--attention), var(--attention-dark));
 	text-decoration: none;
@@ -129,6 +134,7 @@ label {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
+	max-width: 400px;
 	/* animation: appear 200ms ease-in forwards; */
 
 	display: flex;
