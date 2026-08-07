@@ -41,10 +41,13 @@ class DB {
 					
 				);
 
+				 
 				create table if not exists files (
 					id integer primary key autoincrement,
 					path text not null,
-					type text,
+					type text, 
+      				height INTEGER default 0,
+      				width INTEGER default 0,
 					size integer,
 					status text,
   					created_at text
@@ -80,6 +83,7 @@ class DB {
 
 			getFileWithStatus : this.db.prepare('select * from files where status = ?'),
 			updateFileStatus : this.db.prepare('update files set status = ? where id = ?'),
+			updateFileHeightAndWidth : this.db.prepare("UPDATE files SET height = ?, width = ? WHERE id = ?"),
 
 			getHotPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit 100'),
 			getNewPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit 100'),

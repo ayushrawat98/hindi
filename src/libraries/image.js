@@ -54,6 +54,7 @@ export async function imageProcessor() {
 				await ffmpegProcess(ffmpegPath, thumbnailArgs)
 				await ffmpegProcess(ffmpegPath, stripMetadataArgs)
 				await removeMetaData(ogfilePath, false, ".mp4")
+				await setHeightAndWidth(thumbfilePath + ".webp", file.id)
 
 			}
 			else if (file.type.includes('gif')) {
@@ -71,6 +72,8 @@ export async function imageProcessor() {
 						force: true
 					})
 					.toFile(thumbfilePath);
+				
+				await setHeightAndWidth(thumbfilePath, file.id)
 
 			} else if (file.type.startsWith('image')) {
 
@@ -85,6 +88,7 @@ export async function imageProcessor() {
 
 				//remove metadata info
 				await removeMetaData(ogfilePath, true, ".temp")
+				await setHeightAndWidth(thumbfilePath, file.id)
 
 			}
 
@@ -146,4 +150,9 @@ async function removeMetaData(ogfilePath, isImage, ext) {
 	await fs.rename(ogfilePath, ogfilePath + ".delete");
 	await fs.rename(tempName, ogfilePath);
 	await fs.unlink(ogfilePath + ".delete");
+}
+
+async function setHeightAndWidth(path, id){
+	const { width = 0, height = 0 } = await sharp(path).metadata();
+	instance.queries.updateFileHeightAndWidth.run(height, width, id);
 }
