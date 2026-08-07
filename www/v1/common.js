@@ -37,6 +37,10 @@ document.getElementById("uploadForm").addEventListener("reset", (resetEvent) => 
 	setFileName("")
 })
 
+document.querySelector(".fakeLink").addEventListener("click", (event) => {
+	document.querySelector("#file").click()
+})
+
 
 //paste image
 const pasteTextBox = document.getElementById('content');
@@ -115,6 +119,7 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 		if (xhr.status === 201) {
 			progressBar.value = 100;
 			status.textContent = xhr.responseText;
+			document.querySelector("#file").value = ""
 			setTimeout(() => {
 				// window.location.hash = xhr.responseText;
 				window.location.reload()
