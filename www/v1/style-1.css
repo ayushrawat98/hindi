@@ -134,7 +134,6 @@ label {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
-	max-width: 400px;
 	/* animation: appear 200ms ease-in forwards; */
 
 	display: flex;
@@ -365,6 +364,7 @@ label {
 
 	.newPostWindow {
 		width: auto;
+		max-width: 400px;
 		right: 16px;
 	}
 
