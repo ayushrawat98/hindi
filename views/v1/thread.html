@@ -42,10 +42,10 @@
 		<textarea rows="8" cols="40" placeholder="अपनी बात यहाँ लिखें..." id="content" name="content" required
 			minlength="1" maxlength="1000" spellcheck="true" autocomplete="off" autofocus></textarea>
 		<br>
-		<label for="file">संचिका :</label>
+		<label for="file" class="fakeLink">संचिका (फाइल) : </label><span class="fileName"></span>
 		<br>
-		<input type="file" id="file" name="file" placeholder="file" accept="image/*,video/*" />
-		<br>
+		<!-- <input type="file" id="file" name="file" placeholder="file" accept="image/*,video/*" /> -->
+		<input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm" required hidden>
 		<div class="formbtn">
 		<button type="button" class="closeButton">बंद करें</button>
 		<button type="reset" class="">पूर्वावस्था में लाएं</button>
