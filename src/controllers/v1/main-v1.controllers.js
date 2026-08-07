@@ -41,8 +41,8 @@ export const getBoardData = async (req, res, next) => {
 	return res.render('v1/board.html', {
 		boards: activeBoardsList,
 		currentBoard: data.currentBoard,
-		newPosts: data.newPosts,
-		hotPosts: data.hotPosts.slice(0, 5)
+		newPosts: data.newPosts.slice(0, 5),
+		hotPosts: data.hotPosts
 	});
 }
 
@@ -106,17 +106,17 @@ export const getThreadData = async (req, res, next) => {
 
 		const currentPosts = instance.queries.getChildPosts.all(threadId, 0);
 
-		const hotPosts = instance.queries.getHotParentPostsByBoard.all(currentThread.board_id);
+		const newPosts = instance.queries.getNewParentPostsByBoard.all(currentThread.board_id);
 
-		return { currentThread, currentPosts, hotPosts };
+		return { currentThread, currentPosts, newPosts };
 	});
 
-	const { currentThread, currentPosts, hotPosts } = getThreadData(req.params.threadId);
+	const { currentThread, currentPosts, newPosts } = getThreadData(req.params.threadId);
 
 	return res.render('v1/thread.html', {
 		boards: activeBoardsList,
 		posts: [currentThread, ...currentPosts],
-		hotPosts: hotPosts.slice(0, 5)
+		newPosts: newPosts.slice(0, 5)
 	});
 }
 

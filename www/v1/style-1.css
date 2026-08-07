@@ -195,6 +195,7 @@ label {
 	max-width: 100px;
 	border-radius: 6px;
 	cursor: pointer;
+	filter: grayscale(15%) brightness(0.85);
 }
 
 .thumbnail--expanded {
@@ -205,6 +206,7 @@ label {
 	object-fit: contain;
 	max-height: 60vh;
 	margin-bottom: 0.5rem;
+	filter: none;
 }
 
 .thumbnail--removed {
