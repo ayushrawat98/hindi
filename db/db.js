@@ -69,15 +69,15 @@ class DB {
 			getFile: this.db.prepare('select * from files where id = ?'),
 
 			insertParentPost: this.db.prepare('insert into posts (board_id, name, title, content, file_id, ip, created_at, updated_at) values (?,?,?,?,?,?,?,?)'),
-			getNewParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit 100'),
-			getHotParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit 100'),
-			getNewParentPostsByBoard : this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status from posts t left join files f on t.file_id = f.id where t.parent_id is null and t.board_id = ? order by t.created_at desc limit 100'),
-			getHotParentPostsByBoard : this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status from posts t left join files f on t.file_id = f.id where t.parent_id is null and t.board_id = ? order by t.updated_at desc limit 100'),
+			getNewParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit 100'),
+			getHotParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit 100'),
+			getNewParentPostsByBoard : this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null and t.board_id = ? order by t.created_at desc limit 100'),
+			getHotParentPostsByBoard : this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null and t.board_id = ? order by t.updated_at desc limit 100'),
 
 
 			insertChildPost: this.db.prepare('insert into posts (board_id, parent_id, name, content, file_id, ip, created_at) values (?,?,?,?,?,?,?)'),
-			getParentPost: this.db.prepare('select t.id, t.board_id, t.title, t.content, t.name, t.created_at, t.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status from posts t left join files f on t.file_id = f.id where t.id = ?'),
-			getChildPosts: this.db.prepare('select p.id, p.parent_id, p.name, p.content, p.created_at, p.file_id, p.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status  from posts p left join files f on p.file_id = f.id where p.parent_id = ? and p.id > ?'),
+			getParentPost: this.db.prepare('select t.id, t.board_id, t.title, t.content, t.name, t.created_at, t.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.id = ?'),
+			getChildPosts: this.db.prepare('select p.id, p.parent_id, p.name, p.content, p.created_at, p.file_id, p.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width  from posts p left join files f on p.file_id = f.id where p.parent_id = ? and p.id > ?'),
 			updateParentPostTimeAndReplies: this.db.prepare('update posts set updated_at = ?, replies = replies + 1 where id = ?'),
 
 
@@ -85,8 +85,8 @@ class DB {
 			updateFileStatus : this.db.prepare('update files set status = ? where id = ?'),
 			updateFileHeightAndWidth : this.db.prepare("UPDATE files SET height = ?, width = ? WHERE id = ?"),
 
-			getHotPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit 100'),
-			getNewPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit 100'),
+			getHotPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit 100'),
+			getNewPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit 100'),
 
 			getFileIdByPostId : this.db.prepare('select file_id from posts where id = ?'),
 		}
