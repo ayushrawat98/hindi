@@ -1,71 +1,170 @@
 import instance from "./db.js";
 
+const db = instance.db;
+
 try {
-  // Row count
-  const { count } = instance.db.prepare("SELECT COUNT(*) AS count FROM files")
-    .get();
+  console.log("Running posts migration sanity check...\n");
 
-  console.log(`Rows: ${count}`);
+  // 1. Check table exists
+  const table = db.prepare(`
+    SELECT name
+    FROM sqlite_master
+    WHERE type = 'table'
+    AND name = 'posts'
+  `).get();
 
-  // Duplicate IDs
-  const duplicateIds = instance.db.prepare(`
-    SELECT id
-    FROM files
+  if (!table) {
+    throw new Error("posts table does not exist");
+  }
+
+  console.log("✅ posts table exists");
+
+
+  // 2. Check columns
+  const columns = db.prepare(`
+    PRAGMA table_info(posts)
+  `).all();
+
+  const columnNames = columns.map(c => c.name);
+
+  const requiredColumns = [
+    "id",
+    "parent_id",
+    "name",
+    "title",
+    "content",
+    "file_id",
+    "ip",
+    "replies",
+    "created_at",
+    "updated_at"
+  ];
+
+  for (const col of requiredColumns) {
+    if (!columnNames.includes(col)) {
+      throw new Error(`Missing column: ${col}`);
+    }
+  }
+
+  console.log("✅ All required columns exist");
+
+
+  // 3. Check duplicate IDs
+  const duplicateIds = db.prepare(`
+    SELECT id, COUNT(*) AS count
+    FROM posts
     GROUP BY id
     HAVING COUNT(*) > 1
   `).all();
 
   if (duplicateIds.length) {
-    throw new Error(`Duplicate IDs found: ${JSON.stringify(duplicateIds)}`);
+    throw new Error(
+      `Duplicate post IDs: ${JSON.stringify(duplicateIds)}`
+    );
   }
 
-  // NULL paths
-  const { nullPaths } = instance.db.prepare(`
-    SELECT COUNT(*) AS nullPaths
-    FROM files
-    WHERE path IS NULL
+  console.log("✅ No duplicate IDs");
+
+
+  // 4. Check NULL IDs
+  const nullIds = db.prepare(`
+    SELECT COUNT(*) AS count
+    FROM posts
+    WHERE id IS NULL
   `).get();
 
-  if (nullPaths > 0) {
-    throw new Error(`${nullPaths} rows have NULL path.`);
+  if (nullIds.count > 0) {
+    throw new Error("Posts with NULL IDs found");
   }
 
-  // Height/width check
-  const { missingDimensions } = instance.db.prepare(`
-    SELECT COUNT(*) AS missingDimensions
-    FROM files
-    WHERE height IS NULL
-       OR width IS NULL
-  `).get();
+  console.log("✅ All posts have IDs");
 
-  console.log(`Rows with missing dimensions: ${missingDimensions}`);
 
-  // Foreign key check
-  const fkErrors = instance.db.prepare("PRAGMA foreign_key_check").all();
-
-  if (fkErrors.length) {
-    console.error("Foreign key errors:");
-    console.table(fkErrors);
-    throw new Error("Foreign key check failed.");
-  }
-
-  // Indexes
-  const indexes = instance.db.prepare("PRAGMA index_list(files)").all();
-  console.log("Indexes:");
-  console.table(indexes);
-
-  // Sample rows
-  const sample = instance.db.prepare(`
-    SELECT *
-    FROM files
-    ORDER BY id
-    LIMIT 8
+  // 5. Check parent_id integrity
+  const badParents = db.prepare(`
+    SELECT p.id, p.parent_id
+    FROM posts p
+    LEFT JOIN posts parent
+      ON p.parent_id = parent.id
+    WHERE p.parent_id IS NOT NULL
+    AND parent.id IS NULL
   `).all();
 
-  console.log("Sample rows:");
+  if (badParents.length) {
+    console.table(badParents);
+    throw new Error("Broken parent_id references");
+  }
+
+  console.log("✅ parent_id relationships valid");
+
+
+  // 6. Check file_id integrity
+  const badFiles = db.prepare(`
+    SELECT p.id, p.file_id
+    FROM posts p
+    LEFT JOIN files f
+      ON p.file_id = f.id
+    WHERE p.file_id IS NOT NULL
+    AND f.id IS NULL
+  `).all();
+
+  if (badFiles.length) {
+    console.table(badFiles);
+    throw new Error("Broken file_id references");
+  }
+
+  console.log("✅ file_id relationships valid");
+
+
+  // 7. Foreign key check
+  const fkErrors = db.prepare(`
+    PRAGMA foreign_key_check(posts)
+  `).all();
+
+  if (fkErrors.length) {
+    console.table(fkErrors);
+    throw new Error("Foreign key check failed");
+  }
+
+  console.log("✅ Foreign key check passed");
+
+
+  // 8. Check row statistics
+  const stats = db.prepare(`
+    SELECT
+      COUNT(*) AS total,
+      MIN(id) AS min_id,
+      MAX(id) AS max_id
+    FROM posts
+  `).get();
+
+  console.log("\nPosts statistics:");
+  console.table(stats);
+
+
+  // 9. Check sample rows
+  const sample = db.prepare(`
+    SELECT
+      id,
+      parent_id,
+      title,
+	  content,
+	  ip,
+      file_id,
+      replies,
+      created_at
+    FROM posts
+    ORDER BY id
+    LIMIT 5
+  `).all();
+
+  console.log("Sample posts:");
   console.table(sample);
 
-  console.log("✅ Sanity check passed.");
+
+  console.log("\n✅ Migration sanity check passed.");
+
 } catch (err) {
-  console.error("❌ Sanity check failed:", err.message);
+  console.error("\n❌ Sanity check failed:");
+  console.error(err.message);
 }

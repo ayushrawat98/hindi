@@ -19,16 +19,8 @@ class DB {
 
 		this.db.exec(
 			`
-				create table if not exists boards (
-					id integer primary key autoincrement,
-					name text not null unique,
-					description text not null,
-					disabled integer default 0
-				);
-
 				CREATE TABLE if not exists posts (
 					id INTEGER PRIMARY KEY AUTOINCREMENT,
-					board_id INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
 					parent_id INTEGER DEFAULT NULL REFERENCES posts(id) ON DELETE CASCADE,
 					name TEXT,
 					title TEXT,
@@ -38,7 +30,6 @@ class DB {
 					replies INTEGER DEFAULT 0,
 					created_at TEXT,
 					updated_at TEXT
-					
 				);
 
 				 
@@ -53,7 +44,7 @@ class DB {
   					created_at text
 				);
 
-				CREATE INDEX IF NOT EXISTS idx_posts_parent_board ON posts(board_id, updated_at DESC) WHERE parent_id IS NULL;
+			
 
 				CREATE INDEX IF NOT EXISTS idx_posts_parent_id ON posts(parent_id) WHERE parent_id IS NOT NULL;
 
@@ -68,15 +59,12 @@ class DB {
 			insertFile: this.db.prepare('insert into files (path, type, size, status, created_at) values (?,?,?,?,?)'),
 			getFile: this.db.prepare('select * from files where id = ?'),
 
-			insertParentPost: this.db.prepare('insert into posts (board_id, name, title, content, file_id, ip, created_at, updated_at) values (?,?,?,?,?,?,?,?)'),
+			insertParentPost: this.db.prepare('insert into posts (name, title, content, file_id, ip, created_at, updated_at) values (?,?,?,?,?,?,?)'),
 			getNewParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit 100'),
 			getHotParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit 100'),
-			getNewParentPostsByBoard : this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null and t.board_id = ? order by t.created_at desc limit 100'),
-			getHotParentPostsByBoard : this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null and t.board_id = ? order by t.updated_at desc limit 100'),
 
-
-			insertChildPost: this.db.prepare('insert into posts (board_id, parent_id, name, content, file_id, ip, created_at) values (?,?,?,?,?,?,?)'),
-			getParentPost: this.db.prepare('select t.id, t.board_id, t.title, t.content, t.name, t.created_at, t.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.id = ?'),
+			insertChildPost: this.db.prepare('insert into posts (parent_id, name, content, file_id, ip, created_at) values (?,?,?,?,?,?)'),
+			getParentPost: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.id = ?'),
 			getChildPosts: this.db.prepare('select p.id, p.parent_id, p.name, p.content, p.created_at, p.file_id, p.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width  from posts p left join files f on p.file_id = f.id where p.parent_id = ? and p.id > ?'),
 			updateParentPostTimeAndReplies: this.db.prepare('update posts set updated_at = ?, replies = replies + 1 where id = ?'),
 

@@ -20,13 +20,9 @@ export const getBoardData = async (req, res, next) => {
 		// 	throw new Error("यह मंच अस्तित्व में नहीं है।");
 		// }
 
-		const newPosts = currentBoard
-			? instance.queries.getNewParentPostsByBoard.all(currentBoard.id)
-			: instance.queries.getNewParentPosts.all();
+		const newPosts = instance.queries.getNewParentPosts.all();
 
-		const hotPosts = currentBoard
-			? instance.queries.getHotParentPostsByBoard.all(currentBoard.id)
-			: instance.queries.getHotParentPosts.all();
+		const hotPosts = instance.queries.getHotParentPosts.all();
 
 		//if no currentBoard just set to whatever frontend sends
 		if (!currentBoard) {
@@ -72,7 +68,6 @@ export const setBoardData = async (req, res, next) => {
 		// console.log(req.file)
 
 		const newThread = instance.queries.insertParentPost.run(
-			currentBoard.id,
 			escapeHTML(req.body.name).trim(),
 			escapeHTML(req.body.title).trim(),
 			escapeHTML(req.body.content).trim(),
@@ -106,7 +101,7 @@ export const getThreadData = async (req, res, next) => {
 
 		const currentPosts = instance.queries.getChildPosts.all(threadId, 0);
 
-		const newPosts = instance.queries.getNewParentPostsByBoard.all(currentThread.board_id);
+		const newPosts = instance.queries.getNewParentPosts.all();
 
 		return { currentThread, currentPosts, newPosts };
 	});
@@ -131,7 +126,7 @@ export const setThreadData = async (req, res, next) => {
 		if (req.file) {
 			newFile = instance.queries.insertFile.run(req.file.filename, req.file.mimetype, req.file.size, 'pending', new Date().toISOString())
 		}
-		const newPost = instance.queries.insertChildPost.run(currentThread.board_id, currentThread.id, escapeHTML(req.body.name).trim(), escapeHTML(req.body.content).trim(), newFile?.lastInsertRowid ?? null, req.ip, new Date().toISOString())
+		const newPost = instance.queries.insertChildPost.run( currentThread.id, escapeHTML(req.body.name).trim(), escapeHTML(req.body.content).trim(), newFile?.lastInsertRowid ?? null, req.ip, new Date().toISOString())
 		instance.queries.updateParentPostTimeAndReplies.run(new Date().toISOString(), currentThread.id)
 		return newPost.lastInsertRowid
 	})
