@@ -161,6 +161,7 @@ function getReplies() {
 
 	let postMap = new Map()
 	let replyArray = []
+	let replyMap = {} //to remove duplicates
 
 	postNodes.forEach(article => {
 		const postId = article.id
@@ -170,9 +171,12 @@ function getReplies() {
 		}
 
 		article.querySelectorAll(".replyText").forEach(link => {
-			replyArray.push([link.getAttribute("data-post-number-link"), postId])
+			replyMap[link.getAttribute("data-post-number-link")] = postId
+			// replyArray.push([link.getAttribute("data-post-number-link"), postId])
 		})
 	})
+
+	replyArray = Object.entries(replyMap)
 
 	for (let [replyTo, replyFrom] of replyArray) {
 		postMap.get(replyTo)[1].push(replyFrom)
@@ -194,7 +198,7 @@ function getReplies() {
 
 		repliesId.forEach(replyId => {
 			const linkElem = document.createElement("a");
-			linkElem.style.marginRight = "8px";
+			// linkElem.style.marginRight = "8px";
 			linkElem.href = "#" + replyId;
 			linkElem.textContent = ">>" + replyId;
 			linkElem.classList.add("replyText")

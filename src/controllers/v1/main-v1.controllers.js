@@ -67,7 +67,7 @@ export const setBoardData = async (req, res, next) => {
 }
 
 export const getThreadData = async (req, res, next) => {
-
+	
 	const getThreadData = instance.db.transaction((threadId) => {
 		const currentThread = instance.queries.getParentPost.get(threadId);
 
