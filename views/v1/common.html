@@ -13,6 +13,10 @@
 		</nav>
 {% endmacro %}
 
+{% macro name() %}
+		<div style="font-size: larger; text-align: center;">अपरिचित</div>
+{% endmacro %}
+
 {% macro postList(datalist, board) %}
 	{% if board %}
 	{% for data in datalist %}

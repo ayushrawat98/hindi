@@ -9,71 +9,44 @@
 
 {% block body %}
 
-<div class="board-heading">
-	{% if currentBoard.name == "सर्व" %}
-		<h1>सर्व</h1>
-		<p class="board-heading__desc">सब विचार, एक स्थान</p>
-	{% else %}
-		<h1>{{currentBoard.name}}</h1>
-		<p class="board-heading__desc">{{currentBoard.description}}</p>
-	{% endif %}
-	{% if currentBoard.name != "सर्व" %}
-		<button class="newPostButton">नया प्रकाशन बनाएं +</button>
-	{% endif %}
-</div>
-
 <div class="board-feed">
 
 	<aside class="board-feed__sidebar">
-		{{macros.navigation(boards)}}
+		
 	</aside>
 
 
 	<div class="board-feed__column board-feed__column--new">
 		<div class="post-list">
-		{{ macros.postList(newPosts, boards) }}
+			{{ macros.postList(newPosts, board) }}
 		</div>
 	</div>
 
 	<div class="board-feed__column board-feed__column--hot">
 		<div class="post-list">
-		{{ macros.postList(hotPosts, boards) }}
+			<div class="newPostWindow">
+				<form method="post" enctype="multipart/form-data" id="uploadForm">
+					<textarea rows="8" cols="40" placeholder="विवरण : अपनी बात यहाँ लिखें..." id="content" name="content"
+						minlength="1" maxlength="1000" autocomplete="off" required></textarea>
+					<span class="fileName"></span>
+					<!-- <label for="file" class="fakeLink">संचिका (फाइल) : </label><span class="fileName"></span> -->
+					<!-- <input type="file" id="file" name="file" accept="image/*, video/*" required/> -->
+					<input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm" required
+						hidden>
+					<div class="formbtn">
+						<button type="button" class="fakeLink">संचिका (फाइल) चुने</button>
+						<!-- <button type="button" class="newPostButton">बंद करें</button> -->
+						<button type="reset" class="">पूर्वावस्था में लाएं</button>
+						<button type="submit">भेजें</button>
+					</div>
+					<progress id="progressBar" max="100" value="0" hidden></progress>
+					<p id="status"></p>
+				</form>
+			</div>
+			{{ macros.postList(hotPosts, board) }}
 		</div>
 	</div>
 </div>
 
-
-
-
-
-<div class="newPostWindow hidden">
-	<form method="post" enctype="multipart/form-data" id="uploadForm">
-		<label for="name">नाम :</label>
-		<br>
-		<input type="text" id="name" name="name" placeholder="अपरिचित" maxlength="50" />
-		<br>
-		<label for="title">शीर्षक :</label>
-		<br>
-		<input type="text" id="title" name="title" placeholder="यहाँ शीर्षक लिखें..." maxlength="200"/>
-		<br>
-		<label for="content">विवरण :</label>
-		<br>
-		<textarea rows="8" cols="40" placeholder="अपनी बात यहाँ लिखें..." id="content" name="content"
-			minlength="1" maxlength="1000" autocomplete="off" autofocus></textarea>
-		<br>
-		<button type="button" class="fakeLink"> संचिका (फाइल) : </button><span class="fileName"></span>
-		<!-- <label for="file" class="fakeLink">संचिका (फाइल) : </label><span class="fileName"></span> -->
-		<!-- <input type="file" id="file" name="file" accept="image/*, video/*" required/> -->
-		<input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm" required hidden>
-		<br/>
-		<div class="formbtn">
-		<button type="button" class="newPostButton">बंद करें</button>
-		<button type="reset" class="">पूर्वावस्था में लाएं</button>
-		<button type="submit">भेजें</button>
-		</div>
-		<progress id="progressBar" max="100" value="0" hidden></progress>
-		<p id="status"></p>
-	</form>
-</div>
 
 {% endblock %}

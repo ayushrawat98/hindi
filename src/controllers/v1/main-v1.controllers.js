@@ -4,7 +4,7 @@ import upload from "../../libraries/multer.js"
 import fs from "node:fs/promises"
 import instance from '../../../db/db.js';
 import { escapeHTML } from '../../libraries/sanitize.js';
-import activeBoardsList from '../../libraries/activeBoards.js';
+// import activeBoardsList from '../../libraries/activeBoards.js';
 import { AppError } from '../../libraries/error.js';
 import path from 'node:path';
 import { configuration } from '../../../env.js';
@@ -12,31 +12,19 @@ import { configuration } from '../../../env.js';
 
 export const getBoardData = async (req, res, next) => {
 
-	const getBoardData = instance.db.transaction((boardName) => {
-
-		let currentBoard = activeBoardsList.find(item => item.name === boardName);
-
-		// if (!currentBoard && boardName != "सर्व") {
-		// 	throw new Error("यह मंच अस्तित्व में नहीं है।");
-		// }
+	const getBoardData = instance.db.transaction(() => {
 
 		const newPosts = instance.queries.getNewParentPosts.all();
 
 		const hotPosts = instance.queries.getHotParentPosts.all();
 
-		//if no currentBoard just set to whatever frontend sends
-		if (!currentBoard) {
-			currentBoard = { name: boardName }
-		}
-
-		return { newPosts, hotPosts, currentBoard }
+		return { newPosts, hotPosts }
 	});
 
-	const data = getBoardData(req.params.boardName);
+	const data = getBoardData();
 
 	return res.render('v1/board.html', {
-		boards: activeBoardsList,
-		currentBoard: data.currentBoard,
+		board : true,
 		newPosts: data.newPosts.slice(0, 5),
 		hotPosts: data.hotPosts
 	});
@@ -50,13 +38,7 @@ export const setBoardData = async (req, res, next) => {
 	}
 
 	const createThread = instance.db.transaction(() => {
-		// no board - delete file , throw error
-		const currentBoard = activeBoardsList.find(item => item.name == req.params.boardName)
-
-		if (!currentBoard) {
-			throw new Error("यह मंच अस्तित्व में नहीं है।")
-		}
-
+		
 		const newFile = instance.queries.insertFile.run(
 			req.file.filename,
 			req.file.mimetype,
@@ -64,8 +46,6 @@ export const setBoardData = async (req, res, next) => {
 			'pending',
 			new Date().toISOString()
 		)
-
-		// console.log(req.file)
 
 		const newThread = instance.queries.insertParentPost.run(
 			escapeHTML(req.body.name).trim(),
@@ -82,10 +62,6 @@ export const setBoardData = async (req, res, next) => {
 		createThread()
 		return res.status(201).send("सफल")
 	} catch (error) {
-		//file can be deleted but thumbnail might stay
-		//race issue - no because image loop will find in table only if transaction succeed , if it fails thumbnail never generate
-		// fs.unlink(req.file.path) //delete file
-		// throw error
 		throw new AppError(400, error.message || "Error in sent data for board", true)
 	}
 }
@@ -99,7 +75,7 @@ export const getThreadData = async (req, res, next) => {
 			throw new Error("चर्चा अस्तित्व में नहीं है।");
 		}
 
-		const currentPosts = instance.queries.getChildPosts.all(threadId, 0);
+		const currentPosts = instance.queries.getChildPosts.all(threadId);
 
 		const newPosts = instance.queries.getNewParentPosts.all();
 
@@ -109,7 +85,7 @@ export const getThreadData = async (req, res, next) => {
 	const { currentThread, currentPosts, newPosts } = getThreadData(req.params.threadId);
 
 	return res.render('v1/thread.html', {
-		boards: activeBoardsList,
+		board : true,
 		posts: [currentThread, ...currentPosts],
 		newPosts: newPosts.slice(0, 5)
 	});
@@ -137,10 +113,6 @@ export const setThreadData = async (req, res, next) => {
 		let newPostId = setThreadData(req)
 		return res.status(201).send("सफल")
 	} catch (error) {
-		//file can be deleted but thumbnail might stay
-		//race issue - no because image loop will find in table only if transaction succeed , if it fails thumbnail never generate
-		// fs.unlink(req.file.path) //delete file
-		// throw error
 		throw new AppError(400, error.message || "Error in sent data for thread", true)
 	}
 

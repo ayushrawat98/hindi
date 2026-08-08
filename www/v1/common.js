@@ -1,3 +1,11 @@
+//reset value on coming back from other page
+//solve bug where file is still selected when moving through pages
+window.addEventListener("pageshow", (event) => {
+	let file = document.querySelector("#file").files[0]
+	if(!file) return;
+	setFileName(file.name + " - " + ((file.size)/1024).toFixed(2) + " KiB")
+})
+
 //form events handling
 let newPostWindow = document.querySelector('.newPostWindow')
 document.querySelector(".closeButton")?.addEventListener('click', () => {
@@ -159,10 +167,11 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 
 
 //save name
-document.getElementById('name').addEventListener('input', (e) => {
-	localStorage.setItem('name', e.target.value)
-})
-function showName(){
-	let name = localStorage.getItem('name')
-	if(name) document.getElementById('name').value = name
-}
+// document.getElementById('name').addEventListener('input', (e) => {
+// 	localStorage.setItem('name', e.target.value)
+// })
+// function showName(){
+// 	let name = localStorage.getItem('name')
+// 	if(name) document.getElementById('name').value = name
+// }
+	

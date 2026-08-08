@@ -14,51 +14,42 @@
 <div class="board-feed">
 
 	<aside class="board-feed__sidebar">
-		{{macros.navigation(boards)}}
+
 	</aside>
 
 
 	<div class="board-feed__column board-feed__column--new">
 		<div class="post-list ">
-		{{ macros.postList(newPosts, boards) }}
+		{{ macros.postList(newPosts, board) }}
 		</div>
 	</div>
 
 	<div class="board-feed__column board-feed__column--hot">
 		<div class="post-list post-list--thread">
 		{{ macros.postList(posts) }}
+
+		<div class="newPostWindow hidden" style="position : sticky; bottom : 0; z-index : 4;">
+				<form method="post" enctype="multipart/form-data" id="uploadForm">
+					<textarea rows="8" cols="40" placeholder="विवरण : अपनी बात यहाँ लिखें..." id="content" name="content"
+						minlength="1" maxlength="1000" autocomplete="off" required></textarea>
+					<span class="fileName"></span>
+					<!-- <label for="file" class="fakeLink">संचिका (फाइल) : </label><span class="fileName"></span> -->
+					<!-- <input type="file" id="file" name="file" accept="image/*, video/*" required/> -->
+					<input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm"
+						hidden>
+					<div class="formbtn">
+						<button type="button" class="newPostButton">बंद करें</button>
+						<button type="button" class="fakeLink">संचिका</button>
+						<button type="reset" class="">पूर्वावस्था</button>
+						<button type="submit">भेजें</button>
+					</div>
+					<progress id="progressBar" max="100" value="0" hidden></progress>
+					<p id="status"></p>
+				</form>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div class="newPostWindow hidden">
-	<form method="post" enctype="multipart/form-data" id="uploadForm">
-		<label for="name">नाम :</label>
-		<br>
-		<input type="text" id="name" name="name" placeholder="अपरिचित" maxlength="50" />
-		<br>
-		<label for="content">विवरण :</label>
-		<br>
-		<textarea rows="8" cols="40" placeholder="अपनी बात यहाँ लिखें..." id="content" name="content" required
-			minlength="1" maxlength="1000" spellcheck="true" autocomplete="off" autofocus></textarea>
-		<br>
-		<button type="button" class="fakeLink"> संचिका (फाइल) : </button><span class="fileName"></span>
-		<!-- <label for="file" class="fakeLink">संचिका (फाइल) : </label><span class="fileName"></span> -->
-		<!-- <input type="file" id="file" name="file" accept="image/*, video/*" required/> -->
-		<input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm"  hidden>
-		<br/>
-		<div class="formbtn">
-		<button type="button" class="closeButton">बंद करें</button>
-		<button type="reset" class="">पूर्वावस्था में लाएं</button>
-		<button type="submit">भेजें</button>
-		</div>
-		<progress id="progressBar" max="100" value="0" hidden></progress>
-		<p id="status"></p>
-	</form>
-</div> 
-
-<div id="goBack">
-	Go Back
-</div>
 
 {% endblock %}

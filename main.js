@@ -1,6 +1,6 @@
 import { configuration } from "./env.js";
 import "./db/db.js"
-import "./db/seed.js"
+// import "./db/seed.js"
 import app from "./src/app.js";
 import fs from "fs"
 import { __dirname } from "./path.js";

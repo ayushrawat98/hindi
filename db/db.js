@@ -44,9 +44,11 @@ class DB {
   					created_at text
 				);
 
-			
+				CREATE INDEX IF NOT EXISTS idx_posts_parent_created
+				ON posts(parent_id, created_at DESC);
 
-				CREATE INDEX IF NOT EXISTS idx_posts_parent_id ON posts(parent_id) WHERE parent_id IS NOT NULL;
+				CREATE INDEX IF NOT EXISTS idx_posts_parent_updated
+				ON posts(parent_id, updated_at DESC);
 
 				CREATE INDEX IF NOT EXISTS idx_files_status ON files(status);
 
@@ -54,7 +56,6 @@ class DB {
 		)
 
 		this.queries = {
-			getBoards : this.db.prepare('select id, name, description, disabled from boards where disabled = 0'),
 
 			insertFile: this.db.prepare('insert into files (path, type, size, status, created_at) values (?,?,?,?,?)'),
 			getFile: this.db.prepare('select * from files where id = ?'),
@@ -65,7 +66,7 @@ class DB {
 
 			insertChildPost: this.db.prepare('insert into posts (parent_id, name, content, file_id, ip, created_at) values (?,?,?,?,?,?)'),
 			getParentPost: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.id = ?'),
-			getChildPosts: this.db.prepare('select p.id, p.parent_id, p.name, p.content, p.created_at, p.file_id, p.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width  from posts p left join files f on p.file_id = f.id where p.parent_id = ? and p.id > ?'),
+			getChildPosts: this.db.prepare('select p.id, p.parent_id, p.name, p.content, p.created_at, p.file_id, p.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width  from posts p left join files f on p.file_id = f.id where p.parent_id = ?'),
 			updateParentPostTimeAndReplies: this.db.prepare('update posts set updated_at = ?, replies = replies + 1 where id = ?'),
 
 
