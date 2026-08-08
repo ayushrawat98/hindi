@@ -133,7 +133,7 @@ export const deleteImage = (req, res, next) => {
 		console.log(fileDetails)
 		//delete image
 		const isVideo = fileDetails.type.includes("video") ? ".webp"  : ""
-		fs.unlink(path.resolve(__dirname, 'public', 'files', fileDetails.path, isVideo))
+		fs.unlink(path.join(__dirname, 'public', 'files', fileDetails.path) + isVideo)
 		fs.unlink(path.join(__dirname, 'public', 'thumbnails', fileDetails.path))
 		return res.status(200).send("Complete")
 	} catch (error) {
