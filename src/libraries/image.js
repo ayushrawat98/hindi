@@ -17,49 +17,41 @@ export async function imageProcessor() {
 
 		//if no file in queue , wait for 30 seconds and then start again
 		if (!file) {
-			await new Promise((resolve, reject) => {
-				setTimeout(() => resolve(), 30000)
-			})
+			await pause(15000)
 			continue
 		}
 
 		// let shouldDeleteOriginalFile = file.type.includes('image')
 		let shouldDeleteOriginalFile = false
 
-		let ogfilePath = path.join(__dirname, 'public', 'files', file.path)
-		let thumbfilePath = path.join(__dirname, 'public', 'thumbnails', file.path)
+		let ogFilePath = path.join(__dirname, 'public', 'files', file.path)
+		let thumbFilePath = path.join(__dirname, 'public', 'thumbnails', file.path)
+		let tempFilePath = path.join(__dirname, 'public', 'files', "temp" + file.path)
 
 		try {
 
 			if (file.type.startsWith('video')) {
 
 				const thumbnailArgs = [
-					'-i', ogfilePath,
+					'-i', ogFilePath,
 					'-vf', "scale='min(100,iw)':-1",
 					'-frames:v', '1',
+					'-map_metadata', '-1',
 					'-compression_level', '5',
 					'-quality', '100',
-					thumbfilePath + '.webp'
+					thumbFilePath + '.webp'
 				];
 
-				const stripMetadataArgs = [
-					'-y',
-					'-i', ogfilePath,
-					'-map_metadata', '-1',
-					'-map_chapters', '-1',
-					'-c', 'copy',
-					ogfilePath + ".mp4"
-				];
-
-				await ffmpegProcess(ffmpegPath, thumbnailArgs)
-				await ffmpegProcess(ffmpegPath, stripMetadataArgs)
-				await removeMetaData(ogfilePath, false, ".mp4")
-				await setHeightAndWidth(thumbfilePath + ".webp", file.id)
-
+				await ffmpegProcess(ffmpegPath, thumbnailArgs) //create thumbnail and strip its metadata
+				await setHeightAndWidth(thumbFilePath + ".webp", file.id) //set height and width of thumbnai
+				await pause(1000)
+				await removeVideoMetaData(ogFilePath, tempFilePath)
 			}
 			else if (file.type.includes('gif')) {
 
-				await sharp(ogfilePath, { animated: true, pages: -1 })
+				const inputBuffer = await fs.readFile(ogFilePath);
+
+				await sharp(inputBuffer, { animated: true, pages: -1 })
 					.rotate()
 					.resize({
 						width: 100,
@@ -71,25 +63,24 @@ export async function imageProcessor() {
 						loop: 0,
 						force: true
 					})
-					.toFile(thumbfilePath);
-				
-				await setHeightAndWidth(thumbfilePath, file.id)
+					.toFile(thumbFilePath);
+
+				await setHeightAndWidth(thumbFilePath, file.id)
+				await removeImageMetaData(ogFilePath, tempFilePath, { animated: true, pages: -1 }, inputBuffer)
 
 			} else if (file.type.startsWith('image')) {
 
-				await sharp(ogfilePath)
+				await sharp(ogFilePath)
 					.rotate()
 					.resize({
 						width: 100,
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
 					})
 					.webp({ quality: 100, effort: 5 })
-					.toFile(thumbfilePath);
+					.toFile(thumbFilePath);
 
-				//remove metadata info
-				await removeMetaData(ogfilePath, true, ".temp")
-				await setHeightAndWidth(thumbfilePath, file.id)
-
+				await setHeightAndWidth(thumbFilePath, file.id)
+				await removeImageMetaData(ogFilePath, tempFilePath, {})
 			}
 
 			//set status as success
@@ -108,11 +99,11 @@ export async function imageProcessor() {
 			if (shouldDeleteOriginalFile) {
 				try {
 					if (file.type.startsWith('video')) {
-						fs.unlink(thumbfilePath + ".webp")
-						fs.unlink(ogfilePath)
+						fs.unlink(thumbFilePath + ".webp")
+						fs.unlink(ogFilePath)
 					} else {
-						fs.unlink(thumbfilePath)
-						fs.unlink(ogfilePath)
+						fs.unlink(thumbFilePath)
+						fs.unlink(ogFilePath)
 					}
 				} catch (err) {
 					console.error(err)
@@ -122,7 +113,7 @@ export async function imageProcessor() {
 		}
 
 		//pause for few seconds
-		await new Promise(r => setTimeout(r, 1000));
+		await pause(1000)
 	}
 }
 
@@ -144,15 +135,37 @@ function ffmpegProcess(ffmpegPath, args) {
 	});
 }
 
-async function removeMetaData(ogfilePath, isImage, ext) {
-	const tempName = ogfilePath + ext
-	if (isImage) await sharp(ogfilePath).toFile(tempName);
-	await fs.rename(ogfilePath, ogfilePath + ".delete");
-	await fs.rename(tempName, ogfilePath);
-	await fs.unlink(ogfilePath + ".delete");
+async function removeVideoMetaData(ogFilePath, tempFilePath) {
+	const stripMetadataArgs = [
+		'-y',
+		'-i', ogFilePath,
+		'-map_metadata', '-1',
+		'-map_chapters', '-1',
+		'-c', 'copy',
+		tempFilePath
+	];
+
+	//strip meta data from original
+	await ffmpegProcess(ffmpegPath, stripMetadataArgs)
+	await fs.unlink(ogFilePath);
+	await fs.rename(tempFilePath, ogFilePath);
 }
 
-async function setHeightAndWidth(path, id){
+async function removeImageMetaData(ogFilePath, tempFilePath, config, buffer = undefined) {
+    // Sharp now works from memory instead of keeping the source file open.
+    await sharp(buffer ?? ogFilePath, config).toFile(tempFilePath);
+	// await sharp(ogFilePath, config).toFile(tempFilePath);
+	await fs.unlink(ogFilePath);
+	await fs.rename(tempFilePath, ogFilePath);
+}
+
+async function setHeightAndWidth(path, id) {
 	const { width = 0, height = 0 } = await sharp(path).metadata();
 	instance.queries.updateFileHeightAndWidth.run(height, width, id);
+}
+
+function pause(time) {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => resolve(), time)
+	})
 }
