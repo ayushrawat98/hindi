@@ -1,20 +1,14 @@
-function scrollToPost() {
-	const postHash = window.location.hash
-	if (postHash) {
-		const postId = postHash.slice(1)
-		let post = document.getElementById(postId)
-		if (post) {
-			const oldBackgroundColor = post.style.backgroundColor
-			post.style.backgroundColor = 'rgba(0, 0, 0, 0.1)'
-			setTimeout(() => {
-				post.style.backgroundColor = oldBackgroundColor
-			}, 2000);
-		}
+const ISMOBILE = window.innerWidth <= 768
+
+//remove any popup on click anywhere
+document.addEventListener("click", (ev) => {
+	if(activePopupWrapper){
+		removeActivePopupWrapper()
 	}
-}
+})
 
 function showOP() {
-	let opPostId = document.querySelector('.post-list').firstElementChild.getAttribute('id')
+	let opPostId = document.querySelector('.post-list--thread').firstElementChild.getAttribute('id')
 	document.querySelectorAll('.replyText').forEach((link) => {
 		if (link.getAttribute('href') == '#' + opPostId) {
 			link.textContent += ' (मूल लेखक)'
@@ -33,30 +27,20 @@ function setShareButton() {
 	})
 }
 
-function setReplyPost() {
+function setRepliesToPost() {
 	const list = document.querySelectorAll('[data-post-number-link]')
 	list.forEach(link => {
 		let postId = link.getAttribute('data-post-number-link')
-		//click for mobile only
-		link.addEventListener('click', (linkevent) => {
-			linkevent.preventDefault()
-			if (linkevent.pointerType !== "touch") return;
-			// console.log("pointer click")
-			addPopup(link, linkevent, postId, true)
-		})
+		addPopupEventHandler(link, postId)
 
-		//hover for pc only
-		link.addEventListener('pointerenter', (linkevent) => {
-			if (linkevent.pointerType === "touch") return;
-			// console.log("pointer eneter")
-			addPopup(link, linkevent, postId, false)
-		})
-
-		link.addEventListener('pointerleave', (linkevent) => {
-			if (linkevent.pointerType === "touch") return;
-			// console.log("pointer leave")
-			removeActivePopupWrapper()
-		})
+		//add hash on mobile
+		if (ISMOBILE) {
+			const goToLinkElem = document.createElement("a");
+			goToLinkElem.href = "#" + postId;
+			goToLinkElem.textContent = " #";
+			goToLinkElem.classList.add("replyText")
+			link.parentElement.appendChild(goToLinkElem)
+		}
 	})
 }
 
@@ -66,15 +50,17 @@ function toggleThumbnailClass(elemList) {
 }
 
 let activePopupWrapper = null
-function removeActivePopupWrapper (){
-	activePopupWrapper.remove()
+function removeActivePopupWrapper() {
+	activePopupWrapper?.remove()
 	activePopupWrapper = null
 }
 
 function addPopup(currentNode, linkevent, postHash, addOverlay) {
+	linkevent.stopPropagation()
+	removeActivePopupWrapper()
 	if (!postHash) return;
 	if (activePopupWrapper) {
-		
+
 	}
 	const currentPost = document.getElementById(postHash)
 	//if the post was delete by moderator , gray it and give a line through
@@ -106,11 +92,11 @@ function addPopup(currentNode, linkevent, postHash, addOverlay) {
 
 
 	currentPostHeight = Math.min(currentPostHeight, 300)
-
+	
 	//find correct place to show popup
-	clone.style.top = linkevent.clientY < 300 ?
-		`${linkevent.clientY + 20}px` :
-		`${linkevent.clientY - currentPostHeight - 20}px`
+	clone.style.top = linkevent.pageY < 300 ?
+		`${linkevent.pageY + 20}px` :
+		`${linkevent.pageY - currentPostHeight - 20}px`
 	clone.style.left = currentPost.offsetLeft + "px"
 	clone.style.width = currentPost.offsetWidth + "px"
 
@@ -128,7 +114,7 @@ function addPopup(currentNode, linkevent, postHash, addOverlay) {
 		overlay.appendChild(clone);
 	} else {
 		//no overlay , make clone fixed
-		clone.style.position = "fixed"
+		clone.style.position = "absolute"
 	}
 	document.querySelector('.board-feed__column--hot').appendChild(addOverlay ? overlay : clone)
 	activePopupWrapper = clone
@@ -155,13 +141,12 @@ function expandFile() {
 	}))
 }
 
-
-function getReplies() {
+function setRepliesForPost() {
 	let postNodes = document.querySelectorAll(".board-feed__column--hot .post-list .post")
 
 	let postMap = new Map()
 	let replyArray = []
-	let replyMap = {} //to remove duplicates
+	let seen = {}
 
 	postNodes.forEach(article => {
 		const postId = article.id
@@ -171,12 +156,15 @@ function getReplies() {
 		}
 
 		article.querySelectorAll(".replyText").forEach(link => {
-			replyMap[link.getAttribute("data-post-number-link")] = postId
-			// replyArray.push([link.getAttribute("data-post-number-link"), postId])
+			if (seen[link.getAttribute("data-post-number-link")] != postId) {
+				replyArray.push([link.getAttribute("data-post-number-link"), postId])
+				seen[link.getAttribute("data-post-number-link")] = postId
+			}
 		})
 	})
 
-	replyArray = Object.entries(replyMap)
+	//remove duplicates from replyArray
+
 
 	for (let [replyTo, replyFrom] of replyArray) {
 		postMap.get(replyTo)[1].push(replyFrom)
@@ -197,34 +185,33 @@ function getReplies() {
 		fragment.appendChild(firstElem);
 
 		repliesId.forEach(replyId => {
+
 			const linkElem = document.createElement("a");
 			// linkElem.style.marginRight = "8px";
 			linkElem.href = "#" + replyId;
+			// linkElem.style.textDecoration = "underline"
 			linkElem.textContent = ">>" + replyId;
 			linkElem.classList.add("replyText")
 
-			//for mobile
-			linkElem.addEventListener('click', (linkevent) => {
-				linkevent.preventDefault()
-				if (linkevent.pointerType !== "touch") return;
-				// console.log("pointer click")
-				addPopup(linkElem, linkevent, replyId, true)
-			})
+			addPopupEventHandler(linkElem, replyId)
 
-			//hover for pc only
-			linkElem.addEventListener('pointerenter', (linkevent) => {
-				if (linkevent.pointerType === "touch") return;
-				// console.log("pointer eneter")
-				addPopup(linkElem, linkevent, replyId, false)
-			})
+			let goToLinkElem
+			if (ISMOBILE) {
+				goToLinkElem = document.createElement("a");
+				// goToLinkElem.style.marginRight = "12px";
+				goToLinkElem.href = "#" + replyId;
+				// goToLinkElem.style.textDecoration = "underline"
+				goToLinkElem.textContent = " #";
+				goToLinkElem.classList.add("replyText")
+			}
 
-			linkElem.addEventListener('pointerleave', (linkevent) => {
-				if (linkevent.pointerType === "touch") return;
-				// console.log("pointer leave")
-				removeActivePopupWrapper()
-			})
+			const spanContainer = document.createElement("span")
+			spanContainer.style.marginRight = "12px";
+			spanContainer.append(...(goToLinkElem ? [linkElem, goToLinkElem] : [linkElem]))
 
-			fragment.appendChild(linkElem);
+			fragment.appendChild(spanContainer);
+			// fragment.appendChild(linkElem);
+			// fragment.appendChild(goToLinkElem);
 		});
 
 		footerElem.appendChild(fragment);
@@ -232,9 +219,35 @@ function getReplies() {
 	}
 }
 
-scrollToPost()
-setReplyPost()
+function addPopupEventHandler(linkElem, replyId) {
+	//on pointer/mouse hover to show , click to go
+	//on touch click to show , hash to go
+
+	//for mobile
+	linkElem.addEventListener('click', (linkevent) => {
+		if (linkevent.pointerType == "touch") {
+			linkevent.preventDefault()
+			addPopup(linkElem, linkevent, replyId, false)
+		}
+	})
+
+	//hover for pc only
+	linkElem.addEventListener('pointerenter', (linkevent) => {
+		if (linkevent.pointerType === "touch") return;
+		// console.log("pointer eneter")
+		addPopup(linkElem, linkevent, replyId, false)
+	})
+
+	linkElem.addEventListener('pointerleave', (linkevent) => {
+		if (linkevent.pointerType === "touch") return;
+		// console.log("pointer leave")
+		removeActivePopupWrapper()
+	})
+}
+
+
 setShareButton()
 showOP()
 expandFile()
-getReplies()
+setRepliesForPost()
+setRepliesToPost()

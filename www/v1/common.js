@@ -17,7 +17,13 @@ document.querySelectorAll('.newPostButton').forEach(element => element.addEventL
 document.querySelectorAll(".replyButton").forEach(btn => {
 	btn.addEventListener('click', () => {
 		newPostWindow.classList.remove('hidden')
-		document.getElementById('content').value += ">>" + btn.dataset.postNumber + "\n"
+		//if there is content add a newline before appending post number
+		
+		if(document.getElementById('content').value.trim().length > 0 && !document.getElementById('content').value.endsWith("\n")){
+			document.getElementById('content').value += "\n>>" + btn.dataset.postNumber + "\n"
+		}else{
+			document.getElementById('content').value += ">>" + btn.dataset.postNumber + "\n"
+		}
 	})
 })
 const commonHideFunction = () => {

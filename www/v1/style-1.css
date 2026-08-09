@@ -7,6 +7,7 @@
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
+	scroll-behavior: smooth;
 }
 :root {
     color-scheme: light dark;
@@ -346,6 +347,12 @@ label {
 .board-list__item {
 	display: inline-block;
 	margin-right: 0.5rem;
+}
+
+/* Styles the element only when it is the active URL fragment */
+:target {
+  border: 2px dashed red;
+  transition: background-color 0.5s ease; /* Optional fade-in effect */
 }
 
 

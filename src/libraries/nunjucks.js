@@ -30,7 +30,7 @@ export function configNunjucks(app) {
 		let regexTwo = /&gt;&gt;([\u0966-\u096F]+)/gm
 		// let regex = /^>(?!>)(.*?)$/gm
 		// let regexTwo = />>(\d+)/gm
-		return str.replace(regex, "<span class='greenText'>&gt;$1</span>").replace(regexTwo, "<a class='replyText' data-post-number-link='$1' href='#$1'>&gt;&gt;$1</a>")
+		return str.replace(regex, "<span class='greenText'>&gt;$1</span>").replace(regexTwo, "<span><a class='replyText' data-post-number-link='$1' href='#$1'>&gt;&gt;$1</a></span>")
 	})
 
 	nunjucksEnv.addFilter('hindinumber', (num) => {
