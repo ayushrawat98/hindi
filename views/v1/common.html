@@ -13,6 +13,10 @@
 		</nav>
 {% endmacro %}
 
+{% macro replies() %}
+<nav class="board-list"><ul class="board-list__items"></ul></nav>
+{% endmacro %}
+
 {% macro name() %}
 		<div style="font-size: larger; text-align: center;">अपरिचित</div>
 {% endmacro %}
@@ -59,7 +63,7 @@
 	{% endif %}
 
 	{% if data.content %}
-	<p class="post__content post__content--pre-wrap">{{data.content | greenText | urlize | safe}}</p>
+	<p class="post__content post__content--pre-wrap">{{data.content | greenText  | safe}}</p>
 	{% endif %}
 
 </article>

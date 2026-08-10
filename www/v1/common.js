@@ -1,9 +1,14 @@
+window.addEventListener('load', () => {
+  const font = document.getElementById('late-font');
+  font.media = 'all';
+});
+
 //reset value on coming back from other page
 //solve bug where file is still selected when moving through pages
 window.addEventListener("pageshow", (event) => {
 	let file = document.querySelector("#file").files[0]
-	if(!file) return;
-	setFileName(file.name + " - " + ((file.size)/1024).toFixed(2) + " KiB")
+	if (!file) return;
+	setFileName(file.name + " - " + ((file.size) / 1024).toFixed(2) + " KiB")
 })
 
 //form events handling
@@ -18,10 +23,10 @@ document.querySelectorAll(".replyButton").forEach(btn => {
 	btn.addEventListener('click', () => {
 		newPostWindow.classList.remove('hidden')
 		//if there is content add a newline before appending post number
-		
-		if(document.getElementById('content').value.trim().length > 0 && !document.getElementById('content').value.endsWith("\n")){
+
+		if (document.getElementById('content').value.trim().length > 0 && !document.getElementById('content').value.endsWith("\n")) {
 			document.getElementById('content').value += "\n>>" + btn.dataset.postNumber + "\n"
-		}else{
+		} else {
 			document.getElementById('content').value += ">>" + btn.dataset.postNumber + "\n"
 		}
 	})
@@ -36,14 +41,14 @@ const commonHideFunction = () => {
 }
 
 const fileName = document.querySelector(".fileName")
-function setFileName(str){
+function setFileName(str) {
 	fileName.innerText = str
 }
 
 //show file name on selection
 document.querySelector("#file").addEventListener("change", (event) => {
 	let file = event.target.files[0]
-	setFileName(file.name + " - " + ((file.size)/1024).toFixed(2) + " KiB")
+	setFileName(file.name + " - " + ((file.size) / 1024).toFixed(2) + " KiB")
 })
 
 //reset event on form
@@ -74,7 +79,7 @@ pasteTextBox?.addEventListener('paste', (event) => {
 		const dataTransfer = new DataTransfer();
 		dataTransfer.items.add(imageFile);
 		imageFileInput.files = dataTransfer.files;
-		setFileName(imageFile.name + " - " + ((imageFile.size)/1024).toFixed(2) + " KiB")
+		setFileName(imageFile.name + " - " + ((imageFile.size) / 1024).toFixed(2) + " KiB")
 		// Prevent default paste behavior in the textbox if desired
 		event.preventDefault();
 	}
@@ -91,8 +96,6 @@ document.getElementById("file")?.addEventListener("invalid", (event) => {
 })
 
 //post data
-let inter = undefined
-//upload progress
 document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 	e.preventDefault();
 
@@ -104,12 +107,12 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 	const form = e.target;
 	const formData = new FormData(form); // Directly pass the form to FormData
 	const xhr = new XMLHttpRequest();
-
+	xhr.responseType = 'json';
 	xhr.open("POST", window.location.href); // ← change to your upload URL
 
 	const progressBar = document.getElementById("progressBar");
 	progressBar.style.width = "100%"
-	
+
 
 	// Track upload progress
 	xhr.upload.onprogress = function (event) {
@@ -122,38 +125,23 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 		}
 	};
 
-
-	//clear interval
-	if (inter) {
-		clearInterval(inter)
-	}
 	// When upload completes
 	xhr.onload = function () {
 
 		if (xhr.status === 201) {
+			if(window.location.pathname.includes("thread")) {
+				let str = xhr.response.threadId + "#" + numberToHindi(xhr.response.replyId)
+				appendToReplyList(str)
+			}
 			progressBar.value = 100;
-			status.textContent = xhr.responseText;
+			status.textContent = xhr.response.message;
 			document.querySelector("#file").value = ""
 			setTimeout(() => {
 				// window.location.hash = xhr.responseText;
 				window.location.reload()
 			}, 300);
 		} else if (xhr.status == 429) {
-			status.textContent = xhr.responseText
-			const regex = /(\d+)/g
-			let number = Number(xhr.responseText.match(regex)[0])
-			status.textContent = `Wait ${number} seconds.`
-			number--
-			inter = setInterval(() => {
-				status.textContent = `Wait ${number} seconds.`
-				number--
-				if (number < 0) {
-					clearInterval(inter)
-					setTimeout(() => {
-						status.textContent = ''
-					}, 500);
-				}
-			}, 1000);
+			status.textContent = xhr.response.message
 		} else if (xhr.responseText) {
 			status.textContent = xhr.responseText;
 		} else {
@@ -180,4 +168,44 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 // 	let name = localStorage.getItem('name')
 // 	if(name) document.getElementById('name').value = name
 // }
-	
+
+function numberToHindi(num) {
+	return new Intl.NumberFormat('hi-IN', { numberingSystem: 'deva', useGrouping: false }).format(num);
+}
+
+function appendToReplyList(str) {
+	let t = localStorage.getItem("repliesId")
+	t = JSON.parse(t)
+	if(t){
+		t.push(str)
+	}else{
+		t = [str]
+	}
+	//keep only last 25
+	while(t.lenght > 25){
+		t.shift()
+	}
+	localStorage.setItem("repliesId", JSON.stringify(t))
+}
+
+function setReplyList() {
+	const container = document.querySelector(".board-list__items")
+	let repliesId = localStorage.getItem("repliesId") //array of ids(string)
+	const fragment = document.createDocumentFragment();
+	if (repliesId) {
+		repliesId = JSON.parse(repliesId)
+		for (let id of repliesId) {
+			const liElem = document.createElement("li")
+			liElem.classList.add("board-list__item")
+			const aElem = document.createElement("a")
+			aElem.classList.add("board-list__link")
+			aElem.href = "/v1/thread/" + id
+			aElem.textContent = ">>" + id.split("#")[1]
+			liElem.appendChild(aElem)
+			fragment.append(liElem)
+		}
+		container.append(fragment)
+	}
+}
+
+setReplyList()

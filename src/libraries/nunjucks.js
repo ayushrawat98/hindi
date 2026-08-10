@@ -26,11 +26,15 @@ export function configNunjucks(app) {
 	)
 
 	nunjucksEnv.addFilter('greenText', (str) => {
-		let regex = /^&gt;(?!&gt;)(.*?)$/gm
-		let regexTwo = /&gt;&gt;([\u0966-\u096F]+)/gm
+		const greenTextRegex = /^&gt;(?!&gt;)(.*?)$/gm
+		const replyTextRegex = /&gt;&gt;([\u0966-\u096F]+)/gm
+		const urlRegex = /(https?:\/\/\S+)/iugm;
 		// let regex = /^>(?!>)(.*?)$/gm
 		// let regexTwo = />>(\d+)/gm
-		return str.replace(regex, "<span class='greenText'>&gt;$1</span>").replace(regexTwo, "<span><a class='replyText' data-post-number-link='$1' href='#$1'>&gt;&gt;$1</a></span>")
+		return str
+				.replace(greenTextRegex, "<span class='greenText'>&gt;$1</span>")
+				.replace(replyTextRegex, "<span><a class='replyText' data-post-number-link='$1' href='#$1'>&gt;&gt;$1</a></span>")
+				.replace(urlRegex, "<a href='$1'>लिंक</a>")
 	})
 
 	nunjucksEnv.addFilter('hindinumber', (num) => {

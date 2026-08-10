@@ -4,11 +4,14 @@ import { __dirname } from '../path.js';
 import { mainRoutes as v1Routes } from './routes/v1/main-v1.routes.js';
 import path from "path";
 import fs from "fs/promises"
+import helmet from 'helmet';
 
 const app = express()
 
 //set proxy
 app.set('trust proxy', 1);
+
+app.use(helmet())
 
 if(configuration.NODE_ENV === "development"){
 	app.use('/public', express.static(path.resolve(__dirname, "public"), {maxAge : '1y'}));

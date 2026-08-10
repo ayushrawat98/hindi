@@ -61,8 +61,8 @@ class DB {
 			getFile: this.db.prepare('select * from files where id = ?'),
 
 			insertParentPost: this.db.prepare('insert into posts (name, title, content, file_id, ip, created_at, updated_at) values (?,?,?,?,?,?,?)'),
-			getNewParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit 100'),
-			getHotParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit 100'),
+			getNewParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit ?'),
+			getHotParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit ?'),
 
 			insertChildPost: this.db.prepare('insert into posts (parent_id, name, content, file_id, ip, created_at) values (?,?,?,?,?,?)'),
 			getParentPost: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.id = ?'),

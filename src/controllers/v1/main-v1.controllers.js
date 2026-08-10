@@ -14,9 +14,9 @@ export const getBoardData = async (req, res, next) => {
 
 	const getBoardData = instance.db.transaction(() => {
 
-		const newPosts = instance.queries.getNewParentPosts.all();
+		const newPosts = instance.queries.getNewParentPosts.all(5);
 
-		const hotPosts = instance.queries.getHotParentPosts.all();
+		const hotPosts = instance.queries.getHotParentPosts.all(100);
 
 		return { newPosts, hotPosts }
 	});
@@ -25,7 +25,7 @@ export const getBoardData = async (req, res, next) => {
 
 	return res.render('v1/board.html', {
 		board : true,
-		newPosts: data.newPosts.slice(0, 5),
+		newPosts: data.newPosts,
 		hotPosts: data.hotPosts
 	});
 }
@@ -56,11 +56,18 @@ export const setBoardData = async (req, res, next) => {
 			new Date().toISOString(),
 			new Date().toISOString()
 		)
+		
+		return newThread.lastInsertRowid
 	})
 
 	try {
-		createThread()
-		return res.status(201).send("सफल")
+		const newThreadId = createThread()
+		return res.status(201).send(
+			{
+				message : "सफल",
+				threadId : newThreadId
+			}
+		)
 	} catch (error) {
 		throw new AppError(400, error.message || "Error in sent data for board", true)
 	}
@@ -77,7 +84,7 @@ export const getThreadData = async (req, res, next) => {
 
 		const currentPosts = instance.queries.getChildPosts.all(threadId);
 
-		const newPosts = instance.queries.getNewParentPosts.all();
+		const newPosts = instance.queries.getNewParentPosts.all(5);
 
 		return { currentThread, currentPosts, newPosts };
 	});
@@ -87,7 +94,7 @@ export const getThreadData = async (req, res, next) => {
 	return res.render('v1/thread.html', {
 		board : true,
 		posts: [currentThread, ...currentPosts],
-		newPosts: newPosts.slice(0, 5)
+		newPosts: newPosts
 	});
 }
 
@@ -111,7 +118,13 @@ export const setThreadData = async (req, res, next) => {
 
 	try {
 		let newPostId = setThreadData(req)
-		return res.status(201).send("सफल")
+		return res.status(201).send(
+			{
+				message : "सफल",
+				replyId : newPostId,
+				threadId : req.params.threadId
+			}
+		)
 	} catch (error) {
 		throw new AppError(400, error.message || "Error in sent data for thread", true)
 	}

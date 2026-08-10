@@ -309,7 +309,7 @@ label {
 	clear: both;
 	color: light-dark(var(--ignore), var(--ignore-dark));
 	font-size: 0.925rem;
-	padding-top: 0.7rem;
+	padding-top: 0.5rem;
 }
 
 .board-feed {
@@ -333,10 +333,11 @@ label {
 /* links to all boards */
 .board-list {
 	border-radius: 8px;
-	padding: 1rem;
+	padding: 0.5rem;
 	background-color: light-dark(var(--surface), var(--surface-dark));
 	position: sticky;
-	top: 24px;
+	top: 8px;
+	font-size: 0.925rem;
 }
 
 .board-list__items {
