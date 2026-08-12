@@ -1,6 +1,7 @@
 window.addEventListener('load', () => {
   const font = document.getElementById('late-font');
   font.media = 'all';
+  showName()
 });
 
 //reset value on coming back from other page
@@ -42,7 +43,7 @@ const commonHideFunction = () => {
 
 const fileName = document.querySelector(".fileName")
 function setFileName(str) {
-	fileName.innerText = str
+	fileName.textContent = str
 }
 
 //show file name on selection
@@ -89,9 +90,9 @@ pasteTextBox?.addEventListener('paste', (event) => {
 document.getElementById("file")?.addEventListener("invalid", (event) => {
 	event.preventDefault();
 	const status = document.getElementById("status");
-	status.innerText = "संचिका(फाइल) आवश्यक है।"
+	status.textContent = "संचिका(फाइल) आवश्यक है।"
 	setTimeout(() => {
-		status.innerText = ""
+		status.textContent = ""
 	}, 2000);
 })
 
@@ -161,13 +162,14 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 
 
 //save name
-// document.getElementById('name').addEventListener('input', (e) => {
-// 	localStorage.setItem('name', e.target.value)
-// })
-// function showName(){
-// 	let name = localStorage.getItem('name')
-// 	if(name) document.getElementById('name').value = name
-// }
+document.getElementById('name').addEventListener('input', (e) => {
+	localStorage.setItem('name', e.target.value)
+})
+
+function showName(){
+	let name = localStorage.getItem('name')
+	if(name) document.getElementById('name').value = name
+}
 
 function numberToHindi(num) {
 	return new Intl.NumberFormat('hi-IN', { numberingSystem: 'deva', useGrouping: false }).format(num);

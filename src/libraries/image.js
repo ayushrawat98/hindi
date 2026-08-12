@@ -153,7 +153,7 @@ async function removeVideoMetaData(ogFilePath, tempFilePath) {
 
 async function removeImageMetaData(ogFilePath, tempFilePath, config, buffer = undefined) {
     // Sharp now works from memory instead of keeping the source file open.
-    await sharp(buffer ?? ogFilePath, config).toFile(tempFilePath);
+    await sharp(buffer ?? ogFilePath, config).rotate().toFile(tempFilePath);
 	// await sharp(ogFilePath, config).toFile(tempFilePath);
 	await fs.unlink(ogFilePath);
 	await fs.rename(tempFilePath, ogFilePath);

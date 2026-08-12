@@ -93,8 +93,8 @@ button {
 
 input,
 textarea {
-	font-size: 1rem;
-	padding: 6px;
+	font-size: 0.925rem;
+	padding: 4px;
 	border: 1px solid light-dark(var(--border), var(--border-dark));
 	background-color: light-dark(var(--surface), var(--surface-dark));
 	color: light-dark(var(--content), var(--content-dark));
@@ -126,7 +126,7 @@ label {
 
 .newPostWindow {
 	background-color: light-dark(var(--surface), var(--surface-dark));
-	padding: 16px;
+	padding: 12px;
 	width: 100%;
 	
 	button {
