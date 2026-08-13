@@ -40,4 +40,10 @@ export function configNunjucks(app) {
 	nunjucksEnv.addFilter('hindinumber', (num) => {
 		return new Intl.NumberFormat('hi-IN', { numberingSystem: 'deva', useGrouping: false }).format(num);
 	})
+
+	nunjucksEnv.addFilter('safeFileName', (name) => {
+		return encodeURIComponent(name)
+	})
+
+	
 }
