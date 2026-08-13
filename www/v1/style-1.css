@@ -93,16 +93,14 @@ button {
 
 input,
 textarea {
-	font-size: 0.925rem;
-	padding: 4px;
+	font-size: 0.95rem;
+	padding: 8px;
 	border: 1px solid light-dark(var(--border), var(--border-dark));
 	background-color: light-dark(var(--surface), var(--surface-dark));
 	color: light-dark(var(--content), var(--content-dark));
 	font-family: inherit;
 	border-radius: 4px;
 	width: 100%;
-	margin-bottom: 4px;
-
 }
 
 label {
@@ -126,7 +124,7 @@ label {
 
 .newPostWindow {
 	background-color: light-dark(var(--surface), var(--surface-dark));
-	padding: 12px;
+	padding: 16px;
 	width: 100%;
 	
 	button {
@@ -136,6 +134,10 @@ label {
 	textarea {
 		height: 125px;
 		resize: vertical;
+	}
+
+	input {
+		margin-bottom: 8px;
 	}
 }
 
