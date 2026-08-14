@@ -147,11 +147,13 @@ label {
 }
 
 @keyframes appear {
-	from {
-		transform: translateY(-5px);
+	0% {
+		opacity: 0;
+		transform: translateY(-10px);
 	}
 
-	to {
+	100% {
+		opacity: 1;
 		transform: translateY(0px);
 	}
 }
@@ -227,6 +229,12 @@ label {
 	margin-bottom: 350px;
 }
 
+.post-list--scroll {
+	height: calc(100vh - 16px);
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
 /* smaller gap for thread */
 .post-list--thread {
 	gap: 0.8rem;
@@ -240,6 +248,7 @@ label {
 	background-color: light-dark(var(--surface), var(--surface-dark));
 	padding: 1rem;
 	position: relative;
+	opacity: 0;
 }
 
 .post__header {
@@ -332,13 +341,16 @@ label {
 	display: none;
 }
 
+.sticky { 
+	position: sticky;
+	top: 8px;
+}
+
 /* links to all boards */
 .board-list {
 	border-radius: 8px;
 	padding: 0.5rem;
 	background-color: light-dark(var(--surface), var(--surface-dark));
-	position: sticky;
-	top: 8px;
 	font-size: 0.925rem;
 }
 

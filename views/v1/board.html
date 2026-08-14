@@ -17,7 +17,7 @@
 
 
 	<div class="board-feed__column board-feed__column--new">
-		<div class="post-list">
+		<div class="post-list post-list--scroll sticky">
 			{{ macros.postList(newPosts, board) }}
 		</div>
 	</div>
@@ -26,11 +26,9 @@
 		<div class="post-list">
 			<div class="newPostWindow">
 				<form method="post" enctype="multipart/form-data" id="uploadForm">
-					<details>
-						<summary>अनावश्यक जानकारी</summary>
+					
 						<input type="text" id="name" name="name" placeholder="नाम (आवश्यक नहीं)" maxlength="50" />
 						<input type="text" id="title" name="title" placeholder="शीर्षक (आवश्यक नहीं)" maxlength="200" />
-					</details>
 					<textarea rows="8" cols="40" placeholder="विवरण : अपनी बात यहाँ लिखें..." id="content"
 						name="content" minlength="1" maxlength="1000" autocomplete="off" required></textarea>
 					<span class="fileName"></span>

@@ -14,7 +14,7 @@
 {% endmacro %}
 
 {% macro replies() %}
-<nav class="board-list"><ul class="board-list__items"></ul></nav>
+<nav class="board-list sticky"><ul class="board-list__items"></ul></nav>
 {% endmacro %}
 
 {% macro name() %}
@@ -24,18 +24,18 @@
 {% macro postList(datalist, board) %}
 	{% if board %}
 	{% for data in datalist %}
-	{{ boardPost(data, board) }}
+	{{ boardPost(data, board, loop.index) }}
 	{% endfor %}
 	{% else %}
 	{% for data in datalist %}
-	{{ post(data, board) }}
+	{{ post(data, board, loop.index) }}
 	{% endfor %}
 	{% endif %}
 {% endmacro %}
 
 
-{% macro post(data, board) %}
-<article class="post post--border clearfix" id="{{data.id | hindinumber}}">
+{% macro post(data, board, index) %}
+<article class="post post--border clearfix" id="{{data.id | hindinumber}}" style="animation-delay: {{(index*25) + 'ms'}};">
 
 	<header class="post__header">
 		<div class="post__meta">
@@ -93,9 +93,9 @@
 {% endif %}
 {% endmacro %}
 
-{% macro boardPost(data, board) %}
+{% macro boardPost(data, board, index) %}
 
-<article class="post post--hover clearfix" id="{{data.id}}">
+<article class="post post--hover clearfix" id="{{data.id}}" style="animation-delay: {{(index*25) + 'ms'}};">
 
 	<header class="post__header">
 		<div class="post__meta">
