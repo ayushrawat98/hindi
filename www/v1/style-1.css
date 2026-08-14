@@ -149,7 +149,7 @@ label {
 @keyframes appear {
 	0% {
 		opacity: 0;
-		transform: translateY(-10px);
+		transform: translateY(-15px);
 	}
 
 	100% {
@@ -242,7 +242,7 @@ label {
 
 .post {
 	width: 100%;
-	animation: appear 200ms ease-in forwards;
+	animation: appear 150ms ease-in forwards;
 	border-radius: 6px;
 	display: flow-root;
 	background-color: light-dark(var(--surface), var(--surface-dark));
@@ -352,7 +352,6 @@ label {
 	padding: 0.5rem;
 	background-color: light-dark(var(--surface), var(--surface-dark));
 	font-size: 0.925rem;
-	margin-bottom: 8px;
 }
 
 .board-list__items {
@@ -376,6 +375,8 @@ label {
 	object-fit: contain;
 	border-radius: 6px;
 	display: none;
+	filter: grayscale(15%) brightness(0.85);
+	margin-top: 8px;
 }
 
 

@@ -35,7 +35,11 @@
 
 
 {% macro post(data, board, index) %}
-<article class="post post--border clearfix" id="{{data.id | hindinumber}}" style="animation-delay: {{(index*25) + 'ms'}};">
+{% set delayIndex = index %}
+{% if index > 9 %}
+  {% set delayIndex = 9 %}
+{% endif %}
+<article class="post post--border clearfix" id="{{data.id | hindinumber}}" style="animation-delay: {{ (delayIndex * 25) + 'ms' }};">
 
 	<header class="post__header">
 		<div class="post__meta">
@@ -94,8 +98,11 @@
 {% endmacro %}
 
 {% macro boardPost(data, board, index) %}
-
-<article class="post post--hover clearfix" id="{{data.id}}" style="animation-delay: {{(index*25) + 'ms'}};">
+{% set delayIndex = index %}
+{% if index > 5 %}
+  {% set delayIndex = 5 %}
+{% endif %}
+<article class="post post--hover clearfix" id="{{data.id}}" style="animation-delay: {{ (delayIndex * 50) + 'ms' }};">
 
 	<header class="post__header">
 		<div class="post__meta">
