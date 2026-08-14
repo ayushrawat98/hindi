@@ -352,6 +352,7 @@ label {
 	padding: 0.5rem;
 	background-color: light-dark(var(--surface), var(--surface-dark));
 	font-size: 0.925rem;
+	margin-bottom: 8px;
 }
 
 .board-list__items {
@@ -370,6 +371,13 @@ label {
   transition: background-color 0.5s ease; /* Optional fade-in effect */
 }
 
+.lara-image {
+	width: 100%;
+	object-fit: contain;
+	border-radius: 6px;
+	display: none;
+}
+
 
 
 @media (min-width : 768px) {
@@ -378,6 +386,11 @@ label {
 		gap : 1.5rem;
 	}
 	 */
+
+	.lara-image {
+		display: block;
+	}
+
 	.popup {
 		width: 600px;
 	}
