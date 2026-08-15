@@ -178,11 +178,13 @@ export const deletePost = (req, res, next) => {
 		//child file
 		if (childs && childs.length > 0) {
 			for (let child of childs) {
-				const isVideo = child.file_type.includes("video") ? ".webp" : ""
-				const path1 = path.join(__dirname, 'public', 'files', child.file_path)
-				const path2 = path.join(__dirname, 'public', 'thumbnails', child.file_path + isVideo)
-				fs.unlink(path1)
-				fs.unlink(path2)
+				if(child.file_path) {
+					const isVideo = child.file_type.includes("video") ? ".webp" : ""
+					const path1 = path.join(__dirname, 'public', 'files', child.file_path)
+					const path2 = path.join(__dirname, 'public', 'thumbnails', child.file_path + isVideo)
+					fs.unlink(path1)
+					fs.unlink(path2)
+				}
 			}
 		}
 
