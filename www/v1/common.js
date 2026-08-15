@@ -143,8 +143,8 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 			}, 300);
 		} else if (xhr.status == 429) {
 			status.textContent = xhr.response.message
-		} else if (xhr.responseText) {
-			status.textContent = xhr.responseText;
+		} else if (xhr.response) {
+			status.textContent = xhr.response.message;
 		} else {
 			status.textContent = "Upload failed!"
 		}

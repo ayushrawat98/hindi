@@ -70,7 +70,9 @@ export async function imageProcessor() {
 
 			} else if (file.type.startsWith('image')) {
 
-				await sharp(ogFilePath)
+				const inputBuffer = await fs.readFile(ogFilePath);
+
+				await sharp(inputBuffer)
 					.rotate()
 					.resize({
 						width: 100,
@@ -80,14 +82,14 @@ export async function imageProcessor() {
 					.toFile(thumbFilePath);
 
 				await setHeightAndWidth(thumbFilePath, file.id)
-				await removeImageMetaData(ogFilePath, tempFilePath, {})
+				await removeImageMetaData(ogFilePath, tempFilePath, {}, inputBuffer)
 			}
 
 			//set status as success
 			instance.queries.updateFileStatus.run('success', file.id)
 
 		} catch (error) {
-			console.log(error)
+			console.error(error)
 			//set status as failed
 			instance.queries.updateFileStatus.run('failed', file.id)
 			//set that file has failed
@@ -160,7 +162,8 @@ async function removeImageMetaData(ogFilePath, tempFilePath, config, buffer = un
 }
 
 async function setHeightAndWidth(path, id) {
-	const { width = 0, height = 0 } = await sharp(path).metadata();
+	const inputBuffer = await fs.readFile(path);
+	const { width = 0, height = 0 } = await sharp(inputBuffer).metadata();
 	instance.queries.updateFileHeightAndWidth.run(height, width, id);
 }
 

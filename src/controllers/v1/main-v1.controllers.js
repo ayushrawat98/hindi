@@ -24,7 +24,7 @@ export const getBoardData = async (req, res, next) => {
 	const data = getBoardData();
 
 	return res.render('v1/board.html', {
-		board : true,
+		board: true,
 		newPosts: data.newPosts,
 		hotPosts: data.hotPosts
 	});
@@ -38,7 +38,7 @@ export const setBoardData = async (req, res, next) => {
 	}
 
 	const createThread = instance.db.transaction(() => {
-		
+
 		const newFile = instance.queries.insertFile.run(
 			req.file.filename,
 			req.file.mimetype,
@@ -56,7 +56,7 @@ export const setBoardData = async (req, res, next) => {
 			new Date().toISOString(),
 			new Date().toISOString()
 		)
-		
+
 		return newThread.lastInsertRowid
 	})
 
@@ -64,8 +64,8 @@ export const setBoardData = async (req, res, next) => {
 		const newThreadId = createThread()
 		return res.status(201).send(
 			{
-				message : "सफल",
-				threadId : newThreadId
+				message: "सफल",
+				threadId: newThreadId
 			}
 		)
 	} catch (error) {
@@ -74,7 +74,7 @@ export const setBoardData = async (req, res, next) => {
 }
 
 export const getThreadData = async (req, res, next) => {
-	
+
 	const getThreadData = instance.db.transaction((threadId) => {
 		const currentThread = instance.queries.getParentPost.get(threadId);
 
@@ -92,7 +92,7 @@ export const getThreadData = async (req, res, next) => {
 	const { currentThread, currentPosts, newPosts } = getThreadData(req.params.threadId);
 
 	return res.render('v1/thread.html', {
-		board : true,
+		board: true,
 		posts: [currentThread, ...currentPosts],
 		newPosts: newPosts
 	});
@@ -109,7 +109,7 @@ export const setThreadData = async (req, res, next) => {
 		if (req.file) {
 			newFile = instance.queries.insertFile.run(req.file.filename, req.file.mimetype, req.file.size, 'pending', new Date().toISOString())
 		}
-		const newPost = instance.queries.insertChildPost.run( currentThread.id, escapeHTML(req.body.name).trim(), escapeHTML(req.body.content).trim(), newFile?.lastInsertRowid ?? null, req.ip, new Date().toISOString())
+		const newPost = instance.queries.insertChildPost.run(currentThread.id, escapeHTML(req.body.name).trim(), escapeHTML(req.body.content).trim(), newFile?.lastInsertRowid ?? null, req.ip, new Date().toISOString())
 		instance.queries.updateParentPostTimeAndReplies.run(new Date().toISOString(), currentThread.id)
 		return newPost.lastInsertRowid
 	})
@@ -120,9 +120,9 @@ export const setThreadData = async (req, res, next) => {
 		let newPostId = setThreadData(req)
 		return res.status(201).send(
 			{
-				message : "सफल",
-				replyId : newPostId,
-				threadId : req.params.threadId
+				message: "सफल",
+				replyId: newPostId,
+				threadId: req.params.threadId
 			}
 		)
 	} catch (error) {
@@ -131,25 +131,66 @@ export const setThreadData = async (req, res, next) => {
 
 }
 
+export const adminCheck = (req, res, next) => {
+	if (configuration.PASSWORD == null) return res.status(500).send("Set password")
+	if (configuration.PASSWORD != req.params.password) return res.status(500).send("Wrong password")
+	next()
+}
+
 export const deleteImage = (req, res, next) => {
-	if(configuration.PASSWORD == null) return res.status(500).send("Set password")
-	if(configuration.PASSWORD != req.params.password) return res.status(500).send("Wrong password")
+
 	// req : /delete/postId/password
 	let changeFilePath = instance.db.transaction((req) => {
 		const fileRes = instance.queries.getFileIdByPostId.get(req.params.postId)
-		const result = instance.queries.updateFileStatus.run("failed", fileRes.file_id)
+		const result = instance.queries.updateFileStatus.run("deleted", fileRes.file_id)
 		const fileDetails = instance.queries.getFile.get(fileRes.file_id)
 		return fileDetails
 	})
 	try {
 		const fileDetails = changeFilePath(req)
-		console.log(fileDetails)
+		// console.log(fileDetails)
 		//delete image
-		const isVideo = fileDetails.type.includes("video") ? ".webp"  : ""
+		const isVideo = fileDetails.type.includes("video") ? ".webp" : ""
 		fs.unlink(path.join(__dirname, 'public', 'files', fileDetails.path))
 		fs.unlink(path.join(__dirname, 'public', 'thumbnails', fileDetails.path) + isVideo)
 		return res.status(200).send("Complete")
 	} catch (error) {
 		console.error(error)
+	}
+}
+
+export const deletePost = (req, res, next) => {
+	try {
+		let parent = instance.queries.getParentPost.get(req.params.postId)
+		let childs = instance.queries.getChildPosts.all(req.params.postId)
+
+		//delete all files
+		//parent file
+		if (parent && parent.file_status != "deleted" && parent.file_status != "failed") {
+			// console.log(parent)
+			const isVideo = parent.file_type.includes("video") ? ".webp" : ""
+			const path1 = path.join(__dirname, 'public', 'files', parent.file_path)
+			const path2 = path.join(__dirname, 'public', 'thumbnails', parent.file_path + isVideo)
+			fs.unlink(path1)
+			fs.unlink(path2)
+		}
+
+		//child file
+		if (childs && childs.length > 0) {
+			for (let child of childs) {
+				const isVideo = child.file_type.includes("video") ? ".webp" : ""
+				const path1 = path.join(__dirname, 'public', 'files', child.file_path)
+				const path2 = path.join(__dirname, 'public', 'thumbnails', child.file_path + isVideo)
+				fs.unlink(path1)
+				fs.unlink(path2)
+			}
+		}
+
+		//delete parent , will cascade delete child
+		instance.queries.deletePostById.run(req.params.postId)
+		return res.status(200).send("Complete")
+	} catch (error) {
+		console.error(error)
+		return res.status(500).send(error)
 	}
 }

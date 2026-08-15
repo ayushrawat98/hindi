@@ -79,7 +79,7 @@
 {% if data.file_status == 'pending' %}
 <img class="thumbnail thumbnail-js" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
 <img class="thumbnail thumbnail--expanded thumbnail--removed" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
-{% elif data.file_status == 'failed' %}
+{% elif data.file_status == 'failed' or data.file_status == 'deleted' %}
 <img class="thumbnail thumbnail-js" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
 <img class="thumbnail thumbnail--expanded thumbnail--removed" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
 {% else %}

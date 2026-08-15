@@ -78,6 +78,8 @@ class DB {
 			getNewPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit 100'),
 
 			getFileIdByPostId : this.db.prepare('select file_id from posts where id = ?'),
+
+			deletePostById : this.db.prepare("DELETE FROM posts WHERE id = ?")
 		}
 	}
 }
