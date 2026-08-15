@@ -94,7 +94,7 @@ function addPopup(currentNode, linkevent, postHash, addOverlay) {
 	currentPostHeight = Math.min(currentPostHeight, 300)
 	
 	//find correct place to show popup
-	clone.style.top = linkevent.pageY < 300 ?
+	clone.style.top = linkevent.clientY < (currentPostHeight + 20) ?
 		`${linkevent.pageY + 20}px` :
 		`${linkevent.pageY - currentPostHeight - 20}px`
 	clone.style.left = currentPost.offsetLeft + "px"
