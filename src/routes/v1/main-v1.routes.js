@@ -1,8 +1,9 @@
 import express from 'express';
-import { adminCheck, deleteImage, deletePost, getBoardData, getThreadData, setBoardData, setThreadData } from '../../controllers/v1/main-v1.controllers.js';
+import { adminCheck, banPost, deleteImage, deletePost, getBoardData, getThreadData, setBoardData, setThreadData } from '../../controllers/v1/main-v1.controllers.js';
 import { burstLimiter, quotaLimiter } from '../../libraries/ratelimit.js';
 import upload from '../../libraries/multer.js';
 import { hindiCheck, trimBody } from '../../libraries/sanitize.js';
+import { ipBanMiddleware } from '../../libraries/ban.js';
 
 const route = express.Router()
 
@@ -12,15 +13,17 @@ route.get("/", (req, res, next) => {
 
 route.get('/board/:boardName', getBoardData)
 
-route.post('/board/:boardName', burstLimiter, quotaLimiter, upload.single("file"), trimBody, hindiCheck, setBoardData)
+route.post('/board/:boardName', burstLimiter, quotaLimiter, ipBanMiddleware, upload.single("file"), trimBody, hindiCheck, setBoardData)
 
 route.get('/thread/:threadId', getThreadData)
 
-route.post('/thread/:threadId', burstLimiter, quotaLimiter, upload.single("file"), trimBody, hindiCheck, setThreadData)
+route.post('/thread/:threadId', burstLimiter, quotaLimiter, ipBanMiddleware, upload.single("file"), trimBody, hindiCheck, setThreadData)
 
 route.get("/d/:postId/:password", adminCheck, deleteImage)
 
 route.get("/r/:postId/:password", adminCheck, deletePost)
+
+route.get("/b/:postId/:password", adminCheck, banPost)
 
 
 

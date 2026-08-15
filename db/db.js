@@ -44,6 +44,10 @@ class DB {
   					created_at text
 				);
 
+				CREATE TABLE IF NOT EXISTS ban (
+					ip text primary key
+				);
+
 				CREATE INDEX IF NOT EXISTS idx_posts_parent_created
 				ON posts(parent_id, created_at DESC);
 
@@ -79,7 +83,10 @@ class DB {
 
 			getFileIdByPostId : this.db.prepare('select file_id from posts where id = ?'),
 
-			deletePostById : this.db.prepare("DELETE FROM posts WHERE id = ?")
+			deletePostById : this.db.prepare("DELETE FROM posts WHERE id = ?"),
+
+			banByIp : this.db.prepare("INSERT INTO ban (ip) values (?)"),
+			getBanByIp : this.db.prepare("SELECT * from ban where ip = ?")
 		}
 	}
 }

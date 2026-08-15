@@ -8,6 +8,7 @@ import { escapeHTML } from '../../libraries/sanitize.js';
 import { AppError } from '../../libraries/error.js';
 import path from 'node:path';
 import { configuration } from '../../../env.js';
+import { convertIP } from '../../libraries/ban.js';
 
 
 export const getBoardData = async (req, res, next) => {
@@ -194,5 +195,16 @@ export const deletePost = (req, res, next) => {
 	} catch (error) {
 		console.error(error)
 		return res.status(500).send(error)
+	}
+}
+
+
+export const banPost = (req, res, next) => {
+	try {
+		const done = instance.queries.banByIp.run(convertIP(req.ip))
+		return res.status(200).send(done)
+	}catch(error) {
+		console.error(error)
+		return res.status(500).send({message : error.message})
 	}
 }
