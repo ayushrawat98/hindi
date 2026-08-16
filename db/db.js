@@ -86,7 +86,8 @@ class DB {
 			deletePostById : this.db.prepare("DELETE FROM posts WHERE id = ?"),
 
 			banByIp : this.db.prepare("INSERT INTO ban (ip) values (?)"),
-			getBanByIp : this.db.prepare("SELECT * from ban where ip = ?")
+			getBanByIp : this.db.prepare("SELECT * from ban where ip = ?"),
+			getIpByPostId : this.db.prepare("SELECT ip from posts where id = ?")
 		}
 	}
 }

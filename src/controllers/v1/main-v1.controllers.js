@@ -201,7 +201,9 @@ export const deletePost = (req, res, next) => {
 
 export const banPost = (req, res, next) => {
 	try {
-		const done = instance.queries.banByIp.run(convertIP(req.ip))
+		const postIp = instance.queries.getIpByPostId.get(req.params.postId)
+		console.error(postIp)
+		const done = instance.queries.banByIp.run(convertIP(postIp.ip))
 		return res.status(200).send(done)
 	}catch(error) {
 		console.error(error)
