@@ -19,11 +19,11 @@ route.get('/thread/:threadId', getThreadData)
 
 route.post('/thread/:threadId', burstLimiter, quotaLimiter, ipBanMiddleware, upload.single("file"), trimBody, hindiCheck, setThreadData)
 
-route.get("/d/:postId/:password", adminCheck, deleteImage)
+route.get("/di/:postId/:password", adminCheck, deleteImage)
 
-route.get("/r/:postId/:password", adminCheck, deletePost)
+route.get("/dp/:postId/:password", adminCheck, deletePost)
 
-route.get("/b/:postId/:password", adminCheck, banPost)
+route.get("/ba/:postId/:password", adminCheck, banPost)
 
 
 

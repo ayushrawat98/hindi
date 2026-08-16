@@ -202,9 +202,9 @@ export const deletePost = (req, res, next) => {
 export const banPost = (req, res, next) => {
 	try {
 		const postIp = instance.queries.getIpByPostId.get(req.params.postId)
-		console.error(postIp)
-		const done = instance.queries.banByIp.run(convertIP(postIp.ip))
-		return res.status(200).send(done)
+		const convertedPostIp = convertIP(postIp.ip)
+		const done = instance.queries.banByIp.run(convertedPostIp)
+		return res.status(200).send({message : "banned : " + convertedPostIp })
 	}catch(error) {
 		console.error(error)
 		return res.status(500).send({message : error.message})
