@@ -4,11 +4,14 @@ import upload from "../../libraries/multer.js"
 import fs from "node:fs/promises"
 import instance from '../../../db/db.js';
 import { escapeHTML } from '../../libraries/sanitize.js';
-// import activeBoardsList from '../../libraries/activeBoards.js';
 import { AppError } from '../../libraries/error.js';
 import path from 'node:path';
 import { configuration } from '../../../env.js';
 import { convertIP } from '../../libraries/ban.js';
+import { deletePostFiles } from '../../libraries/prune.js';
+
+const MAX_THREAD_COUNT = 100
+const MAX_THREAD_BUMP_LIMIT = 100
 
 
 export const getBoardData = async (req, res, next) => {
@@ -17,7 +20,7 @@ export const getBoardData = async (req, res, next) => {
 
 		const newPosts = instance.queries.getNewParentPosts.all(5);
 
-		const hotPosts = instance.queries.getHotParentPosts.all(100);
+		const hotPosts = instance.queries.getHotParentPosts.all(MAX_THREAD_COUNT);
 
 		return { newPosts, hotPosts }
 	});
@@ -111,11 +114,13 @@ export const setThreadData = async (req, res, next) => {
 			newFile = instance.queries.insertFile.run(req.file.filename, req.file.mimetype, req.file.size, 'pending', new Date().toISOString())
 		}
 		const newPost = instance.queries.insertChildPost.run(currentThread.id, escapeHTML(req.body.name).trim(), escapeHTML(req.body.content).trim(), newFile?.lastInsertRowid ?? null, req.ip, new Date().toISOString())
-		instance.queries.updateParentPostTimeAndReplies.run(new Date().toISOString(), currentThread.id)
+
+		if(currentThread.replies < MAX_THREAD_BUMP_LIMIT) {
+			instance.queries.updateParentPostTimeAndReplies.run(new Date().toISOString(), currentThread.id)
+		}
+		
 		return newPost.lastInsertRowid
 	})
-
-
 
 	try {
 		let newPostId = setThreadData(req)
@@ -163,31 +168,11 @@ export const deleteImage = (req, res, next) => {
 export const deletePost = (req, res, next) => {
 	try {
 		let parent = instance.queries.getParentPost.get(req.params.postId)
-		let childs = instance.queries.getChildPosts.all(req.params.postId)
+		let children = instance.queries.getChildPosts.all(req.params.postId)
 
 		//delete all files
-		//parent file
-		if (parent && parent.file_status != "deleted" && parent.file_status != "failed") {
-			// console.log(parent)
-			const isVideo = parent.file_type.includes("video") ? ".webp" : ""
-			const path1 = path.join(__dirname, 'public', 'files', parent.file_path)
-			const path2 = path.join(__dirname, 'public', 'thumbnails', parent.file_path + isVideo)
-			fs.unlink(path1)
-			fs.unlink(path2)
-		}
-
-		//child file
-		if (childs && childs.length > 0) {
-			for (let child of childs) {
-				if(child.file_path) {
-					const isVideo = child.file_type.includes("video") ? ".webp" : ""
-					const path1 = path.join(__dirname, 'public', 'files', child.file_path)
-					const path2 = path.join(__dirname, 'public', 'thumbnails', child.file_path + isVideo)
-					fs.unlink(path1)
-					fs.unlink(path2)
-				}
-			}
-		}
+		deletePostFiles([parent])
+		deletePostFiles(children)
 
 		//delete parent , will cascade delete child
 		instance.queries.deletePostById.run(req.params.postId)
@@ -206,6 +191,23 @@ export const banPost = (req, res, next) => {
 		const done = instance.queries.banByIp.run(convertedPostIp)
 		return res.status(200).send({message : "banned : " + convertedPostIp })
 	}catch(error) {
+		console.error(error)
+		return res.status(500).send({message : error.message})
+	}
+}
+
+export const pruneBoard = (req, res, next) => {
+	try {
+		const toDeleteParent = instance.queries.getOldParentPost.all()
+		for(let parent of toDeleteParent){
+			deletePostFiles([parent])
+			const children = instance.queries.getChildPosts.all(parent.id)
+			deletePostFiles(children)
+			//delete parent , will cascade delete child
+			instance.queries.deletePostById.run(parent.id)
+		}
+		return res.status(200).send("pruned")
+	}catch(error){
 		console.error(error)
 		return res.status(500).send({message : error.message})
 	}

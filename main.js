@@ -1,6 +1,5 @@
 import { configuration } from "./env.js";
 import "./db/db.js"
-// import "./db/seed.js"
 import app from "./src/app.js";
 import fs from "fs"
 import { __dirname } from "./path.js";
@@ -23,7 +22,6 @@ if(!fs.existsSync(path.join(__dirname, 'public', 'thumbnails'))){
 
 //start image processing worker
 imageProcessor()
-
 
 app.listen(configuration.PORT, () => {
 	console.log("Server started at " + configuration.PORT)

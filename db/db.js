@@ -87,7 +87,9 @@ class DB {
 
 			banByIp : this.db.prepare("INSERT INTO ban (ip) values (?)"),
 			getBanByIp : this.db.prepare("SELECT * from ban where ip = ?"),
-			getIpByPostId : this.db.prepare("SELECT ip from posts where id = ?")
+			getIpByPostId : this.db.prepare("SELECT ip from posts where id = ?"),
+
+			getOldParentPost : this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit -1 offset 100'),
 		}
 	}
 }

@@ -1,5 +1,5 @@
 import express from 'express';
-import { adminCheck, banPost, deleteImage, deletePost, getBoardData, getThreadData, setBoardData, setThreadData } from '../../controllers/v1/main-v1.controllers.js';
+import { adminCheck, banPost, deleteImage, deletePost, getBoardData, getThreadData, pruneBoard, setBoardData, setThreadData } from '../../controllers/v1/main-v1.controllers.js';
 import { burstLimiter, quotaLimiter } from '../../libraries/ratelimit.js';
 import upload from '../../libraries/multer.js';
 import { hindiCheck, trimBody } from '../../libraries/sanitize.js';
@@ -24,6 +24,8 @@ route.get("/di/:postId/:password", adminCheck, deleteImage)
 route.get("/dp/:postId/:password", adminCheck, deletePost)
 
 route.get("/ba/:postId/:password", adminCheck, banPost)
+
+route.get("/prune/:password", adminCheck, pruneBoard)
 
 
 

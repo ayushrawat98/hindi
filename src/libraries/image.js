@@ -17,7 +17,7 @@ export async function imageProcessor() {
 
 		//if no file in queue , wait for 30 seconds and then start again
 		if (!file) {
-			await pause(15000)
+			await pause(20000)
 			continue
 		}
 
