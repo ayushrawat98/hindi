@@ -10,7 +10,7 @@ import { configuration } from '../../../env.js';
 import { convertIP } from '../../libraries/ban.js';
 import { deletePostFiles } from '../../libraries/prune.js';
 
-const MAX_THREAD_COUNT = 100
+const MAX_THREAD_COUNT = 500 //show all thread , prune when needed (real limit is 100)
 const MAX_THREAD_BUMP_LIMIT = 100
 
 
