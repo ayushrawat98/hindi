@@ -1,6 +1,6 @@
 window.addEventListener('load', () => {
-  const font = document.getElementById('late-font');
-  font.media = 'all';
+//   const font = document.getElementById('late-font');
+//   font.media = 'all';
   showName()
 });
 
@@ -201,7 +201,7 @@ function setReplyList() {
 			liElem.classList.add("board-list__item")
 			const aElem = document.createElement("a")
 			aElem.classList.add("board-list__link")
-			aElem.href = "/v1/thread/" + id
+			aElem.href = "/thread/" + id
 			aElem.textContent = ">>" + id.split("#")[1]
 			liElem.appendChild(aElem)
 			fragment.append(liElem)

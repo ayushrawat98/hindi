@@ -1,14 +1,14 @@
-import { __dirname } from '../../../path.js';
-import { burstLimiter, quotaLimiter } from '../../libraries/ratelimit.js';
-import upload from "../../libraries/multer.js"
+import { __dirname } from '../../path.js';
+import { burstLimiter, quotaLimiter } from '../libraries/ratelimit.js';
+import upload from "../libraries/multer.js"
 import fs from "node:fs/promises"
-import instance from '../../../db/db.js';
-import { escapeHTML } from '../../libraries/sanitize.js';
-import { AppError } from '../../libraries/error.js';
+import instance from '../../db/db.js';
+import { escapeHTML } from '../libraries/sanitize.js';
+import { AppError } from '../libraries/error.js';
 import path from 'node:path';
-import { configuration } from '../../../env.js';
-import { convertIP } from '../../libraries/ban.js';
-import { deletePostFiles } from '../../libraries/prune.js';
+import { configuration } from '../../env.js';
+import { convertIP } from '../libraries/ban.js';
+import { deletePostFiles } from '../libraries/prune.js';
 
 const MAX_THREAD_COUNT = 500 //show all thread , prune when needed (real limit is 100)
 const MAX_THREAD_BUMP_LIMIT = 100
@@ -27,7 +27,7 @@ export const getBoardData = async (req, res, next) => {
 
 	const data = getBoardData();
 
-	return res.render('v1/board.html', {
+	return res.render('board.html', {
 		board: true,
 		newPosts: data.newPosts,
 		hotPosts: data.hotPosts
@@ -95,7 +95,7 @@ export const getThreadData = async (req, res, next) => {
 
 	const { currentThread, currentPosts, newPosts } = getThreadData(req.params.threadId);
 
-	return res.render('v1/thread.html', {
+	return res.render('thread.html', {
 		board: true,
 		posts: [currentThread, ...currentPosts],
 		newPosts: newPosts
