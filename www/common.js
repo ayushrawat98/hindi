@@ -1,6 +1,4 @@
 window.addEventListener('load', () => {
-//   const font = document.getElementById('late-font');
-//   font.media = 'all';
   showName()
 });
 
@@ -184,7 +182,7 @@ function appendToReplyList(str) {
 		t = [str]
 	}
 	//keep only last 25
-	while(t.lenght > 25){
+	while(t.length > 25){
 		t.shift()
 	}
 	localStorage.setItem("repliesId", JSON.stringify(t))

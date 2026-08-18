@@ -28,6 +28,7 @@ export const getBoardData = async (req, res, next) => {
 	const data = getBoardData();
 
 	return res.render('board.html', {
+		title : "हिन्दी प्रोजेक्ट",
 		board: true,
 		newPosts: data.newPosts,
 		hotPosts: data.hotPosts
