@@ -1,5 +1,5 @@
 window.addEventListener('load', () => {
-  showName()
+	showName()
 });
 
 //reset value on coming back from other page
@@ -128,7 +128,7 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 	xhr.onload = function () {
 
 		if (xhr.status === 201) {
-			if(window.location.pathname.includes("thread")) {
+			if (window.location.pathname.includes("thread")) {
 				let str = xhr.response.threadId + "#" + numberToHindi(xhr.response.replyId)
 				appendToReplyList(str)
 			}
@@ -164,9 +164,9 @@ document.getElementById('name').addEventListener('input', (e) => {
 	localStorage.setItem('name', e.target.value)
 })
 
-function showName(){
+function showName() {
 	let name = localStorage.getItem('name')
-	if(name) document.getElementById('name').value = name
+	if (name) document.getElementById('name').value = name
 }
 
 function numberToHindi(num) {
@@ -176,13 +176,13 @@ function numberToHindi(num) {
 function appendToReplyList(str) {
 	let t = localStorage.getItem("repliesId")
 	t = JSON.parse(t)
-	if(t){
+	if (t) {
 		t.push(str)
-	}else{
+	} else {
 		t = [str]
 	}
 	//keep only last 25
-	while(t.length > 25){
+	while (t.length > 25) {
 		t.shift()
 	}
 	localStorage.setItem("repliesId", JSON.stringify(t))
@@ -212,14 +212,16 @@ setReplyList()
 
 function addObserver() {
 	const options = {
-		threshold : 0.0,
-		 rootMargin: '200px 0px 200px 0px',
+		threshold: 0.0,
+		rootMargin: '200px 0px 200px 0px',
 	}
 	const callback = (entries, observer) => {
 		entries.forEach((entry) => {
 			if (entry.isIntersecting) {
-				entry.target.src = entry.target.dataset.src
-     				 observer.unobserve(entry.target);
+				if (!entry.target.src) {
+					entry.target.src = entry.target.dataset.src
+				}
+				observer.unobserve(entry.target);
 			}
 		})
 	}

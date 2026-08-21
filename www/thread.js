@@ -2,7 +2,7 @@ const ISMOBILE = window.innerWidth <= 768
 
 //remove any popup on click anywhere
 document.addEventListener("click", (ev) => {
-	if(activePopupWrapper){
+	if (activePopupWrapper) {
 		removeActivePopupWrapper()
 	}
 })
@@ -92,7 +92,7 @@ function addPopup(currentNode, linkevent, postHash, addOverlay) {
 
 
 	currentPostHeight = Math.min(currentPostHeight, 300)
-	
+
 	//find correct place to show popup
 	clone.style.top = linkevent.clientY < (currentPostHeight + 20) ?
 		`${linkevent.pageY + 20}px` :
@@ -116,8 +116,14 @@ function addPopup(currentNode, linkevent, postHash, addOverlay) {
 		//no overlay , make clone fixed
 		clone.style.position = "absolute"
 	}
+
+	//force load image before appending
+	forceLoadLazyImage(clone)
+
 	document.querySelector('.board-feed__column--hot').appendChild(addOverlay ? overlay : clone)
 	activePopupWrapper = clone
+
+	
 }
 
 
@@ -133,7 +139,7 @@ function expandFile() {
 		}
 		toggle()
 
-		//if video , add poster
+		//if video , add poster (removed poster for lazy loading)
 		if (og.nodeName == "VIDEO") {
 			og.poster = og.dataset.poster
 		}
@@ -250,16 +256,26 @@ function addPopupEventHandler(linkElem, replyId) {
 	})
 }
 
-function goDownUp(){
+//images are loaded on intersection observer
+//if image are referenced and far away they dont load
+//so manually loading them
+function forceLoadLazyImage(post) {
+	let i = post.querySelector("img") //first thumbnail
+	if (!i.src) {
+		i.src = i.dataset.src
+	}
+}
+
+function goDownUp() {
 	document.getElementById("go-down").addEventListener("click", (e) => {
 		window.scrollTo({
-			top : document.documentElement.scrollHeight
+			top: document.documentElement.scrollHeight
 		})
 	})
 
 	document.getElementById("go-up").addEventListener("click", (e) => {
 		window.scrollTo({
-			top : 0
+			top: 0
 		})
 	})
 }
