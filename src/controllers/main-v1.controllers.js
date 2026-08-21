@@ -11,7 +11,7 @@ import { convertIP } from '../libraries/ban.js';
 import { deletePostFiles } from '../libraries/prune.js';
 
 const MAX_THREAD_COUNT = 500 //show all thread , prune when needed (real limit is 100)
-const MAX_THREAD_BUMP_LIMIT = 100
+const MAX_THREAD_BUMP_LIMIT = 200
 
 
 export const getBoardData = async (req, res, next) => {
@@ -171,12 +171,17 @@ export const deletePost = (req, res, next) => {
 		let parent = instance.queries.getParentPost.get(req.params.postId)
 		let children = instance.queries.getChildPosts.all(req.params.postId)
 
+		const transact = instance.db.transaction((req) => {
+			//delete parent , will cascade delete child
+			instance.queries.deletePostById.run(req.params.postId)
+		})
+
+		transact()
+		
 		//delete all files
 		deletePostFiles([parent])
 		deletePostFiles(children)
 
-		//delete parent , will cascade delete child
-		instance.queries.deletePostById.run(req.params.postId)
 		return res.status(200).send("Complete")
 	} catch (error) {
 		console.error(error)
@@ -201,11 +206,18 @@ export const pruneBoard = (req, res, next) => {
 	try {
 		const toDeleteParent = instance.queries.getOldParentPost.all()
 		for(let parent of toDeleteParent){
+			let children = []
+
+			const transact = instance.db.transaction((req) => {
+				children = instance.queries.getChildPosts.all(parent.id)
+				//delete parent , will cascade delete child
+				instance.queries.deletePostById.run(req.params.postId)
+			})
+
+			transact()
+
 			deletePostFiles([parent])
-			const children = instance.queries.getChildPosts.all(parent.id)
 			deletePostFiles(children)
-			//delete parent , will cascade delete child
-			instance.queries.deletePostById.run(parent.id)
 		}
 		return res.status(200).send("pruned")
 	}catch(error){
