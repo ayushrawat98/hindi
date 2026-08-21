@@ -147,14 +147,14 @@ export const adminCheck = (req, res, next) => {
 export const deleteImage = (req, res, next) => {
 
 	// req : /delete/postId/password
-	let changeFilePath = instance.db.transaction((req) => {
+	let changeFilePath = instance.db.transaction(() => {
 		const fileRes = instance.queries.getFileIdByPostId.get(req.params.postId)
 		const result = instance.queries.updateFileStatus.run("deleted", fileRes.file_id)
 		const fileDetails = instance.queries.getFile.get(fileRes.file_id)
 		return fileDetails
 	})
 	try {
-		const fileDetails = changeFilePath(req)
+		const fileDetails = changeFilePath()
 		// console.log(fileDetails)
 		//delete image
 		const isVideo = fileDetails.type.includes("video") ? ".webp" : ""
@@ -171,7 +171,7 @@ export const deletePost = (req, res, next) => {
 		let parent = instance.queries.getParentPost.get(req.params.postId)
 		let children = instance.queries.getChildPosts.all(req.params.postId)
 
-		const transact = instance.db.transaction((req) => {
+		const transact = instance.db.transaction(() => {
 			//delete parent , will cascade delete child
 			instance.queries.deletePostById.run(req.params.postId)
 		})
@@ -208,7 +208,7 @@ export const pruneBoard = (req, res, next) => {
 		for(let parent of toDeleteParent){
 			let children = []
 
-			const transact = instance.db.transaction((req) => {
+			const transact = instance.db.transaction(() => {
 				children = instance.queries.getChildPosts.all(parent.id)
 				//delete parent , will cascade delete child
 				instance.queries.deletePostById.run(req.params.postId)
