@@ -212,12 +212,14 @@ setReplyList()
 
 function addObserver() {
 	const options = {
-		threshold : 0.1
+		threshold : 0.0,
+		 rootMargin: '200px 0px 200px 0px',
 	}
 	const callback = (entries, observer) => {
 		entries.forEach((entry) => {
 			if (entry.isIntersecting) {
-				entry.target.src = entry.target.dataset.src 
+				entry.target.src = entry.target.dataset.src
+     				 observer.unobserve(entry.target);
 			}
 		})
 	}
