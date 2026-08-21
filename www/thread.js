@@ -132,6 +132,11 @@ function expandFile() {
 			og.classList.toggle("thumbnail--removed")
 		}
 		toggle()
+
+		//if video , add poster
+		if (og.nodeName == "VIDEO") {
+			og.poster = og.dataset.poster
+		}
 		//add event listener on og if not video
 		if (og.nodeName != "VIDEO") {
 			og.addEventListener("click", (secEvent) => {
