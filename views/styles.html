@@ -162,12 +162,12 @@
 
 	@keyframes appear {
 		0% {
-			opacity: 0;
-			transform: translateY(-15px);
+			/* opacity: 0; */
+			transform: translateY(-10px);
 		}
 
 		100% {
-			opacity: 1;
+			/* opacity: 1; */
 			transform: translateY(0px);
 		}
 	}
@@ -246,13 +246,12 @@
 
 	.post {
 		width: 100%;
-		animation: appear 150ms ease-in forwards;
+		/* animation: appear 150ms ease-in forwards; */
 		border-radius: 6px;
 		display: flow-root;
 		background-color: light-dark(var(--surface), var(--surface-dark));
 		padding: 1rem;
 		position: relative;
-		opacity: 0;
 	}
 
 	.post__header {
