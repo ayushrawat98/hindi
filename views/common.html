@@ -80,13 +80,13 @@
 {% else %}
 {% if "video" in data.file_type %}
 <img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}" data-src="/public/thumbnails/{{data.file_path | safeFileName}}.webp" alt="{{data.file_path}}" decoding="async" />
-<video class="thumbnail thumbnail--expanded thumbnail--removed" src="/public/files/{{data.file_path | safeFileName}}" data-poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp"
+<video class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/public/files/{{data.file_path | safeFileName}}" data-poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp"
 	controls preload="none">
 </video>
 {% else %}
 <img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}" data-src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}"
 	decoding="async" />
-	<img class="thumbnail thumbnail--removed thumbnail--expanded " src="/public/files/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" loading="lazy"
+	<img class="thumbnail thumbnail--removed thumbnail--expanded " data-src="/public/files/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" loading="lazy"
 	decoding="async" />
 {% endif %}
 {% endif %}

@@ -123,7 +123,7 @@ function addPopup(currentNode, linkevent, postHash, addOverlay) {
 	document.querySelector('.board-feed__column--hot').appendChild(addOverlay ? overlay : clone)
 	activePopupWrapper = clone
 
-	
+
 }
 
 
@@ -136,13 +136,17 @@ function expandFile() {
 		let toggle = () => {
 			thumbnail.classList.toggle("thumbnail--removed")
 			og.classList.toggle("thumbnail--removed")
+
+			if (!og.src) {
+				if (og.nodeName == "VIDEO") {
+					og.poster = og.dataset.poster
+				}
+				og.src = og.dataset.src
+			}
 		}
+
 		toggle()
 
-		//if video , add poster (removed poster for lazy loading)
-		if (og.nodeName == "VIDEO") {
-			og.poster = og.dataset.poster
-		}
 		//add event listener on og if not video
 		if (og.nodeName != "VIDEO") {
 			og.addEventListener("click", (secEvent) => {

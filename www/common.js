@@ -214,8 +214,6 @@ function addObserver() {
 	const options = {
 		threshold: 0.0,
 		rootMargin: '200px 0px 200px 0px',
-		trackVisibility : true,
-		delay : 500
 	}
 	const callback = (entries, observer) => {
 		entries.forEach((entry) => {
