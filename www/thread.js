@@ -265,7 +265,7 @@ function addPopupEventHandler(linkElem, replyId) {
 //so manually loading them
 function forceLoadLazyImage(post) {
 	let i = post.querySelector("img") //first thumbnail
-	if (!i.src) {
+	if (i && !i.src) {
 		i.src = i.dataset.src
 	}
 }
