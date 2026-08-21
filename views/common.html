@@ -50,7 +50,7 @@
 			<span>&middot;</span>
 			<time datetime="{{data.created_at | indianDate}}">{{data.created_at | indianDate}}</time>
 		</div>
-		<button type="button" class="replyButton link-look post__reply" data-post-number="{{data.id | hindinumber}}">उत्तर दें</button>
+		<button type="button" class="post__reply" data-post-number="{{data.id | hindinumber}}">उत्तर दें</button>
 	</header>
 
 	{% if data.file_path %}
@@ -72,19 +72,19 @@
 
 {% macro image(data) %}
 {% if data.file_status == 'pending' %}
-<img class="thumbnail thumbnail-js" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
+<img class="thumbnail thumbnail-js" data-src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
 <img class="thumbnail thumbnail--expanded thumbnail--removed" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
 {% elif data.file_status == 'failed' or data.file_status == 'deleted' %}
-<img class="thumbnail thumbnail-js" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
+<img class="thumbnail thumbnail-js" data-src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
 <img class="thumbnail thumbnail--expanded thumbnail--removed" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
 {% else %}
 {% if "video" in data.file_type %}
-<img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}" src="/public/thumbnails/{{data.file_path | safeFileName}}.webp" alt="{{data.file_path}}" loading="lazy" decoding="async" />
+<img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}" data-src="/public/thumbnails/{{data.file_path | safeFileName}}.webp" alt="{{data.file_path}}" loading="lazy" decoding="async" />
 <video class="thumbnail thumbnail--expanded thumbnail--removed" src="/public/files/{{data.file_path | safeFileName}}" poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp"
 	controls preload="none">
 </video>
 {% else %}
-<img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}" src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" loading="lazy"
+<img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}" data-src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" loading="lazy"
 	decoding="async" />
 	<img class="thumbnail thumbnail--removed thumbnail--expanded " src="/public/files/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" loading="lazy"
 	decoding="async" />

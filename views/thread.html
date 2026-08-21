@@ -22,22 +22,26 @@
 
 	<div class="board-feed__column board-feed__column--new">
 		<div class="post-list post-list--scroll sticky">
-		{{ macros.postList(newPosts, board) }}
+			{{ macros.postList(newPosts, board) }}
 		</div>
 	</div>
 
 	<div class="board-feed__column board-feed__column--hot">
 		<div class="post-list post-list--thread">
-		{{ macros.postList(posts) }}
 
-		<div class="newPostWindow hidden" style="position : sticky; bottom : 0; z-index : 4;">
+			<button id="go-down">।। नीचे जाईए ।।</button>
+
+			{{ macros.postList(posts) }}
+
+			<button id="go-up">।। ऊपर जाईए ।।</button>
+
+			<div class="newPostWindow hidden" style="position : sticky; bottom : 0; z-index : 4;">
 				<form method="post" enctype="multipart/form-data" id="uploadForm">
 					<input type="text" id="name" name="name" placeholder="नाम (आवश्यक नहीं)" maxlength="50" />
-					<textarea rows="8" cols="40" placeholder="विवरण : अपनी बात यहाँ लिखें..." id="content" name="content"
-						minlength="1" maxlength="1000" autocomplete="off" required></textarea>
+					<textarea rows="8" cols="40" placeholder="विवरण : अपनी बात यहाँ लिखें..." id="content"
+						name="content" minlength="1" maxlength="1000" autocomplete="off" required></textarea>
 					<span class="fileName"></span>
-					<input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm"
-						hidden>
+					<input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm" hidden>
 					<div class="formbtn">
 						<button type="button" class="newPostButton">बंद करें</button>
 						<button type="button" class="fakeLink">संचिका</button>
@@ -48,6 +52,7 @@
 					<p id="status"></p>
 				</form>
 			</div>
+
 		</div>
 	</div>
 </div>

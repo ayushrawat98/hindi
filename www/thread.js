@@ -245,9 +245,23 @@ function addPopupEventHandler(linkElem, replyId) {
 	})
 }
 
+function goDownUp(){
+	document.getElementById("go-down").addEventListener("click", (e) => {
+		window.scrollTo({
+			top : document.documentElement.scrollHeight
+		})
+	})
+
+	document.getElementById("go-up").addEventListener("click", (e) => {
+		window.scrollTo({
+			top : 0
+		})
+	})
+}
 
 setShareButton()
 showOP()
 expandFile()
 setRepliesForPost()
 setRepliesToPost()
+goDownUp()

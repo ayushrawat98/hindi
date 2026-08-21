@@ -18,7 +18,7 @@ document.querySelector(".closeButton")?.addEventListener('click', () => {
 document.querySelectorAll('.newPostButton').forEach(element => element.addEventListener('click', () => {
 	commonHideFunction()
 }))
-document.querySelectorAll(".replyButton").forEach(btn => {
+document.querySelectorAll(".post__reply").forEach(btn => {
 	btn.addEventListener('click', () => {
 		newPostWindow.classList.remove('hidden')
 		//if there is content add a newline before appending post number
@@ -209,3 +209,19 @@ function setReplyList() {
 }
 
 setReplyList()
+
+function addObserver() {
+	const options = {
+		threshold : 0.1
+	}
+	const callback = (entries, observer) => {
+		entries.forEach((entry) => {
+			if (entry.isIntersecting) {
+				entry.target.src = entry.target.dataset.src 
+			}
+		})
+	}
+	const observer = new IntersectionObserver(callback, options)
+	document.querySelectorAll(".thumbnail-js").forEach(thumbnail => observer.observe(thumbnail))
+}
+addObserver()
