@@ -81,7 +81,7 @@
 {% if "video" in data.file_type %}
 <img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}" data-src="/public/thumbnails/{{data.file_path | safeFileName}}.webp" alt="{{data.file_path}}" decoding="async" />
 <video class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/public/files/{{data.file_path | safeFileName}}" data-poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp"
-	controls preload="none">
+	controls preload="none" autoplay>
 </video>
 {% else %}
 <img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}" data-src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}"
