@@ -1,5 +1,4 @@
 <style>
-
 	@font-face {
 		font-family: "Noto Sans Devanagari";
 		src: url("/www/NotoSansDevanagari-Regular.woff2") format("woff2");
@@ -367,16 +366,9 @@
 		transition: background-color 0.5s ease;
 	}
 
-	.lara-image {
-		width: 100%;
-		object-fit: contain;
-		border-radius: 6px;
-		display: none;
-		filter: grayscale(15%) brightness(0.85);
-		margin-top: 8px;
+	img:not([src]) {
+		visibility: hidden;
 	}
-
-
 
 	@media (min-width : 900px) {
 
