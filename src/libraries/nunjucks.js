@@ -4,7 +4,7 @@ export function configNunjucks(app) {
 	const nunjucksEnv = nunjucks.configure("views", {
 		autoescape: true,
 		express: app,
-		noCache: true
+		noCache: false
 	});
 
 	//filter for getting indian date
