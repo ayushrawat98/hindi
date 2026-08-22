@@ -2,7 +2,7 @@ const ISMOBILE = window.innerWidth <= 768
 
 //remove any popup on click anywhere
 document.addEventListener("click", (ev) => {
-	if (activePopupWrapper) {
+	if (activePopupWrapper && !ev.defaultPrevented) {
 		removeActivePopupWrapper()
 	}
 })
@@ -16,18 +16,7 @@ function showOP() {
 	})
 }
 
-function setShareButton() {
-	document.querySelectorAll('.share').forEach((btn) => {
-		btn.addEventListener('click', (event) => {
-			let id = btn.getAttribute('data-post-number')
-			let removeHashIfAny = window.location.href.split('#')[0]
-			let shareLink = removeHashIfAny + '#' + id
-			navigator.clipboard.writeText(shareLink)
-		})
-	})
-}
-
-function setRepliesToPost() {
+function setContentReplies() {
 	const list = document.querySelectorAll('[data-post-number-link]')
 	list.forEach(link => {
 		let postId = link.getAttribute('data-post-number-link')
@@ -39,7 +28,7 @@ function setRepliesToPost() {
 			goToLinkElem.href = "#" + postId;
 			goToLinkElem.textContent = " #";
 			goToLinkElem.classList.add("replyText")
-			link.parentElement.appendChild(goToLinkElem)
+			link.parentElement.append(goToLinkElem)
 		}
 	})
 }
@@ -55,13 +44,11 @@ function removeActivePopupWrapper() {
 	activePopupWrapper = null
 }
 
-function addPopup(currentNode, linkevent, postHash, addOverlay) {
-	linkevent.stopPropagation()
+function addPopup(currentNode, linkevent, postHash) {
+	linkevent.preventDefault()
 	removeActivePopupWrapper()
 	if (!postHash) return;
-	if (activePopupWrapper) {
-
-	}
+	
 	const currentPost = document.getElementById(postHash)
 	//if the post was delete by moderator , gray it and give a line through
 	if (!currentPost) {
@@ -76,10 +63,8 @@ function addPopup(currentNode, linkevent, postHash, addOverlay) {
 	if (cloneThumbnails[0]?.classList.contains("thumbnail--removed")) {
 		toggleThumbnailClass(cloneThumbnails)
 	}
-
-
+	
 	clone.classList.add("popup")
-	clone.classList.remove("post--border")
 
 	//find true unexpanded currentPost height
 	let currentPostThumbnails = currentPost.querySelectorAll("img, video")
@@ -99,39 +84,21 @@ function addPopup(currentNode, linkevent, postHash, addOverlay) {
 		`${linkevent.pageY - currentPostHeight - 20}px`
 	clone.style.left = currentPost.offsetLeft + "px"
 	clone.style.width = currentPost.offsetWidth + "px"
-
-	let overlay
-	if (addOverlay) {
-		overlay = document.createElement('div');
-		overlay.classList.add("overlay")
-		overlay.addEventListener('click', (e) => {
-			// Only close if the user clicks the overlay itself, not the clone content
-			if (e.target === overlay) {
-				overlay.remove();
-				activePopupWrapper = undefined;
-			}
-		});
-		overlay.appendChild(clone);
-	} else {
-		//no overlay , make clone fixed
-		clone.style.position = "absolute"
-	}
-
-	//force load image before appending
+	clone.style.position = "absolute"
+	
+	//force load lazy image before appending
 	forceLoadLazyImage(clone)
 
-	document.querySelector('.board-feed__column--hot').appendChild(addOverlay ? overlay : clone)
+	document.querySelector('.board-feed__column--hot').append(clone)
 	activePopupWrapper = clone
-
-
 }
 
 
 function expandFile() {
 	document.querySelectorAll(".thumbnail-js").forEach(file => file.addEventListener("click", (event) => {
 		//on click , expand the image/video
-		let thumbnail = event.currentTarget
-		let og = event.currentTarget.nextElementSibling
+		let thumbnail = event.target
+		let og = event.target.nextElementSibling
 
 		let toggle = () => {
 			thumbnail.classList.toggle("thumbnail--removed")
@@ -156,7 +123,7 @@ function expandFile() {
 	}))
 }
 
-function setRepliesForPost() {
+function setFooterReplies() {
 	let postNodes = document.querySelectorAll(".board-feed__column--hot .post-list .post")
 
 	let postMap = new Map()
@@ -178,9 +145,6 @@ function setRepliesForPost() {
 		})
 	})
 
-	//remove duplicates from replyArray
-
-
 	for (let [replyTo, replyFrom] of replyArray) {
 		postMap.get(replyTo)[1].push(replyFrom)
 	}
@@ -188,6 +152,7 @@ function setRepliesForPost() {
 	//add the links
 	for (let [postId, [postNode, repliesId]] of postMap) {
 		if (repliesId.length === 0) continue;
+		
 		const footerElem = document.createElement("footer")
 		footerElem.classList.add("post__footer")
 
@@ -224,13 +189,11 @@ function setRepliesForPost() {
 			spanContainer.style.marginRight = "12px";
 			spanContainer.append(...(goToLinkElem ? [linkElem, goToLinkElem] : [linkElem]))
 
-			fragment.appendChild(spanContainer);
-			// fragment.appendChild(linkElem);
-			// fragment.appendChild(goToLinkElem);
+			fragment.append(spanContainer);
 		});
 
-		footerElem.appendChild(fragment);
-		postNode.appendChild(footerElem)
+		footerElem.append(fragment);
+		postNode.append(footerElem)
 	}
 }
 
@@ -238,24 +201,26 @@ function addPopupEventHandler(linkElem, replyId) {
 	//on pointer/mouse hover to show , click to go
 	//on touch click to show , hash to go
 
-	//for mobile
 	linkElem.addEventListener('click', (linkevent) => {
 		if (linkevent.pointerType == "touch") {
 			linkevent.preventDefault()
-			addPopup(linkElem, linkevent, replyId, false)
+			addPopup(linkElem, linkevent, replyId)
 		}
 	})
 
-	//hover for pc only
 	linkElem.addEventListener('pointerenter', (linkevent) => {
-		if (linkevent.pointerType === "touch") return;
-		// console.log("pointer eneter")
-		addPopup(linkElem, linkevent, replyId, false)
+		if (linkevent.pointerType === "touch") {
+			linkevent.preventDefault()
+			return false
+		}
+		addPopup(linkElem, linkevent, replyId)
 	})
 
 	linkElem.addEventListener('pointerleave', (linkevent) => {
-		if (linkevent.pointerType === "touch") return;
-		// console.log("pointer leave")
+		if (linkevent.pointerType === "touch") {
+			linkevent.preventDefault()
+			return false
+		}
 		removeActivePopupWrapper()
 	})
 }
@@ -284,9 +249,8 @@ function goDownUp() {
 	})
 }
 
-setShareButton()
 showOP()
 expandFile()
-setRepliesForPost()
-setRepliesToPost()
+setFooterReplies()
+setContentReplies()
 goDownUp()

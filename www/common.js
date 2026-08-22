@@ -1,69 +1,58 @@
+const INPUT_FILE_ELEM = document.querySelector("#file")
+const NEW_POST_WINDOW_ELEM = document.querySelector('.newPostWindow')
+const TEXTAREA_ELEM = document.getElementById('content');
+const fileNameHolder = document.querySelector(".fileName")
+
+const formStatus = document.getElementById("status");
+
 window.addEventListener('load', () => {
 	showName()
 });
 
 //reset value on coming back from other page
-//solve bug where file is still selected when moving through pages
+//solve file is still selected when moving through pages
 window.addEventListener("pageshow", (event) => {
-	let file = document.querySelector("#file").files[0]
-	if (!file) return;
-	setFileName(file.name + " - " + ((file.size) / 1024).toFixed(2) + " KiB")
+	INPUT_FILE_ELEM.value = ""
 })
 
 //form events handling
-let newPostWindow = document.querySelector('.newPostWindow')
-document.querySelector(".closeButton")?.addEventListener('click', () => {
-	commonHideFunction()
-})
 document.querySelectorAll('.newPostButton').forEach(element => element.addEventListener('click', () => {
 	commonHideFunction()
 }))
+
 document.querySelectorAll(".post__reply").forEach(btn => {
 	btn.addEventListener('click', () => {
-		newPostWindow.classList.remove('hidden')
+		NEW_POST_WINDOW_ELEM.classList.remove('hidden')
 		//if there is content add a newline before appending post number
-
-		if (document.getElementById('content').value.trim().length > 0 && !document.getElementById('content').value.endsWith("\n")) {
-			document.getElementById('content').value += "\n>>" + btn.dataset.postNumber + "\n"
+		if (TEXTAREA_ELEM.value.trim().length > 0 && !TEXTAREA_ELEM.value.endsWith("\n")) {
+			TEXTAREA_ELEM.value += "\n>>" + btn.dataset.postNumber + "\n"
 		} else {
-			document.getElementById('content').value += ">>" + btn.dataset.postNumber + "\n"
+			TEXTAREA_ELEM.value += ">>" + btn.dataset.postNumber + "\n"
 		}
 	})
 })
-const commonHideFunction = () => {
-	if (newPostWindow.classList.contains('hidden')) {
-		newPostWindow.classList.remove('hidden')
-		showName()
-	} else {
-		newPostWindow.classList.add('hidden')
-	}
-}
 
-const fileName = document.querySelector(".fileName")
-function setFileName(str) {
-	fileName.textContent = str
+const commonHideFunction = () => {
+	NEW_POST_WINDOW_ELEM.classList.toggle('hidden')
 }
 
 //show file name on selection
-document.querySelector("#file").addEventListener("change", (event) => {
+INPUT_FILE_ELEM.addEventListener("change", (event) => {
 	let file = event.target.files[0]
-	setFileName(file.name + " - " + ((file.size) / 1024).toFixed(2) + " KiB")
+	fileNameHolder.textContent = file.name + " - " + ((file.size) / 1024).toFixed(2) + " KiB"
 })
 
 //reset event on form
 document.getElementById("uploadForm").addEventListener("reset", (resetEvent) => {
-	setFileName("")
+	fileNameHolder.textContent = ""
 })
 
-document.querySelector(".fakeLink").addEventListener("click", (event) => {
-	document.querySelector("#file").click()
+document.querySelector(".fileButton").addEventListener("click", (event) => {
+	INPUT_FILE_ELEM.click()
 })
-
 
 //paste image
-const pasteTextBox = document.getElementById('content');
-const imageFileInput = document.getElementById('file');
-pasteTextBox?.addEventListener('paste', (event) => {
+TEXTAREA_ELEM?.addEventListener('paste', (event) => {
 	const items = (event.clipboardData || event.originalEvent.clipboardData).items;
 	let imageFile = null;
 
@@ -77,28 +66,25 @@ pasteTextBox?.addEventListener('paste', (event) => {
 	if (imageFile) {
 		const dataTransfer = new DataTransfer();
 		dataTransfer.items.add(imageFile);
-		imageFileInput.files = dataTransfer.files;
-		setFileName(imageFile.name + " - " + ((imageFile.size) / 1024).toFixed(2) + " KiB")
+		INPUT_FILE_ELEM.files = dataTransfer.files;
+		fileNameHolder.textContent = imageFile.name + " - " + ((imageFile.size) / 1024).toFixed(2) + " KiB"
 		// Prevent default paste behavior in the textbox if desired
 		event.preventDefault();
 	}
 });
 
 //check if form is not selected
-document.getElementById("file")?.addEventListener("invalid", (event) => {
+INPUT_FILE_ELEM.addEventListener("invalid", (event) => {
 	event.preventDefault();
-	const status = document.getElementById("status");
-	status.textContent = "संचिका(फाइल) आवश्यक है।"
+	formStatus.textContent = "संचिका(फाइल) आवश्यक है।"
 	setTimeout(() => {
-		status.textContent = ""
+		formStatus.textContent = ""
 	}, 2000);
 })
 
 //post data
 document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 	e.preventDefault();
-
-	const status = document.getElementById("status");
 
 	//disable submit button
 	document.querySelector("button[type='submit']").disabled = true
@@ -118,9 +104,8 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 		progressBar.hidden = false
 		if (event.lengthComputable) {
 			const percent = (event.loaded / event.total) * 100;
-			// progressBar.style.width = percent.toFixed(2) + "%";
 			progressBar.value = percent.toFixed(2)
-			status.textContent = `Uploading… ${percent.toFixed(0)}%`;
+			formStatus.textContent = `Uploading… ${percent.toFixed(0)}%`;
 		}
 	};
 
@@ -133,25 +118,25 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 				appendToReplyList(str)
 			}
 			progressBar.value = 100;
-			status.textContent = xhr.response.message;
-			document.querySelector("#file").value = ""
+			formStatus.textContent = xhr.response.message;
+			INPUT_FILE_ELEM.value = ""
 			setTimeout(() => {
 				// window.location.hash = xhr.responseText;
 				window.location.reload()
 			}, 300);
 		} else if (xhr.status == 429) {
-			status.textContent = xhr.response.message
+			formStatus.textContent = xhr.response.message
 		} else if (xhr.response) {
-			status.textContent = xhr.response.message;
+			formStatus.textContent = xhr.response.message;
 		} else {
-			status.textContent = "Upload failed!"
+			formStatus.textContent = "Upload failed!"
 		}
 		document.querySelector("button[type='submit']").disabled = false
 	}
 
 	// Error handling
 	xhr.onerror = function () {
-		status.textContent = "Upload error!";
+		formStatus.textContent = "Upload error!";
 		document.querySelector("button[type='submit']").disabled = false
 	};
 
@@ -208,8 +193,6 @@ function setReplyList() {
 	}
 }
 
-setReplyList()
-
 function addObserver() {
 	const options = {
 		threshold: 0.0,
@@ -228,4 +211,6 @@ function addObserver() {
 	const observer = new IntersectionObserver(callback, options)
 	document.querySelectorAll(".thumbnail-js").forEach(thumbnail => observer.observe(thumbnail))
 }
+
+setReplyList()
 addObserver()

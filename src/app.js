@@ -18,10 +18,6 @@ if(configuration.NODE_ENV === "development"){
 	app.use('/www', express.static(path.resolve(__dirname, "www"), {maxAge : '1y'}));
 }
 
-//routes
-// app.get("/", (req, res, next) => {
-// 	return res.redirect("/v1")
-// })
 app.use('/', v1Routes)
 
 //global error handling

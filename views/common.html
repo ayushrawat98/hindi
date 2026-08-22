@@ -1,40 +1,39 @@
 {% macro navigation(boards) %}
 <nav class="board-list" aria-label="Available boards">
-			<ul class="board-list__items">
-				<li class="board-list__item">
-					<a class="board-list__link" href="/board/सर्व">सर्व</a>
-				</li>
-				{% for board in boards %}
-				<li class="board-list__item">
-					<a class="board-list__link" href="/board/{{board.name}}">{{board.name}}</a>
-				</li>
-				{% endfor %}
-			</ul>
-		</nav>
+	<ul class="board-list__items">
+		<li class="board-list__item">
+			<a class="board-list__link" href="/board/सर्व">सर्व</a>
+		</li>
+		{% for board in boards %}
+		<li class="board-list__item">
+			<a class="board-list__link" href="/board/{{board.name}}">{{board.name}}</a>
+		</li>
+		{% endfor %}
+	</ul>
+</nav>
 {% endmacro %}
 
 {% macro replies() %}
-<nav class="board-list"><ul class="board-list__items"></ul></nav>
+<nav class="board-list">
+	<ul class="board-list__items"></ul>
+</nav>
 {% endmacro %}
 
-{% macro name() %}
-		<div style="font-size: larger; text-align: center;">अपरिचित</div>
-{% endmacro %}
 
 {% macro postList(datalist, board) %}
-	{% if board %}
-	{% for data in datalist %}
-	{{ boardPost(data, board, loop.index) }}
-	{% endfor %}
-	{% else %}
-	{% for data in datalist %}
-	{{ post(data, board, loop.index) }}
-	{% endfor %}
-	{% endif %}
+{% if board %}
+{% for data in datalist %}
+{{ boardPost(data, board, loop.index) }}
+{% endfor %}
+{% else %}
+{% for data in datalist %}
+{{ post(data, board, loop.index) }}
+{% endfor %}
+{% endif %}
 {% endmacro %}
 
 {% macro post(data, board, index) %}
-<article class="post post--border " id="{{data.id | hindinumber}}" >
+<article class="post post--border " id="{{data.id | hindinumber}}">
 
 	<header class="post__header">
 		<div class="post__meta">
@@ -42,9 +41,9 @@
 			<span>&middot;</span>
 			<span>
 				{% if data.name %}
-					{{data.name}}
+				{{data.name}}
 				{% else %}
-					अपरिचित
+				अपरिचित
 				{% endif %}
 			</span>
 			<span>&middot;</span>
@@ -62,7 +61,7 @@
 	{% endif %}
 
 	{% if data.content %}
-	<p class="post__content post__content--pre-wrap">{{data.content | greenText  | safe}}</p>
+	<p class="post__content post__content--pre-wrap">{{data.content | greenText | safe}}</p>
 	{% endif %}
 
 </article>
@@ -72,28 +71,31 @@
 
 {% macro image(data) %}
 {% if data.file_status == 'pending' %}
-<img class="thumbnail thumbnail-js" data-src="/www/processing.webp" alt="File is processing" decoding="async" />
-<img class="thumbnail thumbnail--expanded thumbnail--removed" src="/www/processing.webp" alt="File is processing" loading="lazy" decoding="async" />
+<img class="thumbnail thumbnail-js" data-src="/www/processing.webp" alt="File is processing" />
+<img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/www/processing.webp"
+	alt="File is processing" />
 {% elif data.file_status == 'failed' or data.file_status == 'deleted' %}
-<img class="thumbnail thumbnail-js" data-src="/www/deleted.webp" alt="File deleted"  decoding="async" />
-<img class="thumbnail thumbnail--expanded thumbnail--removed" src="/www/deleted.webp" alt="File deleted" loading="lazy" decoding="async" />
+<img class="thumbnail thumbnail-js" data-src="/www/deleted.webp" alt="File deleted" />
+<img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/www/deleted.webp" alt="File deleted" />
 {% else %}
 {% if "video" in data.file_type %}
-<img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}" data-src="/public/thumbnails/{{data.file_path | safeFileName}}.webp" alt="{{data.file_path}}" decoding="async" />
-<video class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/public/files/{{data.file_path | safeFileName}}" data-poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp"
-	controls preload="none" autoplay>
+<img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}"
+	data-src="/public/thumbnails/{{data.file_path | safeFileName}}.webp" alt="{{data.file_path}}" />
+<video class="thumbnail thumbnail--expanded thumbnail--removed"
+	data-src="/public/files/{{data.file_path | safeFileName}}"
+	data-poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp" controls autoplay>
 </video>
 {% else %}
-<img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}" data-src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}"
-	decoding="async" />
-	<img class="thumbnail thumbnail--removed thumbnail--expanded " data-src="/public/files/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" loading="lazy"
-	decoding="async" />
+<img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}"
+	data-src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" />
+<img class="thumbnail thumbnail--removed thumbnail--expanded "
+	data-src="/public/files/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" />
 {% endif %}
 {% endif %}
 {% endmacro %}
 
 {% macro boardPost(data, board, index) %}
-<article class="post post--hover" id="{{data.id}}" >
+<article class="post post--hover" id="{{data.id}}">
 
 	<header class="post__header">
 		<div class="post__meta">
@@ -101,15 +103,16 @@
 			<span>&middot;</span>
 			<span>
 				{% if data.name %}
-					{{data.name}}
+				{{data.name}}
 				{% else %}
-					अपरिचित
+				अपरिचित
 				{% endif %}
 			</span>
 			<span>&middot;</span>
 			<time datetime="{{data.created_at | indianDate}}">{{data.created_at | indianDate}}</time>
 			<span>&middot;</span>
-			<a class="post__link" href="/thread/{{data.id}}">{{data.replies}} {% if data.replies <= 1 %}टिप्पणी{% else %}टिप्पणियाँ{% endif %} </a>
+			<a class="post__link" href="/thread/{{data.id}}">{{data.replies}} {% if data.replies <= 1 %}टिप्पणी{% else
+					%}टिप्पणियाँ{% endif %} </a>
 		</div>
 	</header>
 
