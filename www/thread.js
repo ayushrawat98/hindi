@@ -58,38 +58,41 @@ function addPopup(currentNode, linkevent, postHash) {
 	}
 
 	let clone = currentPost.cloneNode(true)
+	clone.classList.add("popup")
+
 	//remove expanded image from clone
 	let cloneThumbnails = clone.querySelectorAll("img, video")
 	if (cloneThumbnails[0]?.classList.contains("thumbnail--removed")) {
 		toggleThumbnailClass(cloneThumbnails)
 	}
-	
-	clone.classList.add("popup")
 
-	//find true unexpanded currentPost height
-	let currentPostThumbnails = currentPost.querySelectorAll("img, video")
-	let currentPostHeight = currentPost.offsetHeight
-	if (currentPostThumbnails[0]?.classList.contains("thumbnail--removed")) {
-		toggleThumbnailClass(currentPostThumbnails)
-		currentPostHeight = currentPost.offsetHeight
-		toggleThumbnailClass(currentPostThumbnails)
-	}
+	//set temporary clone css
+	clone.style.position = "absolute"
+	clone.style.visibility = "hidden"
+	clone.style.left = "0"
+	clone.style.top = "0"
 
+	//append clone
+	document.querySelector('.board-feed__column--hot').append(clone)
 
-	currentPostHeight = Math.min(currentPostHeight, 300)
+	//find clone height
+	let cloneHeight = Math.min(clone.offsetHeight, 300)
 
 	//find correct place to show popup
-	clone.style.top = linkevent.clientY < (currentPostHeight + 20) ?
+	clone.style.top = linkevent.clientY < (cloneHeight + 20) ?
 		`${linkevent.pageY + 20}px` :
-		`${linkevent.pageY - currentPostHeight - 20}px`
+		`${linkevent.pageY - cloneHeight - 20}px`
 	clone.style.left = currentPost.offsetLeft + "px"
 	clone.style.width = currentPost.offsetWidth + "px"
-	clone.style.position = "absolute"
+
+	//show clone
+	clone.style.visibility = ""
+
 	
 	//force load lazy image before appending
 	forceLoadLazyImage(clone)
 
-	document.querySelector('.board-feed__column--hot').append(clone)
+	//save clone object
 	activePopupWrapper = clone
 }
 
