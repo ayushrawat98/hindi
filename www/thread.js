@@ -60,11 +60,10 @@ function addPopup(currentNode, linkevent, postHash) {
 	let clone = currentPost.cloneNode(true)
 	clone.classList.add("popup")
 
-	//remove expanded image from clone
+	//remove expanded image and add back thumbnail
 	let cloneThumbnails = clone.querySelectorAll("img, video")
-	if (cloneThumbnails[0]?.classList.contains("thumbnail--removed")) {
-		toggleThumbnailClass(cloneThumbnails)
-	}
+	cloneThumbnails[0]?.classList.remove("thumbnail--removed")
+	cloneThumbnails[1]?.remove()
 
 	//set temporary clone css
 	clone.style.position = "absolute"
