@@ -71,23 +71,23 @@
 
 {% macro image(data) %}
 {% if data.file_status == 'pending' %}
-<img class="thumbnail thumbnail-js" data-src="/www/processing.webp" alt="File is processing" />
+<img class="thumbnail thumbnail-js" data-src="/www/processing.webp" alt="File is processing" fetchpriority="high" />
 <img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/www/processing.webp"
 	alt="File is processing" />
 {% elif data.file_status == 'failed' or data.file_status == 'deleted' %}
-<img class="thumbnail thumbnail-js" data-src="/www/deleted.webp" alt="File deleted" />
+<img class="thumbnail thumbnail-js" data-src="/www/deleted.webp" alt="File deleted" fetchpriority="high" />
 <img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/www/deleted.webp" alt="File deleted" />
 {% else %}
 {% if "video" in data.file_type %}
 <img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}"
-	data-src="/public/thumbnails/{{data.file_path | safeFileName}}.webp" alt="{{data.file_path}}" />
+	data-src="/public/thumbnails/{{data.file_path | safeFileName}}.webp" alt="{{data.file_path}}" fetchpriority="high"/>
 <video class="thumbnail thumbnail--expanded thumbnail--removed"
 	data-src="/public/files/{{data.file_path | safeFileName}}"
 	data-poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp" controls autoplay>
 </video>
 {% else %}
 <img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}"
-	data-src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" />
+	data-src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" fetchpriority="high"/>
 <img class="thumbnail thumbnail--removed thumbnail--expanded "
 	data-src="/public/files/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" />
 {% endif %}

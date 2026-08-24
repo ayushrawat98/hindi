@@ -10,5 +10,5 @@ export const burstLimiter = rateLimit({
 export const quotaLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
     max: 20,                  // Above the 99th percentile of human posting
-    message: {message : "Daily/Hourly limit reached."}
+    message: {message : "Hourly limit reached."}
 });

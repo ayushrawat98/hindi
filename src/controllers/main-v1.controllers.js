@@ -10,7 +10,7 @@ import { configuration } from '../../env.js';
 import { convertIP } from '../libraries/ban.js';
 import { deletePostFiles } from '../libraries/prune.js';
 
-const MAX_THREAD_COUNT = 500 //show all thread , prune when needed (real limit is 100)
+const MAX_THREAD_COUNT = 100 //show 100 threads
 const MAX_THREAD_BUMP_LIMIT = 200
 
 
@@ -202,20 +202,24 @@ export const banPost = (req, res, next) => {
 	}
 }
 
+
+//delete only files keep the old threads for AI purpose
 export const pruneBoard = (req, res, next) => {
 	try {
-		const toDeleteParent = instance.queries.getOldParentPost.all()
+		const toDeleteParent = instance.queries.getOldParentPost.all(MAX_THREAD_COUNT)
 		for(let parent of toDeleteParent){
 			let children = []
 
 			const transact = instance.db.transaction(() => {
 				children = instance.queries.getChildPosts.all(parent.id)
 				//delete parent , will cascade delete child
-				instance.queries.deletePostById.run(req.params.postId)
+				// instance.queries.deletePostById.run(req.params.postId)
 			})
 
-			transact()
+			// transact()
 
+			children = instance.queries.getChildPosts.all(parent.id)
+			
 			deletePostFiles([parent])
 			deletePostFiles(children)
 		}

@@ -138,14 +138,43 @@ function ffmpegProcess(ffmpegPath, args) {
 }
 
 async function removeVideoMetaData(ogFilePath, tempFilePath) {
+	// const stripMetadataArgs = [
+	// 	'-y',
+	// 	'-i', ogFilePath,
+	// 	'-map_metadata', '-1',
+	// 	'-map_chapters', '-1',
+	// 	'-c', 'copy',
+	// 	tempFilePath
+	// ];
+
 	const stripMetadataArgs = [
 		'-y',
 		'-i', ogFilePath,
-		'-map_metadata', '-1',
+
 		'-map_chapters', '-1',
+
+		// Remove GPS/location/device/privacy metadata
+		'-metadata', 'location=',
+		'-metadata', 'location-eng=',
+		'-metadata', 'location-fra=',
+		'-metadata', 'com.apple.quicktime.location.ISO6709=',
+		'-metadata', 'com.apple.quicktime.location.ISO6709=',
+
+		// Remove common descriptive metadata
+		'-metadata', 'title=',
+		'-metadata', 'artist=',
+		'-metadata', 'album=',
+		'-metadata', 'comment=',
+		'-metadata', 'description=',
+		'-metadata', 'copyright=',
+		'-metadata', 'date=',
+
+		// Preserve encoded video/orientation
 		'-c', 'copy',
+
 		tempFilePath
 	];
+
 
 	//strip meta data from original
 	await ffmpegProcess(ffmpegPath, stripMetadataArgs)
@@ -154,8 +183,8 @@ async function removeVideoMetaData(ogFilePath, tempFilePath) {
 }
 
 async function removeImageMetaData(ogFilePath, tempFilePath, config, buffer = undefined) {
-    // Sharp now works from memory instead of keeping the source file open.
-    await sharp(buffer ?? ogFilePath, config).rotate().toFile(tempFilePath);
+	// Sharp now works from memory instead of keeping the source file open.
+	await sharp(buffer ?? ogFilePath, config).rotate().toFile(tempFilePath);
 	// await sharp(ogFilePath, config).toFile(tempFilePath);
 	await fs.unlink(ogFilePath);
 	await fs.rename(tempFilePath, ogFilePath);
