@@ -138,42 +138,43 @@ function ffmpegProcess(ffmpegPath, args) {
 }
 
 async function removeVideoMetaData(ogFilePath, tempFilePath) {
-	// const stripMetadataArgs = [
-	// 	'-y',
-	// 	'-i', ogFilePath,
-	// 	'-map_metadata', '-1',
-	// 	'-map_chapters', '-1',
-	// 	'-c', 'copy',
-	// 	tempFilePath
-	// ];
-
+	
 	const stripMetadataArgs = [
 		'-y',
 		'-i', ogFilePath,
-
+		'-map_metadata', '-1',
 		'-map_chapters', '-1',
-
-		// Remove GPS/location/device/privacy metadata
-		'-metadata', 'location=',
-		'-metadata', 'location-eng=',
-		'-metadata', 'location-fra=',
-		'-metadata', 'com.apple.quicktime.location.ISO6709=',
-		'-metadata', 'com.apple.quicktime.location.ISO6709=',
-
-		// Remove common descriptive metadata
-		'-metadata', 'title=',
-		'-metadata', 'artist=',
-		'-metadata', 'album=',
-		'-metadata', 'comment=',
-		'-metadata', 'description=',
-		'-metadata', 'copyright=',
-		'-metadata', 'date=',
-
-		// Preserve encoded video/orientation
 		'-c', 'copy',
-
 		tempFilePath
 	];
+
+	// const stripMetadataArgs = [
+	// 	'-y',
+	// 	'-i', ogFilePath,
+
+	// 	'-map_chapters', '-1',
+
+	// 	// Remove GPS/location/device/privacy metadata
+	// 	'-metadata', 'location=',
+	// 	'-metadata', 'location-eng=',
+	// 	'-metadata', 'location-fra=',
+	// 	'-metadata', 'com.apple.quicktime.location.ISO6709=',
+	// 	'-metadata', 'com.apple.quicktime.location.ISO6709=',
+
+	// 	// Remove common descriptive metadata
+	// 	'-metadata', 'title=',
+	// 	'-metadata', 'artist=',
+	// 	'-metadata', 'album=',
+	// 	'-metadata', 'comment=',
+	// 	'-metadata', 'description=',
+	// 	'-metadata', 'copyright=',
+	// 	'-metadata', 'date=',
+
+	// 	// Preserve encoded video/orientation
+	// 	'-c', 'copy',
+
+	// 	tempFilePath
+	// ];
 
 
 	//strip meta data from original
