@@ -251,8 +251,28 @@ function goDownUp() {
 	})
 }
 
+function addVideoPauseObserver() {
+	const options = {
+		threshold: 0.0
+	}
+	const callback = (entries, observer) => {
+		entries.forEach((entry) => {
+			if (!entry.isIntersecting) {debugger
+				//src is present and video is playing
+				if (entry.target.src && !entry.target.paused) {
+					entry.target.pause()
+				}
+				// observer.unobserve(entry.target);
+			}
+		})
+	}
+	const observer = new IntersectionObserver(callback, options)
+	document.querySelectorAll("video").forEach(thumbnail => observer.observe(thumbnail))
+}
+
 showOP()
 expandFile()
 setFooterReplies()
 setContentReplies()
 goDownUp()
+addVideoPauseObserver()
