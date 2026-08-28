@@ -26,21 +26,21 @@
 
 	<div class="board-feed__column board-feed__column--hot">
 		<div class="post-list">
-			<button class="newPostButton">[नया पोस्ट बनाएं]</button>
-			<div class="newPostWindow hidden">
+			<!-- <button class="newPostButton">[नया पोस्ट बनाएं]</button> -->
+			<div class="newPostWindow">
 				<form method="post" enctype="multipart/form-data" id="uploadForm">
 
-					<input type="text" id="name" name="name" placeholder="नाम (आवश्यक नहीं)" maxlength="50" />
-					<input type="text" id="title" name="title" placeholder="शीर्षक (आवश्यक नहीं)" maxlength="200" />
+					<!-- <input type="text" id="name" name="name" placeholder="नाम (आवश्यक नहीं)" maxlength="50" /> -->
+					<!-- <input type="text" id="title" name="title" placeholder="शीर्षक (आवश्यक नहीं)" maxlength="200" /> -->
 					<textarea rows="8" cols="40" placeholder="विवरण : अपनी बात यहाँ लिखें..." id="content"
 						name="content" minlength="1" maxlength="1000" autocomplete="off" required></textarea>
 					<span class="fileName"></span>
 					<input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm" required
 						hidden>
 					<div class="formbtn">
-						<button type="button" class="fileButton">संचिका</button>
-						<button type="reset" class="">पूर्वावस्था</button>
-						<button type="submit">भेजें</button>
+						<button type="button" class="fileButton formbtn-pad">संचिका</button>
+						<button type="reset" class="formbtn-pad">पूर्वावस्था</button>
+						<button type="submit" class="formbtn-pad">भेजें</button>
 					</div>
 					<progress id="progressBar" max="100" value="0" hidden></progress>
 					<p id="status"></p>

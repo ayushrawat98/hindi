@@ -6,7 +6,7 @@ const fileNameHolder = document.querySelector(".fileName")
 const formStatus = document.getElementById("status");
 
 window.addEventListener('load', () => {
-	showName()
+	// showName()
 });
 
 //reset value on coming back from other page
@@ -145,9 +145,9 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 
 
 //save name
-document.getElementById('name').addEventListener('input', (e) => {
-	localStorage.setItem('name', e.target.value)
-})
+// document.getElementById('name').addEventListener('input', (e) => {
+// 	localStorage.setItem('name', e.target.value)
+// })
 
 function showName() {
 	let name = localStorage.getItem('name')

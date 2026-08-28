@@ -257,7 +257,7 @@ function addVideoPauseObserver() {
 	}
 	const callback = (entries, observer) => {
 		entries.forEach((entry) => {
-			if (!entry.isIntersecting) {debugger
+			if (!entry.isIntersecting) {
 				//src is present and video is playing
 				if (entry.target.src && !entry.target.paused) {
 					entry.target.pause()
