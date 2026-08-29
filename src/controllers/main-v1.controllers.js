@@ -213,7 +213,7 @@ export const pruneBoard = (req, res, next) => {
 			const transact = instance.db.transaction(() => {
 				children = instance.queries.getChildPosts.all(parent.id)
 				//delete parent , will cascade delete child
-				// instance.queries.deletePostById.run(req.params.postId)
+				// instance.queries.deletePostById.run(parent.id)
 			})
 
 			// transact()
