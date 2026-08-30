@@ -10,18 +10,18 @@ export function convertIP(clientIp) {
 	if (clientIp.includes('.')) {
 		// IPv4 logic: Extract first two octets
 		const octets = clientIp.split('.');
-		if (octets.length >= 2) {
-			const ipv4Prefix = `${octets[0]}.${octets[1]}`;
+		if (octets.length >= 3) {
+			const ipv4Prefix = `${octets[0]}.${octets[1]}.${octets[2]}`;
 			return ipv4Prefix
 		}
 	} else if (clientIp.includes(':')) {
 		// IPv6 logic: Extract first two blocks
 		const blocks = clientIp.split(':');
-		if (blocks.length >= 2) {
+		if (blocks.length >= 3) {
 			// Helper to remove leading zeros (e.g., "0db8" -> "db8", "0000" -> "0")
 			const normalize = (block) => block.toLowerCase().replace(/^0+/, '') || '0';
 
-			const ipv6Prefix = `${normalize(blocks[0])}:${normalize(blocks[1])}`;
+			const ipv6Prefix = `${normalize(blocks[0])}:${normalize(blocks[1])}:${normalize(blocks[2])}`;
 			return ipv6Prefix
 		}
 	}
