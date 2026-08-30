@@ -13,11 +13,11 @@ route.get("/", (req, res, next) => {
 
 route.get('/board', getBoardData)
 
-route.post('/board', burstLimiter, quotaLimiter, ipBanMiddleware, upload.single("file"), trimBody, setBoardData)
+route.post('/board', burstLimiter, quotaLimiter, ipBanMiddleware, upload.single("file"), trimBody, hindiCheck, setBoardData)
 
 route.get('/thread/:threadId', getThreadData)
 
-route.post('/thread/:threadId', burstLimiter, quotaLimiter, ipBanMiddleware, upload.single("file"), trimBody, setThreadData)
+route.post('/thread/:threadId', burstLimiter, quotaLimiter, ipBanMiddleware, upload.single("file"), trimBody, hindiCheck, setThreadData)
 
 route.get("/di/:postId/:password", adminCheck, deleteImage)
 

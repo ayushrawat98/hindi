@@ -1,5 +1,51 @@
 const ISMOBILE = window.innerWidth <= 768
 
+//scroll to last position on coming back
+window.addEventListener("load", () => {
+	scrollToLastPos()
+})
+
+
+function debounce(cb, time){
+	let timeout
+	return () => {
+		if(timeout) clearTimeout(timeout);
+		timeout = setTimeout(() => {
+			cb()
+		}, time);
+	}
+}
+
+//save scroll position in particular thread
+function saveScrollPosition(postId, position) {
+  const positions = JSON.parse(localStorage.getItem('post_scroll_positions')) || {};
+  positions[postId] = position;
+  localStorage.setItem('post_scroll_positions', JSON.stringify(positions));
+}
+
+//retrieve a scroll position
+function getScrollPosition(postId) {
+  const positions = JSON.parse(localStorage.getItem('post_scroll_positions')) || {};
+  return positions[postId] || 0;
+}
+
+function saveScrollWrapper(){
+	const position = window.scrollY
+	const postId = window.location.pathname.split("/")[2]
+	saveScrollPosition(postId, position) 
+}
+
+function scrollToLastPos(){
+	const postId = window.location.pathname.split("/")[2]
+	const lastScrollPos = getScrollPosition(postId)
+	window.scrollBy({
+		top : lastScrollPos,
+		behavior : "instant"
+	})
+}
+
+window.addEventListener("scroll", debounce(saveScrollWrapper, 500))
+
 //remove any popup on click anywhere
 document.addEventListener("click", (ev) => {
 	if (activePopupWrapper && !ev.defaultPrevented) {

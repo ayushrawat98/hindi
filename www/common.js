@@ -113,10 +113,6 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 	xhr.onload = function () {
 
 		if (xhr.status === 201) {
-			if (window.location.pathname.includes("thread")) {
-				let str = xhr.response.threadId + "#" + numberToHindi(xhr.response.replyId)
-				appendToReplyList(str)
-			}
 			progressBar.value = 100;
 			formStatus.textContent = xhr.response.message;
 			INPUT_FILE_ELEM.value = ""
@@ -154,45 +150,6 @@ function showName() {
 	if (name) document.getElementById('name').value = name
 }
 
-function numberToHindi(num) {
-	return new Intl.NumberFormat('hi-IN', { numberingSystem: 'deva', useGrouping: false }).format(num);
-}
-
-function appendToReplyList(str) {
-	let t = localStorage.getItem("repliesId")
-	t = JSON.parse(t)
-	if (t) {
-		t.push(str)
-	} else {
-		t = [str]
-	}
-	//keep only last 25
-	while (t.length > 25) {
-		t.shift()
-	}
-	localStorage.setItem("repliesId", JSON.stringify(t))
-}
-
-function setReplyList() {
-	const container = document.querySelector(".board-list__items")
-	let repliesId = localStorage.getItem("repliesId") //array of ids(string)
-	const fragment = document.createDocumentFragment();
-	if (repliesId) {
-		repliesId = JSON.parse(repliesId)
-		for (let id of repliesId) {
-			const liElem = document.createElement("li")
-			liElem.classList.add("board-list__item")
-			const aElem = document.createElement("a")
-			aElem.classList.add("board-list__link")
-			aElem.href = "/thread/" + id
-			aElem.textContent = ">>" + id.split("#")[1]
-			liElem.appendChild(aElem)
-			fragment.append(liElem)
-		}
-		container.append(fragment)
-	}
-}
-
 function addObserver() {
 	const options = {
 		threshold: 0.0,
@@ -212,5 +169,4 @@ function addObserver() {
 	document.querySelectorAll(".thumbnail-js").forEach(thumbnail => observer.observe(thumbnail))
 }
 
-setReplyList()
 addObserver()
