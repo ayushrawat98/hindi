@@ -3,7 +3,9 @@ files/*
 .env
 package-lock.json
 todo
-public
 database/db
 database/db-shm
 database/db-wal
+
+public/files
+public/thumbnails

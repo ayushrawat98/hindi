@@ -10,9 +10,6 @@ import { configNunjucks } from "./src/libraries/nunjucks.js";
 configNunjucks(app)
 
 //create folders if not exists
-if(!fs.existsSync(path.join(__dirname, 'public'))){
-	fs.mkdirSync(path.join(__dirname, 'public'))
-}
 if(!fs.existsSync(path.join(__dirname, 'public', 'files'))){
 	fs.mkdirSync(path.join(__dirname, 'public', 'files'))
 }
