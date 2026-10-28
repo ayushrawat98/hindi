@@ -5,6 +5,7 @@ import { mainRoutes as v1Routes } from './routes/main-v1.routes.js';
 import path from "path";
 import fs from "fs/promises"
 import helmet from 'helmet';
+import compression from 'compression';
 
 const app = express()
 
@@ -12,6 +13,8 @@ const app = express()
 // app.set('trust proxy', 1);
 
 // app.use(helmet())
+
+app.use(compression())
 
 app.use('/public', express.static(path.resolve(__dirname, "public"), {maxAge : '1y'}));
 
