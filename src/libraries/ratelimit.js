@@ -12,3 +12,10 @@ export const quotaLimiter = rateLimit({
     max: 20,                  // Above the 99th percentile of human posting
     message: {message : "Hourly limit reached."}
 });
+
+export const threadLimiter = rateLimit({
+    windowMs: 1000 * 60 * 10, // 5 seconds
+    max: 1,         // Statistically safe for human jitter
+    message: {message : "Max 1 thread in 10 minutes"}
+});
+

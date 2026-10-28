@@ -1,6 +1,6 @@
 import express from 'express';
 import { adminCheck, banPost, deleteImage, deletePost, getBoardData, getThreadData, pruneBoard, setBoardData, setThreadData} from "../controllers/main-v1.controllers.js"
-import { burstLimiter, quotaLimiter } from '../libraries/ratelimit.js';
+import { burstLimiter, quotaLimiter, threadLimiter } from '../libraries/ratelimit.js';
 import upload from '../libraries/multer.js';
 import { trimBody } from '../libraries/sanitize.js';
 import { ipBanMiddleware } from '../libraries/ban.js';
@@ -13,7 +13,7 @@ route.get("/", (req, res, next) => {
 
 route.get('/board', getBoardData)
 
-route.post('/board', burstLimiter, quotaLimiter, ipBanMiddleware, upload.single("file"), trimBody, setBoardData)
+route.post('/board', threadLimiter, ipBanMiddleware, upload.single("file"), trimBody, setBoardData)
 
 route.get('/thread/:threadId', getThreadData)
 
