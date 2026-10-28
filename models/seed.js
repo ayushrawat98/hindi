@@ -38,7 +38,8 @@ const engBoards = [
 	"g",
 	"tv",
 	"ck",
-	"gen"
+	"gen",
+	"meta"
 ]
 
 
