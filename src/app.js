@@ -11,7 +11,10 @@ const app = express()
 //set proxy
 // app.set('trust proxy', 1);
 
-app.use(helmet())
+app.use(helmet({
+  crossOriginOpenerPolicy: false,
+  originAgentCluster: false
+}));
 
 app.use('/public', express.static(path.resolve(__dirname, "public"), {maxAge : '1y'}));
 
