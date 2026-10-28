@@ -18,8 +18,7 @@
     "helmet": "^8.3.0",
     "multer": "^2.2.0",
     "nunjucks": "^3.2.4",
-    "sharp": "^0.35.3",
-    "xxhashjs": "^0.2.2"
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

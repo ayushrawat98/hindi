@@ -1,4 +1,4 @@
-import instance from "../../db/db.js";
+import instance from "../../models/db.js";
 
 export function convertIP(clientIp) {
 

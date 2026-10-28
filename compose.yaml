@@ -1,0 +1,10 @@
+services:
+  app:
+    build: .
+    container_name: my-node-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./database:/app/database
+      - ./public:/app/public

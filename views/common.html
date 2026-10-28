@@ -52,17 +52,21 @@
 		<button type="button" class="post__reply" data-post-number="{{data.id | hindinumber}}">उत्तर दें</button>
 	</header>
 
-	{% if data.file_path %}
-	{{ image(data) }}
-	{% endif %}
+	<div class="post__title-content-wrapper">
 
-	{% if data.title %}
-	<h3 class="post__title">{{data.title}}</h3>
-	{% endif %}
+		{% if data.file_path %}
+		{{ image(data) }}
+		{% endif %}
 
-	{% if data.content %}
-	<p class="post__content post__content--pre-wrap">{{data.content | greenText | safe}}</p>
-	{% endif %}
+		{% if data.title %}
+		<h3 class="post__title">{{data.title}}</h3>
+		{% endif %}
+
+		{% if data.content %}
+		<p class="post__content post__content--pre-wrap">{{data.content | greenText | safe}}</p>
+		{% endif %}
+		
+	</div>
 
 </article>
 {% endmacro %}
@@ -71,12 +75,12 @@
 
 {% macro image(data) %}
 {% if data.file_status == 'pending' %}
-<img class="thumbnail thumbnail-js" data-src="/www/processing.webp" alt="File is processing" fetchpriority="high" />
-<img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/www/processing.webp"
+<img class="thumbnail thumbnail-js" data-src="/public/static/processing.webp" alt="File is processing" fetchpriority="high" />
+<img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/public/static/processing.webp"
 	alt="File is processing" />
 {% elif data.file_status == 'failed' or data.file_status == 'deleted' %}
-<img class="thumbnail thumbnail-js" data-src="/www/deleted.webp" alt="File deleted" fetchpriority="high" />
-<img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/www/deleted.webp" alt="File deleted" />
+<img class="thumbnail thumbnail-js" data-src="/public/static/deleted.webp" alt="File deleted" fetchpriority="high" />
+<img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/public/static/deleted.webp" alt="File deleted" />
 {% else %}
 {% if "video" in data.file_type %}
 <img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}"

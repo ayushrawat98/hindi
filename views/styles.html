@@ -1,19 +1,27 @@
 <style>
-	@font-face {
-		font-family: "Noto Sans Devanagari";
-		src: url("/www/NotoSansDevanagari-Regular.woff2") format("woff2");
-		font-weight: 400;
-		font-style: normal;
-		font-display: swap;
-	}
 
 	@font-face {
 		font-family: "Noto Sans Devanagari";
-		src: url("/www/NotoSansDevanagari-SemiBold.woff2") format("woff2");
+		src: url("/public/static/NotoSansDevanagari-VariableFont_wdth\,wght.woff2") format("woff2");
+		font-weight: 100 900;
+		font-display: swap;
+	}
+
+	/* @font-face {
+		font-family: "Noto Sans Devanagari";
+		src: url("/public/static/NotoSansDevanagari-Regular.woff2") format("woff2");
+		font-weight: 400;
+		font-style: normal;
+		font-display: swap;
+	} */
+
+	/* @font-face {
+		font-family: "Noto Sans Devanagari";
+		src: url("/public/static/NotoSansDevanagari-SemiBold.woff2") format("woff2");
 		font-weight: 600;
 		font-style: normal;
 		font-display: swap;
-	}
+	} */
 
 	* {
 		padding: 0;
@@ -61,9 +69,6 @@
 	body {
 		background-color: light-dark(var(--background), var(--background-dark));
 		font-family: "Noto Sans Devanagari", Arial, sans-serif;
-		font-optical-sizing: auto;
-		font-style: normal;
-		font-variation-settings: "wdth" 100;
 		line-height: 1.6;
 		min-height: 100vh;
 		text-rendering: optimizeLegibility;
@@ -97,6 +102,7 @@
 		cursor: pointer;
 		font-family: inherit;
 		background-color: transparent;
+		outline-color: light-dark(var(--content), var(--content-dark));
 
 		&:hover {
 			color: light-dark(var(--attention-hover), var(--attention-hover-dark));
@@ -114,6 +120,7 @@
 		font-family: inherit;
 		border-radius: 4px;
 		width: 100%;
+		outline-color: light-dark(var(--content), var(--content-dark));
 	}
 
 	label {
@@ -198,7 +205,7 @@
 
 	.thumbnail {
 		display: block;
-		margin: 0 12px 0 0;
+		margin: 0 12px 0px 0;
 		float: left;
 		max-width: 100px;
 		border-radius: 6px;
@@ -254,8 +261,8 @@
 		align-items: center;
 		justify-content: space-between;
 		color: light-dark(var(--ignore), var(--ignore-dark));
-		font-size: 0.925rem;
-		margin-bottom: 0.5rem;
+		font-size: 0.9rem;
+		margin-bottom: 0.7rem;
 	}
 
 	.post__meta {
@@ -289,8 +296,18 @@
 		}
 	}
 
+	.post__title-content-wrapper {
+		margin-bottom: 0.7rem;
+	}
+
+	.post__title-content-wrapper::after {
+		content: "";
+  		clear: both;
+ 		display: table;
+	}
+
 	.post__title, .post__reply--bold {
-		font-size: 1.125rem;
+		font-size: 1.1rem;
 		text-decoration: none;
 		color: light-dark(var(--heading), var(--heading-dark));
 		font-weight: 600;
@@ -298,10 +315,9 @@
 
 	.post__content {
 		color: light-dark(var(--content), var(--content-dark));
-		font-size: 1.025rem;
+		font-size: 1.05rem;
 		overflow-wrap: break-word;
 		word-break: keep-all;
-		margin-bottom: 0.5rem;
 	}
 
 	.post__content--pre-wrap {
@@ -317,8 +333,8 @@
 	.post__footer {
 		clear: both;
 		color: light-dark(var(--ignore), var(--ignore-dark));
-		font-size: 0.925rem;
-		padding-top: 0.5rem;
+		font-size: 0.9rem;
+		/* padding-top: 0.5rem; */
 	}
 
 	.board-feed {

@@ -1,7 +1,7 @@
 import path from 'path';
 import sharp from 'sharp';
 import { spawn } from 'child_process';
-import instance from '../../db/db.js'
+import instance from '../../models/db.js'
 import fs from "fs/promises"
 import { configuration } from '../../env.js';
 import { __dirname } from '../../path.js';

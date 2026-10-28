@@ -6,19 +6,28 @@ class DB {
 	db;
 	queries;
 	constructor() {
-		this.db = sqlite(path.resolve(__dirname, 'db', 'db'), {})
+		this.db = sqlite(path.resolve(__dirname, 'database', 'db'), {})
 
-		this.db.pragma('journal_mode = WAL');
-		this.db.pragma('synchronous = NORMAL');
-		this.db.pragma('mmap_size = 67108864');
-		this.db.pragma('cache_size = -16000');
-		this.db.pragma('journal_size_limit = 33554432');
-		this.db.pragma('temp_store = MEMORY');
-		this.db.pragma('busy_timeout = 5000');
+		// this.db.pragma('journal_mode = WAL');
+		// this.db.pragma('synchronous = NORMAL');
+		// this.db.pragma('mmap_size = 67108864');
+		// this.db.pragma('cache_size = -16000');
+		// this.db.pragma('journal_size_limit = 33554432');
+		// this.db.pragma('temp_store = MEMORY');
+		// this.db.pragma('busy_timeout = 5000');
+
+		this.db.pragma('journal_mode = WAL')
+		this.db.pragma("synchronous = NORMAL");
+		this.db.pragma("journal_size_limit = 67108864"); // 64 MB
+		this.db.pragma("mmap_size = 134217728"); // 128 MB
+		this.db.pragma("cache_size = 2000");
 
 
 		this.db.exec(
 			`
+
+				
+
 				CREATE TABLE if not exists posts (
 					id INTEGER PRIMARY KEY AUTOINCREMENT,
 					parent_id INTEGER DEFAULT NULL REFERENCES posts(id) ON DELETE CASCADE,
@@ -47,6 +56,7 @@ class DB {
 				CREATE TABLE IF NOT EXISTS ban (
 					ip text primary key
 				);
+
 
 				CREATE INDEX IF NOT EXISTS idx_posts_parent_created
 				ON posts(parent_id, created_at DESC);

@@ -9,14 +9,11 @@ import helmet from 'helmet';
 const app = express()
 
 //set proxy
-app.set('trust proxy', 1);
+// app.set('trust proxy', 1);
 
 app.use(helmet())
 
-if(configuration.NODE_ENV === "development"){
-	app.use('/public', express.static(path.resolve(__dirname, "public"), {maxAge : '1y'}));
-	app.use('/www', express.static(path.resolve(__dirname, "www"), {maxAge : '1y'}));
-}
+app.use('/public', express.static(path.resolve(__dirname, "public"), {maxAge : '1y'}));
 
 app.use('/', v1Routes)
 
@@ -28,7 +25,7 @@ app.use((err, req, res, next) => {
 	}
 	if (err.code && err.code == 'LIMIT_FILE_SIZE') {
 		fs.unlink(req.file?.path)
-		return res.status(500).send({message : "10 MB max size"})
+		return res.status(500).send({message : "5 MB max size"})
 	}
 	return res.status(err.status || 500).send({message : err.message || "Error"})
 })

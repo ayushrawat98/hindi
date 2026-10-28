@@ -4,6 +4,6 @@ files/*
 package-lock.json
 todo
 public
-db/db
-db/db-shm
-db/db-wal
+database/db
+database/db-shm
+database/db-wal

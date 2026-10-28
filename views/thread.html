@@ -5,8 +5,8 @@
 <title>
 	{% if posts[0].title %}{{posts[0].title | safe}}-{% endif %}{{posts[0].content.slice(0,50) | safe}}
 </title>
-<script src="/www/common.js" defer></script>
-<script src="/www/thread.js" defer></script>
+<script src="/public/static/common.js" defer></script>
+<script src="/public/static/thread.js" defer></script>
 {% endblock %}
 
 {% block body %}
@@ -35,8 +35,8 @@
 
 			<div class="newPostWindow hidden" style="position : sticky; bottom : 0; z-index : 4;">
 				<form method="post" enctype="multipart/form-data" id="uploadForm">
-					<!-- <input type="text" id="name" name="name" placeholder="नाम (आवश्यक नहीं)" maxlength="50" /> -->
-					<textarea rows="8" cols="40" placeholder="विवरण : अपनी बात यहाँ लिखें..." id="content"
+					<input type="text" id="name" name="name" placeholder="नाम (आवश्यक नहीं)" maxlength="50" />
+					<textarea rows="8" cols="40" placeholder="अपनी बात यहाँ हिंदी में लिखें..." id="content"
 						name="content" minlength="1" maxlength="1000" autocomplete="off" required></textarea>
 					<span class="fileName"></span>
 					<input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm" hidden>

@@ -2,7 +2,7 @@ import { __dirname } from '../../path.js';
 import { burstLimiter, quotaLimiter } from '../libraries/ratelimit.js';
 import upload from "../libraries/multer.js"
 import fs from "node:fs/promises"
-import instance from '../../db/db.js';
+import instance from '../../models/db.js';
 import { escapeHTML } from '../libraries/sanitize.js';
 import { AppError } from '../libraries/error.js';
 import path from 'node:path';

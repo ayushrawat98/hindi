@@ -4,7 +4,7 @@ export function configNunjucks(app) {
 	const nunjucksEnv = nunjucks.configure("views", {
 		autoescape: true,
 		express: app,
-		noCache: false
+		noCache: true
 	});
 
 	//filter for getting indian date
@@ -28,15 +28,15 @@ export function configNunjucks(app) {
 	nunjucksEnv.addFilter('greenText', (str) => {
 		const greenTextRegex = /^&gt;(?!&gt;)(.*?)$/gm
 		const replyTextRegex = /&gt;&gt;([\u0966-\u096F]+)/gm
-		const boldTextRegex = /\*(.*)\*/gm
-		const urlRegex = /(https?:\/\/\S+)/iugm;
+		// const boldTextRegex = /\*(.*)\*/gm
+		// const urlRegex = /(https?:\/\/\S+)/iugm;
 		// let regex = /^>(?!>)(.*?)$/gm
 		// let regexTwo = />>(\d+)/gm
 		return str
 				.replace(greenTextRegex, "<span class='greenText'>&gt;$1</span>")
 				.replace(replyTextRegex, "<span><a class='replyText' data-post-number-link='$1' href='#$1'>&gt;&gt;$1</a></span>")
-				.replace(urlRegex, "<a href='$1'>लिंक</a>")
-				.replace(boldTextRegex, "<span class='post__reply--bold'>$1</span>")
+				// .replace(urlRegex, "<a href='$1'>लिंक</a>")
+				// .replace(boldTextRegex, "<span class='post__reply--bold'>$1</span>")
 	})
 
 	nunjucksEnv.addFilter('hindinumber', (num) => {
