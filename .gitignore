@@ -3,6 +3,7 @@ files/*
 .env
 package-lock.json
 todo
+database
 database/db
 database/db-shm
 database/db-wal

@@ -1,5 +1,8 @@
 import { configuration } from "./env.js";
 import "./models/db.js"
+import "./models/seed.js";
+
+
 import app from "./src/app.js";
 import fs from "fs"
 import { __dirname } from "./path.js";
@@ -10,6 +13,9 @@ import { configNunjucks } from "./src/libraries/nunjucks.js";
 configNunjucks(app)
 
 //create folders if not exists
+if(!fs.existsSync(path.join(__dirname, 'database'))){
+	fs.mkdirSync(path.join(__dirname, 'database'))
+}
 if(!fs.existsSync(path.join(__dirname, 'public', 'files'))){
 	fs.mkdirSync(path.join(__dirname, 'public', 'files'))
 }

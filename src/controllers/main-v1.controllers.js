@@ -1,6 +1,4 @@
 import { __dirname } from '../../path.js';
-import { burstLimiter, quotaLimiter } from '../libraries/ratelimit.js';
-import upload from "../libraries/multer.js"
 import fs from "node:fs/promises"
 import instance from '../../models/db.js';
 import { escapeHTML } from '../libraries/sanitize.js';
@@ -13,25 +11,42 @@ import { deletePostFiles } from '../libraries/prune.js';
 const MAX_THREAD_COUNT = 100 //show 100 threads
 const MAX_THREAD_BUMP_LIMIT = 200
 
+const hindiBoards = {
+  a: ['a',"एनीमे"],
+  v: ['v', "खेल"],
+  g: ['g', "टेक्नोलॉजी"],
+  tv: ['tv', "टीवी-सिनेमा"],
+  ck: ['ck', "खानपान"],
+  gen: ['gen', "विविध"]
+};
+
 
 export const getBoardData = async (req, res, next) => {
 
-	const getBoardData = instance.db.transaction(() => {
+	const boards = instance.queries.getAllBoards.all()
 
-		const newPosts = instance.queries.getNewParentPosts.all(5);
+	const requestedBoard = boards.find(obj => obj.name === req.params.board)
 
-		const hotPosts = instance.queries.getHotParentPosts.all(MAX_THREAD_COUNT);
+	console.log(boards, requestedBoard)
 
-		return { newPosts, hotPosts }
-	});
+	if(!requestedBoard) {
+		return res.redirect(`/gen`)
+	}
 
-	const data = getBoardData();
+	const activeBoards = boards.map(board => {
+		return hindiBoards[board.name]
+	})
+
+	const newPosts = instance.queries.getNewParentPostsByBoard.all(requestedBoard.id, 5);
+
+	const hotPosts = instance.queries.getHotParentPostsByBoard.all(requestedBoard.id, MAX_THREAD_COUNT);
 
 	return res.render('board.html', {
 		title : "हिन्दी प्रोजेक्ट",
-		board: true,
-		newPosts: data.newPosts,
-		hotPosts: data.hotPosts
+		boards : activeBoards,
+		board : requestedBoard,
+		newPosts: newPosts,
+		hotPosts: hotPosts
 	});
 }
 
@@ -40,6 +55,18 @@ export const setBoardData = async (req, res, next) => {
 	//no file , throw error
 	if (!req.file) {
 		throw new Error("संचिका आवश्यक है।")
+	}
+
+	const requestedBoard = req.params.board
+
+	const boards = instance.queries.getAllBoards.all()
+
+	console.log(boards, requestedBoard)
+
+	const filteredBoard = boards.find(obj => obj.name === requestedBoard)
+	
+	if(!filteredBoard) {
+		throw new Error("बोर्ड अस्तित्व में नहीं है।")
 	}
 
 	const createThread = instance.db.transaction(() => {
@@ -53,6 +80,7 @@ export const setBoardData = async (req, res, next) => {
 		)
 
 		const newThread = instance.queries.insertParentPost.run(
+			filteredBoard.id,
 			escapeHTML(req.body.name).trim(),
 			escapeHTML(req.body.title).trim(),
 			escapeHTML(req.body.content).trim(),
@@ -80,24 +108,41 @@ export const setBoardData = async (req, res, next) => {
 
 export const getThreadData = async (req, res, next) => {
 
-	const getThreadData = instance.db.transaction((threadId) => {
-		const currentThread = instance.queries.getParentPost.get(threadId);
+	const boards = instance.queries.getAllBoards.all()
+
+	const requestedBoard = boards.find(obj => obj.name === req.params.board)
+
+	if(!requestedBoard) {
+		return res.redirect("/gen")
+	}
+
+	const activeBoards = boards.map(board => {
+		return hindiBoards[board.name]
+	})
+
+	const requestThread = req.params.threadId
+
+	const getThreadData = instance.db.transaction(() => {
+		const currentThread = instance.queries.getParentPost.get(requestThread, requestedBoard.id);
 
 		if (!currentThread) {
 			throw new Error("चर्चा अस्तित्व में नहीं है।");
 		}
 
-		const currentPosts = instance.queries.getChildPosts.all(threadId);
+		const currentPosts = instance.queries.getChildPosts.all(requestThread);
 
-		const newPosts = instance.queries.getNewParentPosts.all(5);
+		const newPosts = instance.queries.getNewParentPostsByBoard.all(requestedBoard.id, 5);
 
 		return { currentThread, currentPosts, newPosts };
 	});
 
-	const { currentThread, currentPosts, newPosts } = getThreadData(req.params.threadId);
+	const { currentThread, currentPosts, newPosts } = getThreadData();
+
+	console.log(requestedBoard)
 
 	return res.render('thread.html', {
-		board: true,
+		boards : activeBoards,
+		board : requestedBoard,
 		posts: [currentThread, ...currentPosts],
 		newPosts: newPosts
 	});
@@ -105,16 +150,34 @@ export const getThreadData = async (req, res, next) => {
 
 export const setThreadData = async (req, res, next) => {
 
+	const boards = instance.queries.getAllBoards.all()
+
+	const requestedBoard = boards.find(obj => obj.name === req.params.board)
+
+	if(!requestedBoard) {
+		return res.redirect("/gen")
+	}
+
+	const requestThread = req.params.threadId
+
+	const currentThread = instance.queries.getParentPost.get(requestThread, requestedBoard.id)
+
+	if (!currentThread) {
+		throw new Error("चर्चा अस्तित्व में नहीं है।")
+	}
+
+	const activeBoards = boards.map(board => {
+		return hindiBoards[board.name]
+	})
+
+
 	let setThreadData = instance.db.transaction((req) => {
-		const currentThread = instance.queries.getParentPost.get(req.params.threadId)
-		if (!currentThread) {
-			throw new Error("चर्चा अस्तित्व में नहीं है।")
-		}
+		
 		let newFile = undefined
 		if (req.file) {
 			newFile = instance.queries.insertFile.run(req.file.filename, req.file.mimetype, req.file.size, 'pending', new Date().toISOString())
 		}
-		const newPost = instance.queries.insertChildPost.run(currentThread.id, escapeHTML(req.body.name).trim(), escapeHTML(req.body.content).trim(), newFile?.lastInsertRowid ?? null, req.ip, new Date().toISOString())
+		const newPost = instance.queries.insertChildPost.run(requestedBoard.id, currentThread.id, escapeHTML(req.body.name).trim(), escapeHTML(req.body.content).trim(), newFile?.lastInsertRowid ?? null, req.ip, new Date().toISOString())
 
 		if(currentThread.replies < MAX_THREAD_BUMP_LIMIT) {
 			instance.queries.updateParentPostTimeAndReplies.run(new Date().toISOString(), currentThread.id)

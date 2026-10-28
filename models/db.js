@@ -8,14 +8,6 @@ class DB {
 	constructor() {
 		this.db = sqlite(path.resolve(__dirname, 'database', 'db'), {})
 
-		// this.db.pragma('journal_mode = WAL');
-		// this.db.pragma('synchronous = NORMAL');
-		// this.db.pragma('mmap_size = 67108864');
-		// this.db.pragma('cache_size = -16000');
-		// this.db.pragma('journal_size_limit = 33554432');
-		// this.db.pragma('temp_store = MEMORY');
-		// this.db.pragma('busy_timeout = 5000');
-
 		this.db.pragma('journal_mode = WAL')
 		this.db.pragma("synchronous = NORMAL");
 		this.db.pragma("journal_size_limit = 67108864"); // 64 MB
@@ -26,10 +18,16 @@ class DB {
 		this.db.exec(
 			`
 
+				create table if not exists boards (
+					id integer primary key autoincrement,
+					name text not null unique,
+					disabled integer default 0
+				);
 				
 
 				CREATE TABLE if not exists posts (
 					id INTEGER PRIMARY KEY AUTOINCREMENT,
+					board_id INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
 					parent_id INTEGER DEFAULT NULL REFERENCES posts(id) ON DELETE CASCADE,
 					name TEXT,
 					title TEXT,
@@ -57,6 +55,7 @@ class DB {
 					ip text primary key
 				);
 
+				CREATE INDEX IF NOT EXISTS idx_posts_parent_board ON posts(board_id, updated_at DESC) WHERE parent_id IS NULL;
 
 				CREATE INDEX IF NOT EXISTS idx_posts_parent_created
 				ON posts(parent_id, created_at DESC);
@@ -74,12 +73,15 @@ class DB {
 			insertFile: this.db.prepare('insert into files (path, type, size, status, created_at) values (?,?,?,?,?)'),
 			getFile: this.db.prepare('select * from files where id = ?'),
 
-			insertParentPost: this.db.prepare('insert into posts (name, title, content, file_id, ip, created_at, updated_at) values (?,?,?,?,?,?,?)'),
-			getNewParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit ?'),
-			getHotParentPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit ?'),
+			getAllBoards : this.db.prepare("select * from boards"),
 
-			insertChildPost: this.db.prepare('insert into posts (parent_id, name, content, file_id, ip, created_at) values (?,?,?,?,?,?)'),
-			getParentPost: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.id = ?'),
+			insertParentPost: this.db.prepare('insert into posts (board_id, name, title, content, file_id, ip, created_at, updated_at) values (?,?,?,?,?,?,?,?)'),
+			
+			getNewParentPostsByBoard : this.db.prepare('select t.id, t.name, t.title, t.content, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null and t.board_id = ? order by t.created_at desc limit ?'),
+			getHotParentPostsByBoard : this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null and t.board_id = ? order by t.updated_at desc limit ?'),
+
+			insertChildPost: this.db.prepare('insert into posts (board_id, parent_id, name, content, file_id, ip, created_at) values (?,?,?,?,?,?,?)'),
+			getParentPost: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.id = ? and t.board_id = ?'),
 			getChildPosts: this.db.prepare('select p.id, p.parent_id, p.name, p.content, p.created_at, p.file_id, p.replies, f.id as file_id, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width  from posts p left join files f on p.file_id = f.id where p.parent_id = ?'),
 			updateParentPostTimeAndReplies: this.db.prepare('update posts set updated_at = ?, replies = replies + 1 where id = ?'),
 
@@ -87,9 +89,6 @@ class DB {
 			getFileWithStatus : this.db.prepare('select * from files where status = ?'),
 			updateFileStatus : this.db.prepare('update files set status = ? where id = ?'),
 			updateFileHeightAndWidth : this.db.prepare("UPDATE files SET height = ?, width = ? WHERE id = ?"),
-
-			getHotPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.updated_at desc limit 100'),
-			getNewPosts: this.db.prepare('select t.id, t.title, t.content, t.name, t.created_at, t.replies, f.path as file_path, f.type as file_type, f.status as file_status, f.height as file_height, f.width as file_width from posts t left join files f on t.file_id = f.id where t.parent_id is null order by t.created_at desc limit 100'),
 
 			getFileIdByPostId : this.db.prepare('select file_id from posts where id = ?'),
 

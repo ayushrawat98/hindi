@@ -32,11 +32,20 @@ const boardsExtra =  [
 	["यात्रा", "भ्रमण, पर्यटन, गंतव्य और यात्रा के अनुभव।"],
 ];
 
+const engBoards = [
+	"a",
+	"v",
+	"g",
+	"tv",
+	"ck",
+	"gen"
+]
+
 
 const stmt = instance.db.prepare(
-  "INSERT OR IGNORE INTO boards (name, description) VALUES (?, ?);"
+  "INSERT OR IGNORE INTO boards (name) VALUES (?);"
 );
 
-for (const [board, description] of boardsExtra) {
-  stmt.run(board, description)
+for (const board of engBoards) {
+  stmt.run(board)
 }

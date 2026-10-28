@@ -8,16 +8,16 @@ import { ipBanMiddleware } from '../libraries/ban.js';
 const route = express.Router()
 
 route.get("/", (req, res, next) => {
-	return res.redirect(`board`);
+	return res.redirect(`/gen`);
 })
 
-route.get('/board', getBoardData)
+route.get('/:board', getBoardData)
 
-route.post('/board', threadLimiter, ipBanMiddleware, upload.single("file"), trimBody, setBoardData)
+route.post('/:board', threadLimiter, ipBanMiddleware, upload.single("file"), trimBody, setBoardData)
 
-route.get('/thread/:threadId', getThreadData)
+route.get('/:board/thread/:threadId', getThreadData)
 
-route.post('/thread/:threadId', burstLimiter, quotaLimiter, ipBanMiddleware, upload.single("file"), trimBody, setThreadData)
+route.post('/:board/thread/:threadId', burstLimiter, quotaLimiter, ipBanMiddleware, upload.single("file"), trimBody, setThreadData)
 
 route.get("/di/:postId/:password", adminCheck, deleteImage)
 
