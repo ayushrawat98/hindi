@@ -34,6 +34,10 @@ export const getBoardData = async (req, res, next) => {
 		return res.redirect(`/gen`)
 	}
 
+	//store current board hindi name
+	requestedBoard["hindiname"] =  hindiBoards[requestedBoard.name][1]
+
+	//hindi names for navigation bar
 	const activeBoards = boards.map(board => {
 		return hindiBoards[board.name]
 	})
