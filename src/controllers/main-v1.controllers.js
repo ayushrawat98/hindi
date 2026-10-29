@@ -28,7 +28,7 @@ export const getBoardData = async (req, res, next) => {
 
 	const requestedBoard = boards.find(obj => obj.name === req.params.board)
 
-	console.log(boards, requestedBoard)
+	// console.log(boards, requestedBoard)
 
 	if(!requestedBoard) {
 		return res.redirect(`/gen`)
@@ -62,7 +62,7 @@ export const setBoardData = async (req, res, next) => {
 
 	const boards = instance.queries.getAllBoards.all()
 
-	console.log(boards, requestedBoard)
+	// console.log(boards, requestedBoard)
 
 	const filteredBoard = boards.find(obj => obj.name === requestedBoard)
 	
@@ -139,7 +139,7 @@ export const getThreadData = async (req, res, next) => {
 
 	const { currentThread, currentPosts, newPosts } = getThreadData();
 
-	console.log(requestedBoard)
+	// console.log(requestedBoard)
 
 	return res.render('thread.html', {
 		boards : activeBoards,
@@ -212,7 +212,7 @@ export const deleteImage = (req, res, next) => {
 
 	// req : /delete/postId/password
 	let changeFilePath = instance.db.transaction(() => {
-		const fileRes = instance.queries.getFileIdByPostId.get(req.params.postId)
+		const fileRes = instance.queries.getFileIdByPostId.get(req.params.threadId)
 		const result = instance.queries.updateFileStatus.run("deleted", fileRes.file_id)
 		const fileDetails = instance.queries.getFile.get(fileRes.file_id)
 		return fileDetails
@@ -232,12 +232,12 @@ export const deleteImage = (req, res, next) => {
 
 export const deletePost = (req, res, next) => {
 	try {
-		let parent = instance.queries.getParentPost.get(req.params.postId)
-		let children = instance.queries.getChildPosts.all(req.params.postId)
+		let parent = instance.queries.getParentPost.get(req.params.threadId, req.params.board )
+		let children = instance.queries.getChildPosts.all(req.params.threadId)
 
 		const transact = instance.db.transaction(() => {
 			//delete parent , will cascade delete child
-			instance.queries.deletePostById.run(req.params.postId)
+			instance.queries.deletePostById.run(req.params.threadId)
 		})
 
 		transact()
@@ -256,7 +256,7 @@ export const deletePost = (req, res, next) => {
 
 export const banPost = (req, res, next) => {
 	try {
-		const postIp = instance.queries.getIpByPostId.get(req.params.postId)
+		const postIp = instance.queries.getIpByPostId.get(req.params.threadId)
 		const convertedPostIp = convertIP(postIp.ip)
 		const done = instance.queries.banByIp.run(convertedPostIp)
 		return res.status(200).send({message : "banned : " + convertedPostIp })

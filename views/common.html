@@ -44,7 +44,7 @@
 				{% endif %}
 			</span>
 			<span>&middot;</span>
-			<time datetime="{{data.created_at | indianDate}}">{{data.created_at | indianDate}}</time>
+			<time datetime="{{data.created_at}}">{{data.created_at | indianDate}}</time>
 		</div>
 		<button type="button" class="post__reply" data-post-number="{{data.id | hindinumber}}">उत्तर दें</button>
 	</header>
@@ -110,7 +110,7 @@
 				{% endif %}
 			</span>
 			<span>&middot;</span>
-			<time datetime="{{data.created_at | indianDate}}">{{data.created_at | indianDate}}</time>
+			<time datetime="{{data.created_at}}">{{data.created_at | indianDate}}</time>
 			<span>&middot;</span>
 			<a class="post__link" href="/{{board.name}}/thread/{{data.id}}">{{data.replies}} {% if data.replies <= 1 %}टिप्पणी{% else
 					%}टिप्पणियाँ{% endif %} </a>
