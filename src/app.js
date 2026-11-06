@@ -6,6 +6,7 @@ import path from "path";
 import fs from "fs/promises"
 import helmet from 'helmet';
 import compression from 'compression';
+// import { route as AdminRoutes } from "./routes/admin.route.js"
 
 const app = express()
 
@@ -16,9 +17,20 @@ const app = express()
 
 app.use(compression())
 
-app.use('/public', express.static(path.resolve(__dirname, "public"), {maxAge : '1y'}));
+app.use('/public', express.static(
+	path.resolve(__dirname, "public"),
+	{
+		maxAge : '1y',
+		setHeaders : (res, path) => {
+			res.setHeader('Content-Disposition', 'attachment');
+			res.setHeader('X-Content-Type-Options', 'nosniff');
+		}
+	}
+));
 
+// app.use("/admin", AdminRoutes)
 app.use('/', v1Routes)
+
 
 //global error handling
 app.use((err, req, res, next) => {
@@ -27,7 +39,7 @@ app.use((err, req, res, next) => {
 		fs.unlink(req.file.path)
 	}
 	if (err.code && err.code == 'LIMIT_FILE_SIZE') {
-		fs.unlink(req.file?.path)
+		// fs.unlink(req.file?.path) //multer automatically deletes large files.
 		return res.status(500).send({message : "5 MB max size"})
 	}
 	return res.status(err.status || 500).send({message : err.message || "Error"})
