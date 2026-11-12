@@ -236,7 +236,7 @@
 	.post-list {
 		display: flex;
 		flex-direction: column;
-		gap: 1.25rem;
+		gap: 1rem;
 		/* margin-bottom: 350px; */
 	}
 
@@ -248,7 +248,7 @@
 
 	/* smaller gap for thread */
 	.post-list--thread {
-		gap: 0.8rem;
+		gap: 1rem;
 	}
 
 	.post {
@@ -321,8 +321,7 @@
 	.post__content {
 		color: light-dark(var(--content), var(--content-dark));
 		font-size: 1rem;
-		overflow-wrap: break-word;
-		word-break: break-word;
+		overflow-wrap: anywhere;
 	}
 
 	.post__content--pre-wrap {
@@ -405,7 +404,7 @@
 
 		.board-feed {
 			flex-direction: row;
-			gap: 0.5rem;
+			/* gap: 0.5rem; */
 		}
 
 		.board-feed__sidebar {
