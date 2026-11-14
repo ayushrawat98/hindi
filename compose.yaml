@@ -5,12 +5,13 @@ services:
     restart: unless-stopped
 
     ports:
-      - "127.0.0.1:80:80"
+      - "127.0.0.1:3000:3000"
 
     environment:
       FFMPEG_PATH: ffmpeg
       NODE_ENV: development
-      PORT: 80
+      PORT: 3000
+      PASSWORD: dummy
 
     volumes:
       - ./database:/app/database
