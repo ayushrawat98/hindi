@@ -10,11 +10,11 @@ const route = express.Router()
 
 route.get('/:board', getBoardData)
 
-route.post('/:board', threadLimiter, checkBan, upload.single("file"), trimBody, generateTripcode, setBoardData)
+route.post('/:board', checkBan, upload.single("file"), trimBody, generateTripcode, setBoardData)
 
 route.get('/:board/thread/:threadId', getThreadData)
 
-route.post('/:board/thread/:threadId', burstLimiter, quotaLimiter, checkBan, upload.single("file"), trimBody, generateTripcode, setThreadData)
+route.post('/:board/thread/:threadId', checkBan, upload.single("file"), trimBody, generateTripcode, setThreadData)
 
 
 export { route }
