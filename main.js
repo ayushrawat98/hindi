@@ -1,4 +1,5 @@
-import "./env.js"
+// import "./env.js" //comment out for production 
+
 import "./models/db.js"
 import app from "./src/app.js";
 import fs from "fs"
