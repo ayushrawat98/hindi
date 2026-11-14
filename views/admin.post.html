@@ -1,0 +1,133 @@
+
+{% for data in posts %}
+<article class="post post--hover" id="{{data.id}}">
+
+	<header class="post__header">
+		<div class="post__meta">
+			<span>{{data.id}}</span>
+			<span>&middot;</span>
+			<span>
+				{% if data.name %}
+				{{data.name}}
+				{% else %}
+				अपरिचित
+				{% endif %}
+			</span>
+			<span>&middot;</span>
+			<time datetime="{{data.created_at}}">{{data.created_at }}</time>
+			<span>&middot;</span>	
+		</div>
+	</header>
+
+		{% if data.file_path %}
+	{% if data.file_status == 'pending' %}
+<img class="thumbnail thumbnail-js" src="/static/processing.webp" alt="File is processing" fetchpriority="high" />
+/>
+{% elif data.file_status == 'failed' or data.file_status == 'deleted' %}
+<img class="thumbnail thumbnail-js" src="/static/deleted.webp" alt="File deleted" fetchpriority="high" />
+{% else %}
+{% if "video" in data.file_type %}
+
+<video width="200" height="200" class="thumbnail thumbnail--expanded thumbnail--removed"
+	src="/public/files/{{data.file_path | safeFileName}}"
+	data-poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp" controls autoplay>
+</video>
+{% else %}
+
+<img width="200" height="200" class="thumbnail thumbnail--removed thumbnail--expanded "
+	src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" />
+{% endif %}
+{% endif %}
+{% endif %}
+
+
+	{% if data.title %}
+	<h3 class="post__title">{{data.title}}</h3>
+	{% endif %}
+
+	{% if data.content %}
+	<p class="post__content post__content--pre-line">{{data.content | greenText | safe}}</p>
+	{% endif %}
+
+	<button class="deletePost" data-id="{{data.id}}">delete whole post</button>
+	{% if data.file_id %}<button class="deleteImage" data-id="{{data.file_id}}">delete image</button>{% endif %}
+	<button class="lockPost" data-id="{{data.id}}">{% if data.locked %}unlock{% else %}lock{% endif %} post</button>
+	<button class="pinPost" data-id="{{data.id}}">{% if data.pinned %}unpin{% else %}pin{% endif %} post</button>
+	<button class="ban" data-id="{{data.id}}">ban for 24 hours</button>
+	
+
+</article>
+<hr/>
+{% endfor %}
+
+<script>
+	
+
+	function deletePost(endpoint, id){
+		fetch(window.location.origin + endpoint + id, {
+			method: "DELETE"
+		})
+		.then(res => res.json())
+		.then(res => alert(res.changes))
+	}
+
+	function deleteFile(id){
+		fetch("/files/" + id, {
+			method: "DELETE"
+		})
+		.then(res => res.json())
+		.then(res => alert(res.changes))
+	}
+
+	function patchPost(endpoint, body){
+		fetch(window.location.origin + endpoint, {
+			method: "PATCH",
+			body : new URLSearchParams(body)
+		})
+		.then(res => res.json())
+		.then(res => alert(res.changes))
+	}
+
+	document.querySelectorAll(".deletePost").forEach(btn => {
+		btn.addEventListener("click", (e) => {
+			if(confirm("delete post")){
+				deletePost("/posts/", btn.dataset.id)
+			}
+		})
+	})
+
+	document.querySelectorAll(".deleteImage").forEach(btn => {
+		btn.addEventListener("click", (e) => {
+			if(confirm("delete file")){
+				deleteFile(btn.dataset.id)
+			}
+		})
+	})
+
+	document.querySelectorAll(".lockPost").forEach(btn => {
+		btn.addEventListener("click", (e) => {
+			if(confirm("lock post")){
+				patchPost("/posts/" + btn.dataset.id, {locked : 1})
+			}
+		})
+	})
+
+	document.querySelectorAll(".pinPost").forEach(btn => {
+		btn.addEventListener("click", (e) => {
+			if(confirm("pin post")){
+				patchPost("/posts/" + btn.dataset.id , {pinned : 1})
+			}
+		})
+	})
+
+	document.querySelectorAll(".ban").forEach(btn => {
+		btn.addEventListener("click", (e) => {
+			if(confirm("ban user")){
+				patchPost("/posts/" + btn.dataset.id , {ban : 1})
+			}
+		})
+	})
+
+	
+	
+</script>

@@ -5,9 +5,12 @@ npm-debug.log*
 .env.*
 !.env.example
 
+
 data
 public
 database
+static 
+todo
 
 .DS_Store
 coverage

@@ -1,10 +1,3 @@
 import { configDotenv } from "dotenv";
 
 configDotenv()
-
-export const configuration = {
-	NODE_ENV : process.env.NODE_ENV?.trim() || "development",
-	PORT : process.env.PORT?.trim() || 3001,
-	FFMPEG : process.env.FFMPEG?.trim() || "ffmpeg",
-	PASSWORD : process.env.PASSWORD?.trim() || null
-}

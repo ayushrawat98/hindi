@@ -1,0 +1,168 @@
+
+<h1> create new board </h1>
+<!-- <form id="createBoardForm">
+	<input type="text" name="name" placeholder="name in english">
+	<input type="text" name="title" placeholder="title in hindi">
+	<input type="text" name="rules" placeholder="rules in hindi">
+	<button type="submit">create board</button>
+</form> -->
+
+<form method="post" action="/boards" enctype="application/x-www-form-urlencoded">
+	<input type="text" name="name" placeholder="name in english">
+	<input type="text" name="title" placeholder="title in hindi">
+	<input type="text" name="rules" placeholder="rules in hindi">
+	<button type="submit">create board</button>
+</form>
+
+<!-- <h2> Update / Delete Board </h2>
+<form id="searchBoardForm">
+	<input type="text" name="name" placeholder="search by english name">
+	<button type="submit">search board</button>
+</form> -->
+<h1>Update / Delete Boards</h1>
+{% for board in boards %}
+	<form id="form-{{board.id}}">
+		<input type="number" name="id" value="{{board.id}}">
+		<input type="text" name="name" placeholder="name for route" value="{{board.name}}">
+		<input type="text" name="title" placeholder="title in hindi" value="{{board.title}}">
+		<textarea rows="5" name="rules" placeholder="rules in hindi">{{board.rules}}</textarea>
+		locked : <input type="number" name="locked" value="{{board.locked}}">
+		order_number : <input type="number" name="order_number" value="{{board.order_number}}">
+		<input type="text" name="owner_name" placeholder="owner name with trip code or ADMIN" value="{{board.owner_name}}">
+		<button class="updatebtn" type="button" data-id="{{board.id}}">Update</button>
+		<button class="deletebtn" type="button" data-id="{{board.id}}">Delete</button>
+	</form>
+{% endfor %}
+
+
+<script>
+
+	
+
+	function handler(promise){
+		promise.then(async res => {
+			let response = await res.json()
+			if (!res.ok) throw new Error(response.message);
+			return response
+		})
+		.then(res => {
+			alert("success : " + res.changes)
+		})
+		.catch(res => alert(res.message))
+	}
+
+	function updateBoard(event, form) {
+		event.preventDefault()
+		let result = new URLSearchParams(new FormData(form));
+		let promise = fetch("/boards/" + result.get("id")  , {
+			method: "PUT",
+			headers: {
+				"Content-Type" : 'application/x-www-form-urlencoded'
+			},
+			body: result
+		})
+		handler(promise)
+	}
+
+	function deleteBoard(event, form) {
+		event.preventDefault()
+		let result = new URLSearchParams(new FormData(form));
+		let promise = fetch("/boards/" +  result.get("id"), {
+			method: "DELETE"
+		})
+		handler(promise)
+	}
+
+	document.querySelectorAll(".updatebtn").forEach(btn => {
+		btn.addEventListener("click", (e) => {
+			let form = this.document.getElementById("form-" + btn.dataset.id)
+			updateBoard(e, form)
+		})
+	})
+
+	document.querySelectorAll(".deletebtn").forEach(btn => {
+		btn.addEventListener("click", (e) => {
+			let form = this.document.getElementById("form-" + btn.dataset.id)
+			if(confirm("delete board")) {
+				deleteBoard(e, form)
+			}
+		})
+	})
+
+	// function convertFormDataToObject(target) {
+	// 	const formData = new FormData(target);
+	// 	const data = {};
+	// 	for (const [key, value] of formData.entries()) {
+	// 		if (data[key]) {
+	// 			if (!Array.isArray(data[key])) {
+	// 				data[key] = [data[key]];
+	// 			}
+	// 			data[key].push(value);
+	// 		} else {
+	// 			data[key] = value;
+	// 		}
+	// 	}
+	// 	return data
+	// }
+
+	// function generateForm(object) {
+	// 	function generateInput(name, value){
+	// 		let elem = document.createElement("input")
+	// 		elem.type = "text"
+	// 		elem.name = name
+	// 		elem.value = value
+	// 		elem.placeholder = name
+	// 		return elem
+	// 	}
+	// 	let form = document.createElement("form")
+	// 	form.id = "foundBoardForm"
+	// 	for([key, value] of Object.entries(object)){
+	// 		form.append(generateInput(key, value))
+	// 	}
+
+	// 	let updateBtn = document.createElement("button")
+	// 	let deleteBtn = document.createElement("button")
+
+	// 	updateBtn.textContent = "Update"
+	// 	updateBtn.addEventListener("click", (event) => updateBoard(event))
+
+	// 	deleteBtn.textContent = "Delete"
+	// 	deleteBtn.addEventListener("click", (e) => deleteBoard(e))
+
+	// 	form.append(updateBtn)
+	// 	form.append(deleteBtn)
+	// 	return form
+	// }
+
+	// function appendForm(form){
+	// 	document.getElementById("searchBoardForm").nextElementSibling.remove()
+	// 	document.getElementById("searchBoardForm").after(form)
+	// }
+
+	// document.getElementById("searchBoardForm").addEventListener("submit", (event) => {
+	// 	event.preventDefault()
+	// 	const jsonString = convertFormDataToObject(event.target)
+	// 	fetch(window.location.origin + "/admin/board/" + jsonString.name)
+	// 	.then(res => res.json())
+	// 	.then(res => {
+	// 		let f = generateForm(res)
+	// 		appendForm(f)
+	// 	})
+	// })
+
+
+	// document.getElementById("createBoardForm").addEventListener("submit", (event) => {
+	// 	event.preventDefault()
+	// 	const jsonString = convertFormDataToObject(event.target)
+	// 	fetch(window.location.origin + "/admin/board", {
+	// 		method: "POST",
+	// 		headers: {
+	// 			"Content-Type" : "application/json"
+	// 		},
+	// 		body: JSON.stringify(jsonString)
+	// 	})
+	// 	.then(res => res.json())
+	// 	.then(res => alert(res))
+	// })
+
+</script>

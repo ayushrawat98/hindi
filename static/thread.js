@@ -2,7 +2,7 @@ const ISMOBILE = window.innerWidth <= 768
 
 //scroll to last position on coming back
 window.addEventListener("load", () => {
-	scrollToLastPos()
+	// scrollToLastPos()
 })
 
 
@@ -17,34 +17,34 @@ function debounce(cb, time){
 }
 
 //save scroll position in particular thread
-function saveScrollPosition(postId, position) {
-  const positions = JSON.parse(localStorage.getItem('post_scroll_positions')) || {};
-  positions[postId] = position;
-  localStorage.setItem('post_scroll_positions', JSON.stringify(positions));
-}
+// function saveScrollPosition(postId, position) {
+//   const positions = JSON.parse(localStorage.getItem('post_scroll_positions')) || {};
+//   positions[postId] = position;
+//   localStorage.setItem('post_scroll_positions', JSON.stringify(positions));
+// }
 
-//retrieve a scroll position
-function getScrollPosition(postId) {
-  const positions = JSON.parse(localStorage.getItem('post_scroll_positions')) || {};
-  return positions[postId] || 0;
-}
+// //retrieve a scroll position
+// function getScrollPosition(postId) {
+//   const positions = JSON.parse(localStorage.getItem('post_scroll_positions')) || {};
+//   return positions[postId] || 0;
+// }
 
-function saveScrollWrapper(){
-	const position = window.scrollY
-	const postId = window.location.pathname.split("/")[2]
-	saveScrollPosition(postId, position) 
-}
+// function saveScrollWrapper(){
+// 	const position = window.scrollY
+// 	const postId = window.location.pathname.split("/")[2]
+// 	saveScrollPosition(postId, position) 
+// }
 
-function scrollToLastPos(){
-	const postId = window.location.pathname.split("/")[2]
-	const lastScrollPos = getScrollPosition(postId)
-	window.scrollBy({
-		top : lastScrollPos,
-		behavior : "instant"
-	})
-}
+// function scrollToLastPos(){
+// 	const postId = window.location.pathname.split("/")[2]
+// 	const lastScrollPos = getScrollPosition(postId)
+// 	window.scrollBy({
+// 		top : lastScrollPos,
+// 		behavior : "instant"
+// 	})
+// }
 
-window.addEventListener("scroll", debounce(saveScrollWrapper, 500))
+// window.addEventListener("scroll", debounce(saveScrollWrapper, 500))
 
 //remove any popup on click anywhere
 document.addEventListener("click", (ev) => {
@@ -55,7 +55,7 @@ document.addEventListener("click", (ev) => {
 
 function showOP() {
 	let opPostId = document.querySelector('.post-list--thread').firstElementChild.nextElementSibling.getAttribute('id')
-	document.querySelectorAll('.replyText').forEach((link) => {
+	document.querySelectorAll('.replyLink').forEach((link) => {
 		if (link.getAttribute('href') == '#' + opPostId) {
 			link.textContent += ' (मूल लेखक)'
 		}
@@ -63,9 +63,9 @@ function showOP() {
 }
 
 function setContentReplies() {
-	const list = document.querySelectorAll('[data-post-number-link]')
+	const list = document.querySelectorAll('[data-post-id]')
 	list.forEach(link => {
-		let postId = link.getAttribute('data-post-number-link')
+		let postId = link.getAttribute('data-post-id')
 		addPopupEventHandler(link, postId)
 
 		//add hash on mobile
@@ -73,7 +73,7 @@ function setContentReplies() {
 			const goToLinkElem = document.createElement("a");
 			goToLinkElem.href = "#" + postId;
 			goToLinkElem.textContent = " #";
-			goToLinkElem.classList.add("replyText")
+			goToLinkElem.classList.add("replyLink")
 			link.parentElement.append(goToLinkElem)
 		}
 	})
@@ -90,12 +90,14 @@ function removeActivePopupWrapper() {
 	activePopupWrapper = null
 }
 
+const postListElement = document.querySelector('.board-feed__column--hot .post-list')
+
 function addPopup(currentNode, linkevent, postHash) {
 	linkevent.preventDefault()
 	removeActivePopupWrapper()
 	if (!postHash) return;
 	
-	const currentPost = document.getElementById(postHash)
+	const currentPost = postListElement.querySelector(`[id="${postHash}"]`);
 	//if the post was delete by moderator , gray it and give a line through
 	if (!currentPost) {
 		currentNode.style.color = 'gray'
@@ -180,21 +182,22 @@ function setFooterReplies() {
 
 	postNodes.forEach(article => {
 		const postId = article.id
+		const postHindiId = article.dataset.hindiId
 
-		if (!postMap.has(postId)) {
+		// if (!postMap.has(postId)) {
 			postMap.set(postId, [article, []]) //id, htmlelement, reply array
-		}
+		// }
 
-		article.querySelectorAll(".replyText").forEach(link => {
-			if (seen[link.getAttribute("data-post-number-link")] != postId) {
-				replyArray.push([link.getAttribute("data-post-number-link"), postId])
-				seen[link.getAttribute("data-post-number-link")] = postId
+		article.querySelectorAll(".replyLink").forEach(link => {
+			if (seen[link.getAttribute("data-post-id")] != postId) {
+				replyArray.push([link.getAttribute("data-post-id"), postId, postHindiId])
+				seen[link.getAttribute("data-post-id")] = postId
 			}
 		})
 	})
 
-	for (let [replyTo, replyFrom] of replyArray) {
-		postMap.get(replyTo)[1].push(replyFrom)
+	for (let [replyTo, replyFrom, replyFromHindi] of replyArray) {
+		postMap.get(replyTo)[1].push([replyFrom, replyFromHindi])
 	}
 
 	//add the links
@@ -216,21 +219,21 @@ function setFooterReplies() {
 
 			const linkElem = document.createElement("a");
 			// linkElem.style.marginRight = "8px";
-			linkElem.href = "#" + replyId;
+			linkElem.href = "#" + replyId[0];
 			// linkElem.style.textDecoration = "underline"
-			linkElem.textContent = ">>" + replyId;
-			linkElem.classList.add("replyText")
+			linkElem.textContent = ">>" + replyId[1];
+			linkElem.classList.add("replyLink")
 
-			addPopupEventHandler(linkElem, replyId)
+			addPopupEventHandler(linkElem, replyId[0])
 
 			let goToLinkElem
 			if (ISMOBILE) {
 				goToLinkElem = document.createElement("a");
 				// goToLinkElem.style.marginRight = "12px";
-				goToLinkElem.href = "#" + replyId;
+				goToLinkElem.href = "#" + replyId[0];
 				// goToLinkElem.style.textDecoration = "underline"
 				goToLinkElem.textContent = " #";
-				goToLinkElem.classList.add("replyText")
+				goToLinkElem.classList.add("replyLink")
 			}
 
 			const spanContainer = document.createElement("span")

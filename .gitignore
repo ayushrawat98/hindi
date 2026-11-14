@@ -7,6 +7,6 @@ database
 database/db
 database/db-shm
 database/db-wal
+test.js
 
-public/files
-public/thumbnails
+public

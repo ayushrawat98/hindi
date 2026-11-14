@@ -1,0 +1,78 @@
+server {
+    listen 80;
+	listen [::]:80;
+    server_name hindichan.site;
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+
+    listen 443 ssl;
+	listen [::]:443 ssl;
+
+	listen 443 quic reuseport;
+    listen [::]:443 quic reuseport;
+
+	http2 on;
+    http3 on;
+
+    server_name hindichan.site;
+
+	client_max_body_size 10M;
+
+    ssl_certificate /etc/letsencrypt/live/hindichan.site/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/hindichan.site/privkey.pem;
+
+	add_header Alt-Svc 'h3=":443"; ma=86400' always;
+
+	location / {
+        proxy_pass http://127.0.0.1:80;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+		# Security headers
+		add_header Strict-Transport-Security "max-age=15552000; includeSubDomains" always;
+		add_header X-Content-Type-Options "nosniff" always;
+		add_header X-Frame-Options "SAMEORIGIN" always;
+		add_header Referrer-Policy "no-referrer" always;
+
+		add_header Cross-Origin-Opener-Policy "same-origin" always;
+		add_header Cross-Origin-Resource-Policy "same-origin" always;
+		add_header Origin-Agent-Cluster "?1" always;
+
+		add_header X-DNS-Prefetch-Control "off" always;
+		add_header X-Download-Options "noopen" always;
+		add_header X-Permitted-Cross-Domain-Policies "none" always;
+
+    }
+
+    location /public/ {
+		gzip off;
+        alias /home/hindi/public/;
+        autoindex off;
+    	sendfile on;
+    	tcp_nopush on;
+    	tcp_nodelay on;      
+       	add_header Cache-Control "public, max-age=31536000" always;
+		add_header X-Content-Type-Options "nosniff" always;
+		add_header Content-Disposition "attachment" always;
+    	try_files $uri =404;
+    }
+
+	location /static/ {
+        alias /home/hindi/static/;
+		autoindex off;
+        gzip on;
+        gzip_comp_level 5;
+        gzip_vary on;    
+       	add_header Cache-Control "public, max-age=31536000" always;
+    	try_files $uri =404;
+    }
+
+}

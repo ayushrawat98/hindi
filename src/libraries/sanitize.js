@@ -23,7 +23,7 @@ export const trimBody = (req, res, next) => {
 		throw new AppError(400,`कुछ तो लिखिए।`, true)
 	}
 
-	next()
+	return next()
 }
 
 const hindiPostRegex = /^[\p{Script=Devanagari}\s\p{P}\p{S}\u0966-\u096F\p{Extended_Pictographic}\u200D\uFE0F]+$/u;
@@ -47,5 +47,5 @@ export const hindiCheck = (req, res, next) => {
 		}
 	}
 	
-	next()
+	return next()
 }

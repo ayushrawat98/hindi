@@ -3,7 +3,7 @@
 	<ul class="board-list__items">
 		{% for board in boards %}
 		<li class="board-list__item">
-			<a class="board-list__link" href="/{{board[0]}}">{{board[1]}}</a>
+			<a class="board-list__link" href="/{{board.name}}">{{board.title}}</a>
 		</li>
 		{% endfor %}
 	</ul>
@@ -30,10 +30,12 @@
 {% endmacro %}
 
 {% macro post(data, board, index) %}
-<article class="post post--border " id="{{data.id | hindinumber}}">
+<article class="post post--border " id="{{data.id}}"  data-hindi-id="{{data.id | hindinumber}}">
 
 	<header class="post__header">
 		<div class="post__meta">
+			{% if data.pinned %}<span>{{ pin() }}</span><span>&middot;</span>{% endif %}
+			{% if data.locked %}<span>{{ lock() }}</span><span>&middot;</span>{% endif %}
 			<span>{{data.id | hindinumber}}</span>
 			<span>&middot;</span>
 			<span>
@@ -72,12 +74,12 @@
 
 {% macro image(data) %}
 {% if data.file_status == 'pending' %}
-<img class="thumbnail thumbnail-js" src="/public/static/processing.webp" alt="File is processing" fetchpriority="high" />
-<img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/public/static/processing.webp"
+<img class="thumbnail thumbnail-js" width="100" src="/static/processing.webp" alt="File is processing" fetchpriority="high" />
+<img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/static/processing.webp"
 	alt="File is processing" />
-{% elif data.file_status == 'failed' or data.file_status == 'deleted' %}
-<img class="thumbnail thumbnail-js" src="/public/static/deleted.webp" alt="File deleted" fetchpriority="high" />
-<img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/public/static/deleted.webp" alt="File deleted" />
+{% elif data.file_status == 'failed' or data.file_status == 'deleted' or data.file_status == 'orphan' %}
+<img class="thumbnail thumbnail-js" width="100" src="/static/deleted.webp" alt="File deleted" fetchpriority="high" />
+<img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/static/deleted.webp" alt="File deleted" />
 {% else %}
 {% if "video" in data.file_type %}
 <img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}"
@@ -96,10 +98,12 @@
 {% endmacro %}
 
 {% macro boardPost(data, board, index) %}
-<article class="post post--hover" id="{{data.id}}">
+<article class="post post--hover" data-id="{{data.id}}" data-hindi-id="{{data.id | hindinumber}}">
 
 	<header class="post__header">
 		<div class="post__meta">
+			{% if data.pinned %}<span>{{ pin() }}</span><span>&middot;</span>{% endif %}
+			{% if data.locked %}<span>{{ lock() }}</span><span>&middot;</span>{% endif %}
 			<span>{{data.id | hindinumber}}</span>
 			<span>&middot;</span>
 			<span>
@@ -112,7 +116,7 @@
 			<span>&middot;</span>
 			<time datetime="{{data.created_at}}">{{data.created_at | indianDate}}</time>
 			<span>&middot;</span>
-			<a class="post__link" href="/{{board.name}}/thread/{{data.id}}">{{data.replies}} {% if data.replies <= 1 %}टिप्पणी{% else
+			<a class="post__link" href="/{{data.board_name}}/thread/{{data.id}}">{{data.replies | hindinumber}} {% if data.replies <= 1 %}टिप्पणी{% else
 					%}टिप्पणियाँ{% endif %} </a>
 		</div>
 	</header>
@@ -129,4 +133,12 @@
 
 </article>
 
+{% endmacro %}
+
+{% macro pin() %}
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;"><path class="post__pin" fill-rule="evenodd" clip-rule="evenodd" d="M17.1 1.9C15.8.5 13.5.8 12.5 2.4L9.6 7C9.5 7 9.4 7 9.4 7 8.4 6.6 6.7 6.2 5 6.9 4.1 7.2 3.6 8 3.6 8.9 3.5 9.6 3.8 10.4 4.4 11L7.9 14.6 1.3 21.2C.9 21.6.9 22.3 1.3 22.7 1.7 23 2.3 23 2.7 22.7L9.4 16 12.9 19.5C13.5 20.1 14.3 20.4 15.1 20.4 15.9 20.3 16.7 19.8 17 18.9 17.7 17.2 17.3 15.5 16.9 14.5 16.9 14.5 16.9 14.4 17 14.3L21.5 11.5C23.2 10.4 23.4 8.2 22.1 6.8L17.1 1.9ZM14.2 3.5C14.5 2.9 15.3 2.8 15.7 3.3L20.6 8.2C21.1 8.7 21 9.4 20.5 9.8L15.9 12.6C15 13.2 14.7 14.4 15.1 15.2 15.4 16 15.6 17.1 15.2 18.2 15.1 18.3 15 18.4 14.9 18.4 14.8 18.4 14.5 18.3 14.3 18.1L5.8 9.6C5.6 9.4 5.6 9.2 5.6 9 5.6 8.9 5.6 8.8 5.7 8.7 6.8 8.3 7.9 8.6 8.7 8.9 9.6 9.2 10.7 9 11.3 8L14.2 3.5Z" fill="#0F0F0F"/></svg>
+{% endmacro %}
+
+{% macro lock() %}
+<svg height="16" width="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;"><rect class="post__lock" x="4" y="10" width="16" height="11" rx="3"/><path class="post__lock" d="M12 14.5v2M7 10V8a5 5 0 0 1 10 0v2"/></svg>
 {% endmacro %}

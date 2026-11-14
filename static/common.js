@@ -17,9 +17,10 @@ window.addEventListener("pageshow", (event) => {
 
 //form events handling
 document.querySelectorAll('.newPostButton').forEach(element => element.addEventListener('click', () => {
-	commonHideFunction()
+	toggleViewReplyTextarea()
 }))
 
+//binding reply button to add post id to reply textarea and show it
 document.querySelectorAll(".post__reply").forEach(btn => {
 	btn.addEventListener('click', () => {
 		NEW_POST_WINDOW_ELEM.classList.remove('hidden')
@@ -32,14 +33,15 @@ document.querySelectorAll(".post__reply").forEach(btn => {
 	})
 })
 
-const commonHideFunction = () => {
+
+const toggleViewReplyTextarea = () => {
 	NEW_POST_WINDOW_ELEM.classList.toggle('hidden')
 }
 
 //show file name on selection
 INPUT_FILE_ELEM.addEventListener("change", (event) => {
 	let file = event.target.files[0]
-	fileNameHolder.textContent = file.name + " - " + ((file.size) / 1024).toFixed(2) + " KiB"
+	fileNameHolder.textContent = file.name.slice(0,20) + ( file.name.length > 20 ? "..." : "" ) + " - " + ((file.size) / 1024).toFixed(2) + " KiB"
 })
 
 //reset event on form

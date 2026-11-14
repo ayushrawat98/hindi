@@ -1,19 +1,29 @@
+FROM node:24-bookworm-slim AS build
+
+WORKDIR /app
+
+# Cached system dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 make g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Cached Node dependencies
+COPY package.json ./
+RUN npm i --omit=dev
+
+# Application source
+COPY . .
+
 
 FROM node:24-bookworm-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
+# Cached FFmpeg installation
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-COPY package*.json ./
-RUN npm install --omit=dev
-
-COPY . .
-
-ENV NODE_ENV=production
-ENV PASSWORD=123
-
-EXPOSE 3001
+COPY --from=build /app /app
 
 CMD ["node", "main.js"]

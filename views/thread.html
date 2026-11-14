@@ -5,8 +5,8 @@
 <title>
 	{% if posts[0].title %}{{posts[0].title | safe}}-{% endif %}{{posts[0].content.slice(0,50) | safe}}
 </title>
-<script src="/public/static/common.js" defer></script>
-<script src="/public/static/thread.js" defer></script>
+<script src="/static/common.js" defer></script>
+<script src="/static/thread.js" defer></script>
 {% endblock %}
 
 {% block body %}
@@ -22,7 +22,7 @@
 
 	<div class="board-feed__column board-feed__column--new">
 		<div class="post-list post-list--scroll sticky">
-			{{ macros.postList(newPosts, board) }}
+			{{ macros.postList(newPosts, true) }}
 		</div>
 	</div>
 
@@ -41,6 +41,7 @@
 					<span class="fileName"></span>
 					<input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm" hidden>
 					<div class="formbtn">
+						<input type="checkbox" name="sage" id="sage" hidden><label for="sage" class="sageLabel">सेज</label>
 						<button type="button" class="newPostButton formbtn-pad">बंद करें</button>
 						<button type="button" class="fileButton formbtn-pad">संचिका</button>
 						<button type="reset" class="formbtn-pad">पूर्वावस्था</button>

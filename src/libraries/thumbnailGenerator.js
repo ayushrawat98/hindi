@@ -3,14 +3,13 @@ import sharp from 'sharp';
 import { spawn } from 'child_process';
 import instance from '../../models/db.js'
 import fs from "fs/promises"
-import { configuration } from '../../env.js';
 import { __dirname } from '../../path.js';
 
 // sharp.concurrency(1)
 // sharp.cache(false)
-const ffmpegPath = configuration.FFMPEG
+const ffmpegPath = process.env.FFMPEG_PATH
 
-export async function imageProcessor() {
+export async function thumbnailGenerator() {
 
 	while (true) {
 		let file = instance.queries.getFileWithStatus.get("pending")
@@ -108,7 +107,7 @@ export async function imageProcessor() {
 						fs.unlink(ogFilePath)
 					}
 				} catch (err) {
-					console.error(err)
+					console.error("[thumbnailGenerator] Error deleting original file ", err)
 				}
 			}
 
@@ -185,7 +184,7 @@ async function removeVideoMetaData(ogFilePath, tempFilePath) {
 
 async function removeImageMetaData(ogFilePath, tempFilePath, config, buffer = undefined) {
 	// Sharp now works from memory instead of keeping the source file open.
-	await sharp(buffer ?? ogFilePath, config).rotate().toFile(tempFilePath);
+	await sharp(buffer, config).rotate().toFile(tempFilePath);
 	// await sharp(ogFilePath, config).toFile(tempFilePath);
 	await fs.unlink(ogFilePath);
 	await fs.rename(tempFilePath, ogFilePath);

@@ -1,21 +1,26 @@
 import rateLimit from "express-rate-limit";
 
+const second = 1000
+const minute = second * 60
+
+//burst protector
 export const burstLimiter = rateLimit({
-    windowMs: 5000, // 5 seconds
+    windowMs: 8 * second, // 5 seconds
     max: 1,         // Statistically safe for human jitter
-    message: {message : "High frequency requests detected."}
+    message: {message : "अत्यधिक अनुरोध। प्रतीक्षा करें।"}
 });
 
 // Protects against "Low and Slow" spam bots
 export const quotaLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 20,                  // Above the 99th percentile of human posting
-    message: {message : "Hourly limit reached."}
+    windowMs: 60 * minute, // 1 hour
+    max: 30,                  // Above the 99th percentile of human posting
+    message: {message : "प्रति घंटे की सीमा समाप्त हो गई है।"}
 });
 
+
 export const threadLimiter = rateLimit({
-    windowMs: 1000 * 60 * 10, // 5 seconds
+    windowMs: 5 * minute, // 5 minutes
     max: 1,         // Statistically safe for human jitter
-    message: {message : "Max 1 thread in 10 minutes"}
+    message: {message : "५ मिनट में अधिकतम १ थ्रेड की अनुमति है।"}
 });
 
