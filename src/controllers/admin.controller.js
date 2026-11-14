@@ -12,9 +12,10 @@ export const handleAdminLogin = async (req, res, next) => {
 			maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
 			httpOnly: true,              // Prevents client-side JS access (mitigates XSS)
 			secure: process.env.NODE_ENV === 'production', // Use true in HTTPS production
-			sameSite: 'strict'
+			sameSite: 'strict',
 		});
 	}
+	console.log('Cookie header:', res.getHeader('Set-Cookie'));
 	return res.end("complete")
 }
 
