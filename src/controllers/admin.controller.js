@@ -7,8 +7,7 @@ export const renderAdminLogin = async (req, res, next) => {
 }
 
 export const handleAdminLogin = async (req, res, next) => {
-	console.log(process.env.password, req.body.password, process.env.PASSWORD)
-	if (process.env.password == req.body.password) { 
+	if (process.env.PASSWORD == req.body.password) { 
 		res.cookie('secret', generateSecret(), {
 			maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
 			httpOnly: true,              // Prevents client-side JS access (mitigates XSS)
@@ -16,7 +15,6 @@ export const handleAdminLogin = async (req, res, next) => {
 			sameSite: 'strict',
 		});
 	}
-	console.log('Cookie header:', res.getHeader('Set-Cookie'));
 	return res.end("complete")
 }
 
