@@ -7,6 +7,7 @@ export const renderAdminLogin = async (req, res, next) => {
 }
 
 export const handleAdminLogin = async (req, res, next) => {
+	console.log(process.env.password, req.body.password, process.env.PASSWORD)
 	if (process.env.password == req.body.password) { 
 		res.cookie('secret', generateSecret(), {
 			maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
