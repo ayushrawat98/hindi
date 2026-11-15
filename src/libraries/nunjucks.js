@@ -14,7 +14,6 @@ export function configNunjucks(app) {
 	nunjucksEnv.addFilter('greenText', (str) => {
 		const greenTextRegex = /^&gt;(?!&gt;)(.*?)$/gm
 		const replyLinkRegex = /&gt;&gt;([\u0966-\u096F]+)/gm
-		// const boldTextRegex = /\*(.*)\*/gm
 		// const urlRegex = /(https?:\/\/\S+)/iugm;
 		// let regex = /^>(?!>)(.*?)$/gm
 		// let regexTwo = />>(\d+)/gm
@@ -29,7 +28,7 @@ export function configNunjucks(app) {
 				return `<span><a class='replyLink' data-post-hindi-id=${num} data-post-id='${englishNumber}' href='#${englishNumber}'>&gt;&gt;${num}</a></span>`
 			})
 		// .replace(urlRegex, "<a href='$1'>लिंक</a>")
-		// .replace(boldTextRegex, "<span class='post__reply--bold'>$1</span>")
+		
 	})
 	
 	nunjucksEnv.addFilter('hindinumber', (num) => {
