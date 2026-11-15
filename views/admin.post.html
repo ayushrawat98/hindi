@@ -30,12 +30,12 @@
 
 <video width="200" height="200" class="thumbnail thumbnail--expanded thumbnail--removed"
 	src="/public/files/{{data.file_path | safeFileName}}"
-	data-poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp" controls autoplay>
+	poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp" controls preload="none">
 </video>
 {% else %}
 
 <img width="200" height="200" class="thumbnail thumbnail--removed thumbnail--expanded "
-	src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" />
+	src="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" loading="lazy" />
 {% endif %}
 {% endif %}
 {% endif %}
