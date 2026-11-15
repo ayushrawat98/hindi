@@ -32,7 +32,7 @@
 {% macro post(data, board, index) %}
 <article class="post post--border " id="{{data.id}}"  data-hindi-id="{{data.id | hindinumber}}">
 
-	<header class="post__header">
+	<header class="post__header post__header--thread">
 		<div class="post__meta">
 			{% if data.pinned %}<span>{{ pin() }}</span><span>&middot;</span>{% endif %}
 			{% if data.locked %}<span>{{ lock() }}</span><span>&middot;</span>{% endif %}
@@ -100,7 +100,7 @@
 {% macro boardPost(data, board, index) %}
 <article class="post post--hover" data-id="{{data.id}}" data-hindi-id="{{data.id | hindinumber}}">
 
-	<header class="post__header post__header--thread">
+	<header class="post__header">
 		<div class="post__meta">
 			{% if data.pinned %}<span>{{ pin() }}</span><span>&middot;</span>{% endif %}
 			{% if data.locked %}<span>{{ lock() }}</span><span>&middot;</span>{% endif %}
