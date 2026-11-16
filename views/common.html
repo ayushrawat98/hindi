@@ -36,8 +36,6 @@
 		<div class="post__meta">
 			{% if data.pinned %}<span>{{ pin() }}</span><span>&middot;</span>{% endif %}
 			{% if data.locked %}<span>{{ lock() }}</span><span>&middot;</span>{% endif %}
-			<span>{{data.id | hindinumber}}</span>
-			<span>&middot;</span>
 			<span>
 				{% if data.name %}
 				{{data.name}}
@@ -45,10 +43,12 @@
 				अपरिचित
 				{% endif %}
 			</span>
-			<span>&middot;</span>
-			<time datetime="{{data.created_at}}">{{data.created_at | indianDate}}</time>
 		</div>
-		<button type="button" class="post__reply" data-post-number="{{data.id | hindinumber}}">उत्तर दें</button>
+		<div class="post__meta">
+			<time datetime="{{data.created_at}}">{{data.created_at | indianDate}}</time>
+			<span>&middot;</span>
+			<span class="post__reply" data-post-number="{{data.id | hindinumber}}">{{data.id | hindinumber}}</span>
+		</div>
 	</header>
 
 	<div class="post__title-content-wrapper">
@@ -104,8 +104,6 @@
 		<div class="post__meta">
 			{% if data.pinned %}<span>{{ pin() }}</span><span>&middot;</span>{% endif %}
 			{% if data.locked %}<span>{{ lock() }}</span><span>&middot;</span>{% endif %}
-			<span>{{data.id | hindinumber}}</span>
-			<span>&middot;</span>
 			<span>
 				{% if data.name %}
 				{{data.name}}
@@ -113,23 +111,33 @@
 				अपरिचित
 				{% endif %}
 			</span>
-			<span>&middot;</span>
+		</div>
+		<div class="post__meta" style="display: flex;">
+			<span style="flex-grow: 1;"></span>
 			<time datetime="{{data.created_at}}">{{data.created_at | indianDate}}</time>
 			<span>&middot;</span>
-			<a class="post__link" href="/{{data.board_name}}/thread/{{data.id}}">{{data.replies | hindinumber}} {% if data.replies <= 1 %}टिप्पणी{% else
-					%}टिप्पणियाँ{% endif %} </a>
+			<a class="post__link" href="/{{data.board_name}}/thread/{{data.id}}">{{data.id | hindinumber}}</a>
 		</div>
 	</header>
 
-	{{ image(data, index) }}
+	<div class="post__title-content-wrapper">
 
-	{% if data.title %}
-	<h3 class="post__title">{{data.title}}</h3>
-	{% endif %}
+		{{ image(data, index) }}
 
-	{% if data.content %}
-	<p class="post__content post__content--pre-line">{{data.content | greenText | safe}}</p>
-	{% endif %}
+		{% if data.title %}
+		<h3 class="post__title">{{data.title}}</h3>
+		{% endif %}
+
+		{% if data.content %}
+		<p class="post__content post__content--pre-line">{{data.content | greenText | safe}}</p>
+		{% endif %}
+
+	</div>
+	
+	<div class="post__footer">
+		<span>{{data.replies | hindinumber}} {% if data.replies <= 1 %}टिप्पणी{% else
+					%}टिप्पणियाँ{% endif %} </span>
+	</div>
 
 </article>
 

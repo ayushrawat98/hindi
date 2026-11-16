@@ -256,7 +256,8 @@
 		border-radius: 6px;
 		display: flow-root;
 		background-color: light-dark(var(--surface), var(--surface-dark));
-		padding: 0.8rem;
+		/* hindi text has more space at bottom , so margin to make balance */
+		padding: 1rem 1rem 0.9rem;
 		position: relative;
 	}
 
@@ -266,16 +267,13 @@
 		justify-content: space-between;
 		color: light-dark(var(--ignore), var(--ignore-dark));
 		font-size: 0.9rem;
-		margin-bottom: 0.6rem;
-	}
-
-	.post__header--thread {
-		margin-bottom: 0.3rem;
+		/* margin-bottom: 0.5rem; */
+		flex-wrap: wrap;
 	}
 
 	.post__meta {
 		display: flex;
-		flex-wrap: wrap;
+		/* flex-wrap: wrap; */
 		gap: 0.5rem;
 		/* for large names */
 		overflow-wrap: anywhere;
@@ -306,11 +304,13 @@
 	.post__reply {
 		/* prevent wrapping of word */
 		white-space: nowrap;
-
+		cursor: pointer;
 	}
 
 	.post__title-content-wrapper {
-		margin-bottom: 0.6rem;
+		/* margin-bottom: 0.5rem; */
+		/* hindi text has more space at bottom , so margin to make balance */
+		margin: 0.5rem 0 0.7rem; 
 	}
 
 	.post__title-content-wrapper::after {
