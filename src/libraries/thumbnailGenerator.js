@@ -33,7 +33,7 @@ export async function thumbnailGenerator() {
 
 				const thumbnailArgs = [
 					'-i', ogFilePath,
-					'-vf', "scale='min(100,iw)':-1",
+					'-vf', "scale='min(125,iw)':-1",
 					'-frames:v', '1',
 					'-map_metadata', '-1',
 					'-compression_level', '4',
@@ -53,7 +53,7 @@ export async function thumbnailGenerator() {
 				await sharp(inputBuffer, { animated: true, pages: -1 })
 					.rotate()
 					.resize({
-						width: 100,
+						width: 125,
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
 					})
 					.webp({
@@ -74,7 +74,7 @@ export async function thumbnailGenerator() {
 				await sharp(inputBuffer)
 					.rotate()
 					.resize({
-						width: 100,
+						width: 125,
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
 					})
 					.webp({ quality: 80, effort: 4 })
