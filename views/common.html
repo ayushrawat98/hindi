@@ -74,11 +74,11 @@
 
 {% macro image(data, index) %}
 {% if data.file_status == 'pending' %}
-<img class="thumbnail thumbnail-js" width="100" src="/static/processing.webp" alt="File is processing" fetchpriority="high" />
+<img class="thumbnail thumbnail-js" width="125" src="/static/processing.webp" alt="File is processing" fetchpriority="high" />
 <img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/static/processing.webp"
 	alt="File is processing" />
 {% elif data.file_status == 'failed' or data.file_status == 'deleted' or data.file_status == 'orphan' %}
-<img class="thumbnail thumbnail-js" width="100" src="/static/deleted.webp" alt="File deleted" fetchpriority="high" />
+<img class="thumbnail thumbnail-js" width="125" src="/static/deleted.webp" alt="File deleted" fetchpriority="high" />
 <img class="thumbnail thumbnail--expanded thumbnail--removed" data-src="/static/deleted.webp" alt="File deleted" />
 {% else %}
 {% if "video" in data.file_type %}

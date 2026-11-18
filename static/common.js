@@ -107,7 +107,7 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 		if (event.lengthComputable) {
 			const percent = (event.loaded / event.total) * 100;
 			progressBar.value = percent.toFixed(2)
-			formStatus.textContent = `Uploading… ${percent.toFixed(0)}%`;
+			formStatus.textContent = `दम लगा के हईशा ~ ${percent.toFixed(0)}%`;
 		}
 	};
 
