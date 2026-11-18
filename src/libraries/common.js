@@ -28,7 +28,7 @@ export const convertHindiNumberToEnglishNumber = (num) => {
 export const generateTripcode = (req, res, next) => {
 	let name = req.body.name
 	if (name.length > 0) {
-		let hashIndex = name.indexOf("!")
+		let hashIndex = name.indexOf("#")
 		if (hashIndex != -1) {
 			let first = name.slice(0, hashIndex)
 			let second = name.slice(hashIndex + 1)
