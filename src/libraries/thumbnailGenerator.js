@@ -36,7 +36,7 @@ export async function thumbnailGenerator() {
 					'-vf', "scale='min(125,iw)':-1",
 					'-frames:v', '1',
 					'-map_metadata', '-1',
-					'-compression_level', '4',
+					'-compression_level', '3',
 					'-quality', '100',
 					thumbFilePath + '.webp'
 				];
@@ -57,8 +57,8 @@ export async function thumbnailGenerator() {
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
 					})
 					.webp({
-						quality: 80,
-						effort: 4,
+						quality: 100,
+						effort: 6,
 						loop: 0,
 						force: true
 					})
@@ -77,7 +77,7 @@ export async function thumbnailGenerator() {
 						width: 125,
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
 					})
-					.webp({ quality: 80, effort: 4 })
+					.webp({ quality: 100, effort: 6 })
 					.toFile(thumbFilePath);
 
 				await setHeightAndWidth(thumbFilePath, file.id)
