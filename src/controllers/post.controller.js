@@ -67,7 +67,8 @@ const banUser = (req) => {
 	if(!post) {
 		throw new AppError(404, "पोस्ट अस्तित्व में नहीं है।")
 	}
-	if(post.ip !== ip) {
+	console.log("[deletePostByUser] ip : ", post.ip, ip)
+	if(post.ip != ip) {
 		throw new AppError(401, "आपका नहीं है।")
 	}
 	const currentTime =  new Date().getTime()
