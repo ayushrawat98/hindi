@@ -1,5 +1,5 @@
 import nunjucks from 'nunjucks';
-import { convertHindiNumberToEnglishNumber, convertToHindiDate } from './common.js';
+import {  convertToHindiDate } from './common.js';
 
 export function configNunjucks(app) {
 	const nunjucksEnv = nunjucks.configure("views", {

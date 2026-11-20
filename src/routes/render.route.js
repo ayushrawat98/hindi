@@ -8,6 +8,10 @@ import { generateTripcode } from '../libraries/common.js';
 
 const route = express.Router()
 
+route.get('/', (req, res, next) => {
+	res.redirect("/a")
+})
+
 route.get('/:board', getBoardData)
 
 route.post('/:board', checkBan, upload.single("file"), trimBody, generateTripcode, setBoardData)
