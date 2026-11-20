@@ -167,7 +167,7 @@
 		</button>
 		<ul class="post__menu-list" hidden>
 			<li data-post-id="{{data.id}}">पोस्ट हटाएँ</li>
-			<li><a href="https://www.google.com/searchbyimage?&image_url=https://hindichan.site/public/thumbnails/{{data.file_path | safeFileName}}" style="width: 100%; display: inline-block;" target="_blank">चित्र खोजें</a></li>
+			<li><a href="https://www.google.com/searchbyimage?&image_url=https://hindichan.site/public/thumbnails/{{data.file_path | safeFileName}}{% if 'video' in data.file_type %}.webp{% endif %}" style="width: 100%; display: inline-block;" target="_blank">चित्र खोजें</a></li>
 		</ul>
 	</div>
 {% endmacro %}
