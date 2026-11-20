@@ -1,6 +1,7 @@
 import { __dirname } from '../../path.js';
 import instance from '../../models/db.js';
 import { convertIpNew } from "../libraries/ban.js"
+import { AppError } from '../libraries/error.js';
 
 export const getPosts = async (req , res, next) => {
 	let result = instance.queries.getPosts.all(100)
@@ -36,17 +37,27 @@ const banUser = (req) => {
 	let post = instance.queries.getPostById.get(Number(id))
 	const convertedPostIP = convertIpNew(post.ip)
 
-	const tomorrowUTC = new Date();
-	tomorrowUTC.setUTCDate(tomorrowUTC.getUTCDate() + 1);
-
+	const newBanDate = new Date();
+	
 	let pastBan = instance.queries.getBanByIp.get(convertedPostIP)
 	let result = undefined
 	if(pastBan) {
-		result = instance.queries.updateBanById.run(tomorrowUTC.toISOString(), convertedPostIP)
+		//if user is getting banned within 24 hours of last ban
+		const lastBanTime = new Date(pastBan.current_ban_date).getTime()
+		const currentTime = new Date().getTime()
+		let ban_multiple = pastBan.ban_multiple
+		if( (currentTime - lastBanTime) < 86400000) {
+			ban_multiple *= 2
+		} else {
+			ban_multiple = 1
+		}
+		newBanDate.setUTCDate(newBanDate.getUTCDate() + ban_multiple);
+		result = instance.queries.updateBanById.run(newBanDate.toISOString(), ban_multiple, convertedPostIP)
 	} else {
-		result = instance.queries.createBan.run(convertedPostIP, tomorrowUTC.toISOString())
+		newBanDate.setUTCDate(newBanDate.getUTCDate() + 1);
+		result = instance.queries.createBan.run(convertedPostIP, newBanDate.toISOString())
 	}
-	return result
+	return { message : "Banned : " + convertedPostIP,  ...result}
 }
 
  const deletePostByUser = (req) => {
@@ -54,16 +65,16 @@ const banUser = (req) => {
 	const ip = req.ip
 	const post = instance.queries.getPostById.get(id)
 	if(!post) {
-		throw new AppError(404, "Post does not exist")
+		throw new AppError(404, "पोस्ट अस्तित्व में नहीं है।")
 	}
 	if(post.ip !== ip) {
-		throw new AppError(401, "Not your post")
+		throw new AppError(401, "आपका नहीं है।")
 	}
 	const currentTime =  new Date().getTime()
 	const postTime = new Date(post.created_at).getTime()
 	const timeDiff = currentTime - postTime //cant delete after 5 minute
 	if(timeDiff > (5 * 60 * 1000)) {
-		throw new Error(403, "Too late")
+		throw new AppError(403, "देर हो गई।")
 	}
 	console.log(`[deletePostByUser] ip : ${ip} timediff : ${timeDiff}`)
 	const result = instance.queries.deletePostByIdAndIp.run(id, ip)

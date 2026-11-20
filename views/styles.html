@@ -287,6 +287,34 @@
 		stroke: light-dark(var(--ignore), var(--ignore-dark));
 	}
 
+	.post__menu-icon {
+		fill: light-dark(var(--ignore), var(--ignore-dark));
+		cursor: pointer;
+	}
+
+	.post__menu {
+		position: relative;
+	}
+
+	.post__menu-list {
+		position: absolute;
+		list-style: none;
+		color: inherit;
+    	width: 100px;
+    	z-index: 2;
+		list-style: none;
+		background-color: light-dark(var(--surface-2), var(--surface-2-dark));
+		border-radius: 4px;
+		/* pointer-events: none; */
+
+		& > li {
+			padding: 0.2rem;
+			margin : 0.2rem 0.4rem;
+			/* text-align: center	; */
+			cursor: pointer;
+		}
+	}
+
 	.post__link {
 		color: inherit;
 		flex-grow: 0;
@@ -359,7 +387,7 @@
 
 	.board-feed__sidebar,
 	.board-feed__column {
-		padding: 0.5rem;
+		padding: 0.4rem;
 	}
 
 	/* dont display on mobile */

@@ -54,14 +54,13 @@ class DB {
       				width INTEGER DEFAULT 0,
 					size INTEGER,
 					status TEXT,
-					md5_hash TEXT,
-					is_hashed INTEGER DEFAULT 0,
   					created_at TEXT
 				);
 
 				CREATE TABLE IF NOT EXISTS ban (
 					ip TEXT PRIMARY KEY,
-					ban_time TEXT NOT NULL
+					ban_multiple INTEGER DEFAULT 1,
+					current_ban_date TEXT NOT NULL
 				);
 
 				CREATE INDEX IF NOT EXISTS idx_posts_parent_board ON posts(board_id, updated_at DESC) WHERE parent_id IS NULL;
@@ -93,8 +92,8 @@ class DB {
 
 			deleteFileById : this.db.prepare("DELETE FROM files WHERE id = ?"),
 
-			createBan : this.db.prepare("INSERT INTO ban (ip, ban_time) values (?,?)"),
-			updateBanById : this.db.prepare("UPDATE ban SET ban_time = ? WHERE ip = ?"),
+			createBan : this.db.prepare("INSERT INTO ban (ip, current_ban_date) values (?,?)"),
+			updateBanById : this.db.prepare("UPDATE ban SET current_ban_date = ?, ban_multiple = ? WHERE ip = ?"),
 
 			//non generic
 			deletePostByIdAndIp : this.db.prepare("DELETE FROM posts WHERE id = ? AND ip = ?"),

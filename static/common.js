@@ -171,4 +171,29 @@ function addObserver() {
 	document.querySelectorAll(".thumbnail-js").forEach(thumbnail => observer.observe(thumbnail))
 }
 
+function addMenuEventListener(){
+	document.querySelectorAll(".post__menu").forEach(menu => {
+		menu.firstElementChild?.addEventListener("click", (e) => {
+			menu.lastElementChild.toggleAttribute("hidden")
+		})
+
+		//delete
+		menu.lastElementChild.firstElementChild.addEventListener("click", (e) => {
+			if(confirm("हटा दें?")) {
+				deletePost(e.target.dataset.postId)
+			}
+		})
+	})
+}
+
+function deletePost(id){
+		fetch(window.location.origin + "/posts/" + id, {
+			method: "DELETE"
+		})
+		.then(res => res.json())
+		.then(res => alert(res.message))
+}
+
 addObserver()
+
+addMenuEventListener()

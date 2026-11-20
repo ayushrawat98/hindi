@@ -34,6 +34,7 @@
 
 	<header class="post__header post__header--thread">
 		<div class="post__meta">
+			{{ menu(data) }}
 			{% if data.pinned %}<span>{{ pin() }}</span><span>&middot;</span>{% endif %}
 			{% if data.locked %}<span>{{ lock() }}</span><span>&middot;</span>{% endif %}
 			<span>
@@ -149,4 +150,24 @@
 
 {% macro lock() %}
 <svg height="16" width="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;"><rect class="post__lock" x="4" y="10" width="16" height="11" rx="3"/><path class="post__lock" d="M12 14.5v2M7 10V8a5 5 0 0 1 10 0v2"/></svg>
+{% endmacro %}
+
+{% macro menuIcon() %}
+<svg class="post__menu-icon" width="12" height="12" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+  <circle cx="10" cy="4" r="2"/>
+  <circle cx="10" cy="10" r="2"/>
+  <circle cx="10" cy="16" r="2"/>
+</svg>
+{% endmacro %}
+
+{% macro menu(data) %}
+	<div class="post__menu">
+		<button style="padding: 0;">
+			{{ menuIcon() }}
+		</button>
+		<ul class="post__menu-list" hidden>
+			<li data-post-id="{{data.id}}">पोस्ट हटाएँ</li>
+			<li><a href="https://www.google.com/searchbyimage?&image_url=https://hindichan.site/public/files/{{data.file_path | safeFileName}}" style="width: 100%; display: inline-block;">चित्र खोजें</a></li>
+		</ul>
+	</div>
 {% endmacro %}

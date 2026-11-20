@@ -63,7 +63,7 @@ function showOP() {
 }
 
 function setContentReplies() {
-	const list = document.querySelectorAll('[data-post-id]')
+	const list = document.querySelectorAll('.inpostlink')
 	list.forEach(link => {
 		let postId = link.getAttribute('data-post-id')
 		addPopupEventHandler(link, postId)

@@ -50,11 +50,11 @@ export const checkBan = (req, res, next) => {
 	const ban = instance.queries.getBanByIp.get(convertedIP)
 	
 	if (ban) {
-		const bannedTime = new Date(ban.ban_time).getTime()
+		const bannedTime = new Date(ban.current_ban_date).getTime()
 		const currentTime = new Date().getTime()
 		if(currentTime < bannedTime) {
 			console.log("[checkBan] Banned", ban)
-			return res.status(403).send({ message: `आप ${convertToHindiDate(ban.ban_time)} तक प्रतिबंधित हैं।` });
+			return res.status(403).send({ message: `आप ${convertToHindiDate(ban.current_ban_date)} तक प्रतिबंधित हैं।` });
 		}
 	}
 
