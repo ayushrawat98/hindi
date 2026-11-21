@@ -46,15 +46,16 @@ const banUser = (req) => {
 		const lastBanTime = new Date(pastBan.current_ban_date).getTime()
 		const currentTime = new Date().getTime()
 		let ban_multiple = pastBan.ban_multiple
-		if( (currentTime - lastBanTime) < 86400000) {
+		//86400000
+		if( (currentTime - lastBanTime) < 60 * 60 * 1000) {
 			ban_multiple *= 2
 		} else {
 			ban_multiple = 1
 		}
-		newBanDate.setUTCDate(newBanDate.getUTCDate() + ban_multiple);
+		newBanDate.setUTCHours(newBanDate.getUTCHours() + ban_multiple);
 		result = instance.queries.updateBanById.run(newBanDate.toISOString(), ban_multiple, convertedPostIP)
 	} else {
-		newBanDate.setUTCDate(newBanDate.getUTCDate() + 1);
+		newBanDate.setUTCHours(newBanDate.getUTCHours() + 1);
 		result = instance.queries.createBan.run(convertedPostIP, newBanDate.toISOString())
 	}
 	return { message : "Banned : " + convertedPostIP,  ...result}
