@@ -54,6 +54,7 @@
 	<button class="lockPost" data-id="{{data.id}}">{% if data.locked %}unlock{% else %}lock{% endif %} post</button>
 	<button class="pinPost" data-id="{{data.id}}">{% if data.pinned %}unpin{% else %}pin{% endif %} post</button>
 	<button class="ban" data-id="{{data.id}}">ban for 24 hours</button>
+	<button class="slap" data-id="{{data.id}}">slap user</button>
 	
 
 </article>
@@ -124,6 +125,14 @@
 		btn.addEventListener("click", (e) => {
 			if(confirm("ban user")){
 				patchPost("/posts/" + btn.dataset.id , {ban : 1})
+			}
+		})
+	})
+
+	document.querySelectorAll(".slap").forEach(btn => {
+		btn.addEventListener("click", (e) => {
+			if(confirm("slap user")){
+				patchPost("/posts/" + btn.dataset.id , {slap : 1})
 			}
 		})
 	})
