@@ -19,6 +19,9 @@ export async function torExitIpHandler() {
 
 
 async function getTorExitIp() {
+	if(process.env.NODE_ENV == "development") {
+		return []; //dont want to hit the endpoint multiple time in development
+	}
 	let result = []
 	try {
 		let response = await fetch("https://check.torproject.org/torbulkexitlist")

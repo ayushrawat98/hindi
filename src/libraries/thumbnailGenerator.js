@@ -46,7 +46,7 @@ export async function thumbnailGenerator() {
 				await pause(1000)
 				await removeVideoMetaData(ogFilePath, tempFilePath)
 			}
-			else if (file.type.includes('gif')) {
+			else if (file.type.startsWith('image')) {
 
 				const inputBuffer = await fs.readFile(ogFilePath);
 
@@ -67,22 +67,44 @@ export async function thumbnailGenerator() {
 				await setHeightAndWidth(thumbFilePath, file.id)
 				await removeImageMetaData(ogFilePath, tempFilePath, { animated: true, pages: -1 }, inputBuffer)
 
-			} else if (file.type.startsWith('image')) {
-
-				const inputBuffer = await fs.readFile(ogFilePath);
-
-				await sharp(inputBuffer)
-					.rotate()
-					.resize({
-						width: 125,
-						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
-					})
-					.webp({ quality: 100, effort: 6 })
-					.toFile(thumbFilePath);
-
-				await setHeightAndWidth(thumbFilePath, file.id)
-				await removeImageMetaData(ogFilePath, tempFilePath, {}, inputBuffer)
 			}
+			// else if (file.type.includes('gif')) {
+
+			// 	const inputBuffer = await fs.readFile(ogFilePath);
+
+			// 	await sharp(inputBuffer, { animated: true, pages: -1 })
+			// 		.rotate()
+			// 		.resize({
+			// 			width: 125,
+			// 			withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
+			// 		})
+			// 		.webp({
+			// 			quality: 100,
+			// 			effort: 6,
+			// 			loop: 0,
+			// 			force: true
+			// 		})
+			// 		.toFile(thumbFilePath);
+
+			// 	await setHeightAndWidth(thumbFilePath, file.id)
+			// 	await removeImageMetaData(ogFilePath, tempFilePath, { animated: true, pages: -1 }, inputBuffer)
+
+			// } else if (file.type.startsWith('image')) {
+
+			// 	const inputBuffer = await fs.readFile(ogFilePath);
+
+			// 	await sharp(inputBuffer)
+			// 		.rotate()
+			// 		.resize({
+			// 			width: 125,
+			// 			withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
+			// 		})
+			// 		.webp({ quality: 100, effort: 6 })
+			// 		.toFile(thumbFilePath);
+
+			// 	await setHeightAndWidth(thumbFilePath, file.id)
+			// 	await removeImageMetaData(ogFilePath, tempFilePath, {}, inputBuffer)
+			// }
 
 			//set status as success
 			instance.queries.updateFileStatus.run('success', file.id)
