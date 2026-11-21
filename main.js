@@ -6,12 +6,14 @@ import { __dirname } from "./path.js";
 import { thumbnailGenerator } from "./src/libraries/thumbnailGenerator.js";
 import { configNunjucks } from "./src/libraries/nunjucks.js";
 import { orphanFileDeleter } from "./src/libraries/orphanFileDeleter.js";
+import { torExitIpHandler } from "./src/libraries/torExitIP.js";
 
 configNunjucks(app)
 
 //start image processing worker
 thumbnailGenerator()
 orphanFileDeleter()
+await torExitIpHandler()
 
 
 app.listen(process.env.PORT, () => {

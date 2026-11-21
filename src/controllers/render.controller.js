@@ -6,6 +6,17 @@ import { AppError } from '../libraries/error.js';
 const MAX_THREAD_COUNT = 50
 const MAX_THREAD_BUMP_LIMIT = 75
 
+export const renderHome = async (req, res, next) => {
+	const boards = instance.queries.getBoards.all()
+	const newPosts = instance.queries.getBoardDataRight.all(null, 5);
+	return res.render('home.html', {
+		title: "हिन्दीचान",
+		boards: boards,
+		board: true,
+		newPosts: newPosts,
+	});
+}
+
 export const getBoardData = async (req, res, next) => {
 
 	const boards = instance.queries.getBoards.all()

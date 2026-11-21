@@ -63,7 +63,7 @@
 		{% endif %}
 
 		{% if data.content %}
-		<p class="post__content post__content--pre-wrap">{{data.content | greenText | safe}}</p>
+		<p class="post__content post__content--pre-wrap">{{data.content | urlize(20 , true) | greenText | safe }}</p>
 		{% endif %}
 		
 	</div>
@@ -167,7 +167,9 @@
 		</button>
 		<ul class="post__menu-list" hidden>
 			<li data-post-id="{{data.id}}">पोस्ट हटाएँ</li>
+			{% if data.file_path %}
 			<li><a href="https://www.google.com/searchbyimage?&image_url=https://hindichan.site/public/{% if 'video' in data.file_type %}thumbnails{% else %}files{% endif %}/{{data.file_path | safeFileName}}{% if 'video' in data.file_type %}.webp{% endif %}" style="width: 100%; display: inline-block;" target="_blank">चित्र खोजें</a></li>
+			{% endif %}
 		</ul>
 	</div>
 {% endmacro %}

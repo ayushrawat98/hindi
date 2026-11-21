@@ -1,0 +1,21 @@
+{% extends "skeleton.html" %}
+{% import "common.html" as macros %}
+
+
+{% block head %}
+<title>{{title}}</title>
+{% endblock %}
+
+{% block body %}
+<div style="width : 100%;max-width: 600px; margin: auto; display: flex; gap: 1rem; flex-direction: column;">
+	<div style="text-align: center;">
+		<h1 style="font-size: 5rem;" >हिंदीचान</h1>
+		<p>नमस्ते! आप सभी का यहाँ स्वागत है।</p>
+	</div>
+
+{{ macros.navigation(boards) }}
+<div class="post-list">
+{{ macros.postList(newPosts, board) }}
+</div>
+</div>
+{% endblock %}
