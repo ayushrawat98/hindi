@@ -8,7 +8,7 @@ const MAX_THREAD_BUMP_LIMIT = 75
 
 export const renderHome = async (req, res, next) => {
 	const boards = instance.queries.getBoards.all()
-	const newPosts = instance.queries.getBoardDataRight.all(null, 3);
+	const newPosts = instance.queries.getBoardForHome.all(3);
 	return res.render('home.html', {
 		title: "हिन्दीचान",
 		boards: boards,
