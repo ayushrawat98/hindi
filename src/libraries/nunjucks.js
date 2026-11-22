@@ -25,7 +25,7 @@ export function configNunjucks(app) {
 					'०१२३४५६७८९'.indexOf(d)
 				);
 
-				return `<span><a class='replyLink inpostlink' data-post-hindi-id=${num} data-post-id='${englishNumber}' href='#${englishNumber}'>&gt;&gt;${num}</a></span>`
+				return `<span><a class='replyLink inpostLink' data-post-hindi-id=${num} data-post-id='${englishNumber}' href='#${englishNumber}'>&gt;&gt;${num}</a></span>`
 			})
 		// .replace(urlRegex, "<a href='$1'>लिंक</a>")
 		

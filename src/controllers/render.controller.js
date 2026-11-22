@@ -89,7 +89,7 @@ export const setBoardData = async (req, res, next) => {
 		return res.status(201).send(
 			{
 				message: "सफल",
-				threadId: newThreadId
+				createdId: newThreadId
 			}
 		)
 	} catch (error) {
@@ -145,7 +145,7 @@ export const setThreadData = async (req, res, next) => {
 	return res.status(201).send(
 		{
 			message: "सफल",
-			replyId: newPost.lastInsertRowid,
+			createdId: newPost.lastInsertRowid,
 			threadId: req.params.threadId
 		}
 	)

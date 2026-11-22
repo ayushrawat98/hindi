@@ -90,8 +90,12 @@
 	{% if index < 4 %}src{% else %}data-src{% endif %}="/public/thumbnails/{{data.file_path | safeFileName}}.webp" alt="{{data.file_path}}" fetchpriority="high"/>
 <video class="thumbnail thumbnail--expanded thumbnail--removed"
 	data-src="/public/files/{{data.file_path | safeFileName}}"
-	data-poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp" controls autoplay>
+	data-poster="/public/thumbnails/{{data.file_path | safeFileName}}.webp" controls autoplay loop>
 </video>
+<div  class="thumbnail__button thumbnail--removed">
+<button>बंद करें</button>
+</div>
+
 {% else %}
 <img class="thumbnail thumbnail-js" height="{{data.file_height}}" width="{{data.file_width}}"
 	{% if index < 4 %}src{% else %}data-src{% endif %}="/public/thumbnails/{{data.file_path | safeFileName}}" alt="{{data.file_path}}" fetchpriority="high"/>

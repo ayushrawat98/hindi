@@ -117,6 +117,11 @@ document.getElementById("uploadForm")?.addEventListener("submit", function (e) {
 		if (xhr.status === 201) {
 			progressBar.value = 100;
 			formStatus.textContent = xhr.response.message;
+
+			let tempyou = JSON.parse(localStorage.getItem("you")) ?? []
+			tempyou.push(xhr.response.createdId)
+			localStorage.setItem("you", JSON.stringify(tempyou))
+			
 			INPUT_FILE_ELEM.value = ""
 			setTimeout(() => {
 				// window.location.hash = xhr.responseText;

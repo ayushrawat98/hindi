@@ -6,10 +6,10 @@ window.addEventListener("load", () => {
 })
 
 
-function debounce(cb, time){
+function debounce(cb, time) {
 	let timeout
 	return () => {
-		if(timeout) clearTimeout(timeout);
+		if (timeout) clearTimeout(timeout);
 		timeout = setTimeout(() => {
 			cb()
 		}, time);
@@ -55,15 +55,25 @@ document.addEventListener("click", (ev) => {
 
 function showOP() {
 	let opPostId = document.querySelector('.post-list--thread').firstElementChild.nextElementSibling.getAttribute('id')
-	document.querySelectorAll('.replyLink').forEach((link) => {
+	document.querySelectorAll('.inpostLink').forEach((link) => {
 		if (link.getAttribute('href') == '#' + opPostId) {
 			link.textContent += ' (मूल लेखक)'
 		}
 	})
 }
 
+function showYou() {
+	let you = JSON.parse(localStorage.getItem("you")) ?? []
+	document.querySelectorAll('.inpostLink, .bottomLink').forEach((link) => {
+		let id = link.getAttribute("href").slice(1)
+		if (you.includes(Number(id))) {
+			link.textContent += ' (आप)'
+		}
+	})
+}
+
 function setContentReplies() {
-	const list = document.querySelectorAll('.inpostlink')
+	const list = document.querySelectorAll('.inpostLink')
 	list.forEach(link => {
 		let postId = link.getAttribute('data-post-id')
 		addPopupEventHandler(link, postId)
@@ -73,7 +83,7 @@ function setContentReplies() {
 			const goToLinkElem = document.createElement("a");
 			goToLinkElem.href = "#" + postId;
 			goToLinkElem.textContent = " #";
-			goToLinkElem.classList.add("replyLink")
+			goToLinkElem.classList.add("replyLink", "inpostHashLink")
 			link.parentElement.append(goToLinkElem)
 		}
 	})
@@ -96,7 +106,7 @@ function addPopup(currentNode, linkevent, postHash) {
 	linkevent.preventDefault()
 	removeActivePopupWrapper()
 	if (!postHash) return;
-	
+
 	const currentPost = postListElement.querySelector(`[id="${postHash}"]`);
 	//if the post was delete by moderator , gray it and give a line through
 	if (!currentPost) {
@@ -112,6 +122,9 @@ function addPopup(currentNode, linkevent, postHash) {
 	let cloneThumbnails = clone.querySelectorAll("img, video")
 	cloneThumbnails[0]?.classList.remove("thumbnail--removed")
 	cloneThumbnails[1]?.remove()
+
+	//remove video button
+	clone.querySelector(".thumbnail__button")?.remove()
 
 	//set temporary clone css
 	clone.style.position = "absolute"
@@ -135,7 +148,7 @@ function addPopup(currentNode, linkevent, postHash) {
 	//show clone
 	clone.style.visibility = ""
 
-	
+
 	//force load lazy image before appending
 	forceLoadLazyImage(clone)
 
@@ -143,6 +156,20 @@ function addPopup(currentNode, linkevent, postHash) {
 	activePopupWrapper = clone
 }
 
+let toggle = (thumbnail, og) => {
+	thumbnail.classList.toggle("thumbnail--removed")
+	og.classList.toggle("thumbnail--removed")
+	if (og.nodeName == "VIDEO") {
+		og.nextElementSibling.classList.toggle("thumbnail--removed")
+	}
+
+	if (!og.src) {
+		if (og.nodeName == "VIDEO") {
+			og.poster = og.dataset.poster
+		}
+		og.src = og.dataset.src
+	}
+}
 
 function expandFile() {
 	document.querySelectorAll(".thumbnail-js").forEach(file => file.addEventListener("click", (event) => {
@@ -150,26 +177,21 @@ function expandFile() {
 		let thumbnail = event.target
 		let og = event.target.nextElementSibling
 
-		let toggle = () => {
-			thumbnail.classList.toggle("thumbnail--removed")
-			og.classList.toggle("thumbnail--removed")
-
-			if (!og.src) {
-				if (og.nodeName == "VIDEO") {
-					og.poster = og.dataset.poster
-				}
-				og.src = og.dataset.src
-			}
-		}
-
-		toggle()
+		toggle(thumbnail, og)
 
 		//add event listener on og if not video
 		if (og.nodeName != "VIDEO") {
 			og.addEventListener("click", (secEvent) => {
-				toggle()
+				toggle(thumbnail, og)
 			}, { once: true })
+		} else {
+			og.nextElementSibling.firstElementChild.addEventListener("click", () => {
+				toggle(thumbnail, og)
+			}, {once : true})
 		}
+
+		//add event listener on button for video
+		
 	}))
 }
 
@@ -185,10 +207,10 @@ function setFooterReplies() {
 		const postHindiId = article.dataset.hindiId
 
 		// if (!postMap.has(postId)) {
-			postMap.set(postId, [article, []]) //id, htmlelement, reply array
+		postMap.set(postId, [article, []]) //id, htmlelement, reply array
 		// }
 
-		article.querySelectorAll(".replyLink").forEach(link => {
+		article.querySelectorAll(".inpostLink").forEach(link => {
 			if (seen[link.getAttribute("data-post-id")] != postId) {
 				replyArray.push([link.getAttribute("data-post-id"), postId, postHindiId])
 				seen[link.getAttribute("data-post-id")] = postId
@@ -203,7 +225,7 @@ function setFooterReplies() {
 	//add the links
 	for (let [postId, [postNode, repliesId]] of postMap) {
 		if (repliesId.length === 0) continue;
-		
+
 		const footerElem = document.createElement("footer")
 		footerElem.classList.add("post__footer")
 
@@ -222,7 +244,7 @@ function setFooterReplies() {
 			linkElem.href = "#" + replyId[0];
 			// linkElem.style.textDecoration = "underline"
 			linkElem.textContent = ">>" + replyId[1];
-			linkElem.classList.add("replyLink")
+			linkElem.classList.add("replyLink", "bottomLink")
 
 			addPopupEventHandler(linkElem, replyId[0])
 
@@ -233,7 +255,7 @@ function setFooterReplies() {
 				goToLinkElem.href = "#" + replyId[0];
 				// goToLinkElem.style.textDecoration = "underline"
 				goToLinkElem.textContent = " #";
-				goToLinkElem.classList.add("replyLink")
+				goToLinkElem.classList.add("replyLink", "bottomHashLink")
 			}
 
 			const spanContainer = document.createElement("span")
@@ -325,3 +347,4 @@ setFooterReplies()
 setContentReplies()
 goDownUp()
 addVideoPauseObserver()
+showYou()
