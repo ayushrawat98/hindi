@@ -53,11 +53,11 @@ export async function thumbnailGenerator() {
 				await sharp(inputBuffer, { animated: true, pages: -1 })
 					.rotate()
 					.resize({
-						width: 100,
+						width: 125,
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
 					})
 					.webp({
-						quality: 125,
+						quality: 100,
 						effort: 6,
 						loop: 0,
 						force: true
