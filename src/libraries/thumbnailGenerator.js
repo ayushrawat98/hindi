@@ -33,7 +33,7 @@ export async function thumbnailGenerator() {
 
 				const thumbnailArgs = [
 					'-i', ogFilePath,
-					'-vf', "scale='min(100,iw)':-1",
+					'-vf', "scale='min(125,iw)':-1",
 					'-frames:v', '1',
 					'-map_metadata', '-1',
 					'-compression_level', '3',
@@ -57,7 +57,7 @@ export async function thumbnailGenerator() {
 						withoutEnlargement: true // CRITICAL: Prevents images smaller than 100px from stretching up
 					})
 					.webp({
-						quality: 100,
+						quality: 125,
 						effort: 6,
 						loop: 0,
 						force: true
