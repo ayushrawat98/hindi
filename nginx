@@ -24,7 +24,7 @@ server {
 
     server_name hindichan.site;
 
-	client_max_body_size 15M;
+	client_max_body_size 21M;
 
     ssl_certificate /etc/letsencrypt/live/hindichan.site/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/hindichan.site/privkey.pem;

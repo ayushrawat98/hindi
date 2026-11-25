@@ -4,7 +4,7 @@ import { escapeHTML } from '../libraries/sanitize.js';
 import { AppError } from '../libraries/error.js';
 
 const MAX_THREAD_COUNT = 50
-const MAX_THREAD_BUMP_LIMIT = 75
+const MAX_THREAD_BUMP_LIMIT = 50
 
 export const renderHome = async (req, res, next) => {
 	const boards = instance.queries.getBoards.all()
