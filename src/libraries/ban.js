@@ -5,7 +5,7 @@ import ipaddr from "ipaddr.js";
 export function convertIpNew(ip) {
 	let parsedIP = ipaddr.parse(ip)
 	let normalizedString = parsedIP.toNormalizedString()
-	if(parsedIP.kind == "ipv4") {
+	if(parsedIP.kind() == "ipv4") {
 		return normalizedString.split(".").slice(0, 3).join(".")
 	} else {
 		return normalizedString.split(":").slice(0, 7).join(":")
