@@ -65,7 +65,7 @@ class DB {
 
 				CREATE INDEX IF NOT EXISTS idx_files_post_id ON files(post_id);
 
-				CREATE INDEX idx_posts_parent_board ON posts(board_id, pinned DESC, updated_at DESC) WHERE parent_id IS NULL;
+				CREATE INDEX IF NOT EXISTS idx_posts_parent_board ON posts(board_id, pinned DESC, updated_at DESC) WHERE parent_id IS NULL;
 
 				CREATE INDEX IF NOT EXISTS idx_posts_board_id ON posts(board_id);
 
