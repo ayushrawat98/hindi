@@ -69,14 +69,14 @@ const banUser = (req) => {
 	let result = undefined
 	if (pastBan) {
 		//if user is getting banned within 24 hours of last ban
-		const lastBanTime = new Date(pastBan.current_ban_date).getTime()
-		const currentTime = new Date().getTime()
-		let ban_multiple = pastBan.ban_multiple
-		if ((currentTime - lastBanTime) < 86400000) {
-			ban_multiple *= 2
-		} else {
+		// const lastBanTime = new Date(pastBan.current_ban_date).getTime()
+		// const currentTime = new Date().getTime()
+		// let ban_multiple = pastBan.ban_multiple
+		// if ((currentTime - lastBanTime) < 28800000) { // 8 hours
+			// ban_multiple += 1
+		// } else {
 			ban_multiple = 1
-		}
+		// }
 		newBanDate.setUTCDate(newBanDate.getUTCDate() + ban_multiple);
 		result = instance.queries.updateBanById.run(newBanDate.toISOString(), ban_multiple, convertedPostIP)
 	} else {

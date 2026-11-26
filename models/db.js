@@ -63,13 +63,19 @@ class DB {
 					current_ban_date TEXT NOT NULL
 				);
 
-				CREATE INDEX IF NOT EXISTS idx_posts_parent_board ON posts(board_id, updated_at DESC) WHERE parent_id IS NULL;
+				CREATE INDEX IF NOT EXISTS idx_files_post_id ON files(post_id);
+
+				CREATE INDEX idx_posts_parent_board ON posts(board_id, pinned DESC, updated_at DESC) WHERE parent_id IS NULL;
+
+				CREATE INDEX IF NOT EXISTS idx_posts_board_id ON posts(board_id);
 
 				CREATE INDEX IF NOT EXISTS idx_posts_parent_created
 				ON posts(parent_id, created_at DESC);
 
 				CREATE INDEX IF NOT EXISTS idx_posts_parent_updated
 				ON posts(parent_id, updated_at DESC);
+
+				CREATE INDEX IF NOT EXISTS idx_files_post_id ON files(post_id);
 
 				CREATE INDEX IF NOT EXISTS idx_files_status ON files(status);
 
