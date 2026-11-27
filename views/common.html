@@ -121,10 +121,9 @@
 			</span>
 		</div>
 		<div class="post__meta" style="display: flex;">
-			<span style="flex-grow: 1;"></span>
-			<time datetime="{{data.created_at}}">{{data.created_at | indianDate}}</time>
-			<span>&middot;</span>
 			<a class="post__link" href="/{{data.board_name}}/thread/{{data.id}}">{{data.id | hindinumber}}</a>
+			<span>&middot;</span>
+			<time datetime="{{data.created_at}}">{{data.created_at | indianDate}}</time>
 			<span>&middot;</span>
 			<span>{{data.replies | hindinumber}} {% if data.replies <= 1 %}टिप्पणी{% else
 					%}टिप्पणियाँ{% endif %} </span>
